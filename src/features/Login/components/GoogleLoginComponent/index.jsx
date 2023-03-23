@@ -11,7 +11,7 @@ function GoogleLoginComponent(props) {
   };
 
   return (
-    <div class="google-login">
+    <div className="google-login">
       <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
     </div>
   );
