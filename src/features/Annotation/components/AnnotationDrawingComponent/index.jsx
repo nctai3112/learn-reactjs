@@ -21,23 +21,29 @@ const PolygonAnnotation = (props) => {
   const vertexRadius = 6;
 
   const [stage, setStage] = useState();
+
+  // TAI: handle event move mouse to set the new target point of the line.
   const handleGroupMouseOver = (e) => {
+    console.log("HANDLEGROUPMOUSEOVER");
     if (!isFinished) return;
     e.target.getStage().container().style.cursor = "move";
     setStage(e.target.getStage());
   };
   const handleGroupMouseOut = (e) => {
+    console.log("HANDLEGROUPMOUSEOUT");
     e.target.getStage().container().style.cursor = "default";
   };
   const [minMaxX, setMinMaxX] = useState([0, 0]); //min and max in x axis
   const [minMaxY, setMinMaxY] = useState([0, 0]); //min and max in y axis
   const handleGroupDragStart = (e) => {
+    console.log("HANDLEGROUPDRAGSTART");
     let arrX = points.map((p) => p[0]);
     let arrY = points.map((p) => p[1]);
     setMinMaxX(minMax(arrX));
     setMinMaxY(minMax(arrY));
   };
   const groupDragBound = (pos) => {
+    console.log("GROUPDRAGBOUND");
     let { x, y } = pos;
     const sw = stage.width();
     const sh = stage.height();
