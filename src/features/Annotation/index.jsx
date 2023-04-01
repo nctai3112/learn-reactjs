@@ -48,31 +48,37 @@ const Canvas = () => {
   const [position, setPosition] = useState([0, 0]);
   const [isMouseOverPoint, setMouseOverPoint] = useState(false);
   const [isPolyComplete, setPolyComplete] = useState(false);
-  const videoElement = useMemo(() => {
+
+  const imageElement = useMemo(() => {
     const element = new window.Image();
     element.width = 650;
     element.height = 302;
     element.src = videoSource;
     return element;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoSource]); //it may come from redux so it may be dependency that's why I left it as dependecny...
+  }, [videoSource]);
+  // it may come from redux so it may be dependency
+  // that's why I left it as dependency...
+
   useEffect(() => {
     const onload = function () {
       setSize({
-        width: videoElement.width,
-        height: videoElement.height,
+        width: imageElement.width,
+        height: imageElement.height,
       });
-      setImage(videoElement);
-      imageRef.current = videoElement;
+      setImage(imageElement);
+      imageRef.current = imageElement;
     };
-    videoElement.addEventListener("load", onload);
+    imageElement.addEventListener("load", onload);
     return () => {
-      videoElement.removeEventListener("load", onload);
+      imageElement.removeEventListener("load", onload);
     };
-  }, [videoElement]);
+  }, [imageElement]);
+
   const getMousePos = (stage) => {
     return [stage.getPointerPosition().x, stage.getPointerPosition().y];
   };
+
   //drawing begins when mousedown event fires.
   const handleMouseDown = (e) => {
     if (isPolyComplete) return;
@@ -84,20 +90,24 @@ const Canvas = () => {
       setPoints([...points, mousePos]);
     }
   };
+
   const handleMouseMove = (e) => {
     const stage = e.target.getStage();
     const mousePos = getMousePos(stage);
     setPosition(mousePos);
   };
+
   const handleMouseOverStartPoint = (e) => {
     if (isPolyComplete || points.length < 3) return;
     e.target.scale({ x: 3, y: 3 });
     setMouseOverPoint(true);
   };
+
   const handleMouseOutStartPoint = (e) => {
     e.target.scale({ x: 1, y: 1 });
     setMouseOverPoint(false);
   };
+
   const handlePointDragMove = (e) => {
     const stage = e.target.getStage();
     const index = e.target.index - 1;
@@ -116,15 +126,18 @@ const Canvas = () => {
         .reduce((a, b) => a.concat(b), [])
     );
   }, [points, isPolyComplete, position]);
+
   const undo = () => {
     setPoints(points.slice(0, -1));
     setPolyComplete(false);
     setPosition(points[points.length - 1]);
   };
+
   const reset = () => {
     setPoints([]);
     setPolyComplete(false);
   };
+
   const handleGroupDragEnd = (e) => {
     //drag end listens other children circles' drag end event
     //...that's, why 'name' attr is added, see in polygon annotation part
