@@ -22,6 +22,7 @@ import React, { useMemo, useRef, useState, useEffect } from "react";
 import PolygonAnnotation from "./components/AnnotationDrawingComponent";
 import { Stage, Layer, Image } from "react-konva";
 import Button from "./components/ButtonComponent";
+import RectangleAnnotation from "./components/RectangleComponent";
 const videoSource =
   "https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
 const wrapperStyle = {
@@ -184,6 +185,7 @@ const Canvas = () => {
               handleMouseOutStartPoint={handleMouseOutStartPoint}
               isFinished={isPolyComplete}
             />
+            {/* <RectangleAnnotation /> */}
           </Layer>
         </Stage>
         <div
