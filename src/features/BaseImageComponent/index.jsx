@@ -7,6 +7,7 @@ const BaseImageComponent = ({
   height,
   children,
   handleMouseDownOnImage,
+  handleMouseMoveOnImage,
 }) => {
   const imageRef = useRef(null);
   const [image, setImage] = useState();
@@ -45,7 +46,9 @@ const BaseImageComponent = ({
     console.log("🚀 ~ file: index.jsx:38 ~ handleMouseDown ~ pos:", pos);
     handleMouseDownOnImage(pos);
   };
-  const baseHandleMouseMove = (event) => {};
+  const baseHandleMouseMove = (event) => {
+    handleMouseMoveOnImage();
+  };
 
   const getMousePos = (stage) => {
     return [stage.getPointerPosition().x, stage.getPointerPosition().y];
