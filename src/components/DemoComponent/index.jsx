@@ -6,7 +6,7 @@ const ImageWithRectangle = () => {
   const [image, setImage] = useState(null);
   // Create the default image.
   const [rect, setRect] = useState({
-    id: 0,
+    id: "0",
     x: 0,
     y: 0,
     width: 0,
@@ -44,7 +44,7 @@ const ImageWithRectangle = () => {
       console.log("click first time!");
       let { x, y } = e.target.getStage().getPointerPosition();
       setRect({
-        id: boudingBoxes.length + 1,
+        id: String(boudingBoxes.length + 1),
         x: x,
         y: y,
         width: 1,
@@ -91,7 +91,7 @@ const ImageWithRectangle = () => {
       // console.log("🚀 ~ file: index.jsx:53 ~ handleMouseMove ~ EVENT:", e);
       const { x, y } = e.target.getStage().getPointerPosition();
       setRect({
-        id: boudingBoxes.length + 1,
+        id: String(boudingBoxes.length + 1),
         x: Math.min(rect.x, x),
         y: Math.min(rect.y, y),
         width: Math.abs(rect.x - x),
@@ -101,23 +101,28 @@ const ImageWithRectangle = () => {
   };
 
   const renderBoudingBoxes = () => {
-    console.log("renderBoudingBox");
-    console.log(boudingBoxes);
     if (boudingBoxes.length > 0) {
       boudingBoxes.map(({ id, x, y, width, height }) => {
-        return (
-          <Rect
-            onMouseDown={handleMouseDownOnRect}
-            id={id}
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            stroke="red"
-          />
-        );
+        console.log("in rectangle rendering");
+        console.log({ id, x, y, width, height });
+        if (x !== 0 && y !== 0) {
+          return (
+            <Rect
+              // onMouseDown={handleMouseDownOnRect}
+              key={String(id)}
+              id={String(id)}
+              x={x}
+              y={y}
+              width={width}
+              height={height}
+              stroke="black"
+              strokeWidth={3}
+            />
+          );
+        }
       });
     }
+    return null;
   };
 
   return (
@@ -128,7 +133,7 @@ const ImageWithRectangle = () => {
           onMouseDown={handleMouseDownOnImage}
           onMouseMove={handleMouseMoveOnImage}
         />
-        {drawingBoudingBoxes()}
+        {/* {drawingBoudingBoxes()} */}
         {renderBoudingBoxes()}
       </Layer>
     </Stage>
