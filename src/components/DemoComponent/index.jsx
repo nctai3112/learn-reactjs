@@ -108,7 +108,7 @@ const ImageWithRectangle = () => {
         if (x !== 0 && y !== 0) {
           return (
             <Rect
-              // onMouseDown={handleMouseDownOnRect}
+              onMouseDown={handleMouseDownOnRect}
               key={String(id)}
               id={String(id)}
               x={x}
@@ -117,6 +117,7 @@ const ImageWithRectangle = () => {
               height={height}
               stroke="black"
               strokeWidth={3}
+              draggable
             />
           );
         }
