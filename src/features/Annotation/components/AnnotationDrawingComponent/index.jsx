@@ -18,25 +18,29 @@ const PolygonAnnotation = (props) => {
     handleMouseOverStartPoint,
     handleMouseOutStartPoint,
   } = props;
-  const vertexRadius = 6;
 
+  const vertexRadius = 6;
   const [stage, setStage] = useState();
+  const [minMaxX, setMinMaxX] = useState([0, 0]); //min and max in x axis
+  const [minMaxY, setMinMaxY] = useState([0, 0]); //min and max in y axis
+
   const handleGroupMouseOver = (e) => {
     if (!isFinished) return;
     e.target.getStage().container().style.cursor = "move";
     setStage(e.target.getStage());
   };
+
   const handleGroupMouseOut = (e) => {
     e.target.getStage().container().style.cursor = "default";
   };
-  const [minMaxX, setMinMaxX] = useState([0, 0]); //min and max in x axis
-  const [minMaxY, setMinMaxY] = useState([0, 0]); //min and max in y axis
+
   const handleGroupDragStart = (e) => {
     let arrX = points.map((p) => p[0]);
     let arrY = points.map((p) => p[1]);
     setMinMaxX(minMax(arrX));
     setMinMaxY(minMax(arrY));
   };
+
   const groupDragBound = (pos) => {
     let { x, y } = pos;
     const sw = stage.width();
