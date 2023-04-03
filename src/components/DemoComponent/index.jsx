@@ -102,7 +102,7 @@ const ImageWithRectangle = () => {
 
   const renderBoudingBoxes = () => {
     if (boudingBoxes.length > 0) {
-      boudingBoxes.map(({ id, x, y, width, height }) => {
+      return boudingBoxes.map(({ id, x, y, width, height }) => {
         console.log("in rectangle rendering");
         console.log({ id, x, y, width, height });
         if (x !== 0 && y !== 0) {
@@ -120,9 +120,10 @@ const ImageWithRectangle = () => {
             />
           );
         }
+        return <></>;
       });
     }
-    return null;
+    return <></>;
   };
 
   return (
