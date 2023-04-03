@@ -15,7 +15,7 @@ const ImageWithRectangle = () => {
   // Check the current bouding box is editing or not.
   const [isEditing, setIsEditing] = useState(false);
   // Check the current bouding box is finished or not.
-  const [isFinished, setIsFinished] = useState(false);
+  // const [isFinished, setIsFinished] = useState(false);
   // Array to store all bouding boxes.
   const [boudingBoxes, setBoudingBoxes] = useState([]);
 
@@ -31,18 +31,16 @@ const ImageWithRectangle = () => {
     };
   }, []);
 
-  const drawingBoudingBoxes = () => {};
-
   // Handle event click on image
   // --> (get position x, y for the first time create bouding box)
   const handleMouseDownOnImage = (e) => {
-    console.log(
-      "🚀 ~ file: index.jsx:39 ~ handleMouseDownOnImage ~ isFinished:",
-      isFinished
-    );
-    if (!isFinished) {
-      console.log("click first time!");
+    // if starting drawing (first click) --> get location -->
+    if (!isEditing) {
       let { x, y } = e.target.getStage().getPointerPosition();
+      console.log(
+        "🚀 ~ file: index.jsx:40 ~ handleMouseDownOnImage ~ { x, y }:",
+        { x, y }
+      );
       setRect({
         id: String(boudingBoxes.length + 1),
         x: x,
@@ -50,18 +48,13 @@ const ImageWithRectangle = () => {
         width: 1,
         height: 1,
       });
-      setBoudingBoxes([...boudingBoxes, rect]);
-      console.log(
-        "🚀 ~ file: index.jsx:55 ~ handleMouseDownOnImage ~ boudingBoxes:",
-        boudingBoxes
-      );
       setIsEditing(true);
       return;
     }
-    if (!isEditing) {
-      setIsEditing(true);
-      return;
-    }
+    // if (!isEditing) {
+    //   setIsEditing(true);
+    //   return;
+    // }
     if (isEditing) {
       setIsEditing(false);
       return;
@@ -71,20 +64,13 @@ const ImageWithRectangle = () => {
   const handleMouseDownOnRect = (e) => {
     if (isEditing) {
       setBoudingBoxes([...boudingBoxes, rect]);
-      console.log(
-        "🚀 ~ file: index.jsx:66 ~ handleMouseDownOnRect ~ boudingBoxes:",
-        boudingBoxes
-      );
       setIsEditing(false);
-      setIsFinished(true);
+      // setIsFinished(true);
     }
   };
 
   const handleMouseMoveOnImage = (e) => {
-    // if (rect.width === 0 || rect.height === 0) {
-    //   return;
-    // }
-    if (isFinished) {
+    if (!isEditing) {
       return;
     }
     if (isEditing) {
@@ -108,7 +94,7 @@ const ImageWithRectangle = () => {
         if (x !== 0 && y !== 0) {
           return (
             <Rect
-              // onMouseDown={handleMouseDownOnRect}
+              onMouseDown={handleMouseDownOnRect}
               key={String(id)}
               id={String(id)}
               x={x}
@@ -134,7 +120,14 @@ const ImageWithRectangle = () => {
           onMouseDown={handleMouseDownOnImage}
           onMouseMove={handleMouseMoveOnImage}
         />
-        {/* {drawingBoudingBoxes()} */}
+        <Rect
+          x={rect.x}
+          y={rect.y}
+          width={rect.width}
+          height={rect.height}
+          stroke="red"
+          onMouseDown={handleMouseDownOnRect}
+        />
         {renderBoudingBoxes()}
       </Layer>
     </Stage>
