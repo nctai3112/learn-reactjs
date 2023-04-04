@@ -40,14 +40,11 @@ const BaseImageComponent = ({
 
   const baseHandleMouseDown = (event) => {
     // If the event fire from image -> prevent it
-    if (!event.target.getAttrs().image) return;
-    const stage = event.target.getStage();
-    const pos = getMousePos(stage);
-    console.log("🚀 ~ file: index.jsx:38 ~ handleMouseDown ~ pos:", pos);
-    handleMouseDownOnImage(pos);
-  };
-  const baseHandleMouseMove = (event) => {
-    handleMouseMoveOnImage();
+    // Tai: currently raising the error with getStage here.
+    // if (!event.target.getAttrs().image) return;
+    // const stage = event.target.getStage();
+    // const pos = getMousePos(stage);
+    // handleMouseDownOnImage(pos);
   };
 
   const getMousePos = (stage) => {
@@ -60,10 +57,11 @@ const BaseImageComponent = ({
         width={size.width}
         height={size.height}
         onMouseDown={baseHandleMouseDown}
-        onMouseMove={baseHandleMouseMove}
       >
         <Layer>
           <Image
+            onMouseDown={handleMouseDownOnImage}
+            onMouseMove={handleMouseMoveOnImage}
             ref={imageRef}
             image={image}
             x={0}

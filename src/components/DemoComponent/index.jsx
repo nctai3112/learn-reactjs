@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Stage, Layer, Image, Rect } from "react-konva";
-// import BaseImageComponent from "../../features/BaseImageComponent";
+import BaseImageComponent from "../../features/BaseImageComponent";
 
 const ImageWithRectangle = () => {
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState(null);
   // Create the default image.
   const [rect, setRect] = useState({
     id: "0",
@@ -18,16 +18,16 @@ const ImageWithRectangle = () => {
   const [boundingBoxes, setBoundingBoxes] = useState([]);
 
   // Load the image for annotating.
-  // const imageUrl =
-  //   "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
-  useEffect(() => {
-    const img = new window.Image();
-    img.src =
-      "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
-    img.onload = () => {
-      setImage(img);
-    };
-  }, []);
+  const imageUrl =
+    "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
+  // useEffect(() => {
+  //   const img = new window.Image();
+  //   img.src =
+  //     "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
+  //   img.onload = () => {
+  //     setImage(img);
+  //   };
+  // }, []);
 
   // Handle event click on image
   // --> (get position x, y for the first time create bounding box)
@@ -102,13 +102,33 @@ const ImageWithRectangle = () => {
   };
 
   return (
-    <Stage width={800} height={600}>
+    // <Stage width={800} height={600}>
+    //   <Layer>
+    //     <Image
+    //       image={image}
+    //       onMouseDown={handleMouseDownOnImage}
+    //       onMouseMove={handleMouseMoveOnImage}
+    //     />
+    //     <Rect
+    //       x={rect.x}
+    //       y={rect.y}
+    //       width={rect.width}
+    //       height={rect.height}
+    //       stroke="red"
+    //       onMouseDown={handleMouseDownOnRect}
+    //     />
+    //     {renderBoundingBoxes()}
+    //   </Layer>
+    // </Stage>
+
+    <BaseImageComponent
+      imageUrl={imageUrl}
+      width={800}
+      height={600}
+      handleMouseDownOnImage={handleMouseDownOnImage}
+      handleMouseMoveOnImage={handleMouseMoveOnImage}
+    >
       <Layer>
-        <Image
-          image={image}
-          onMouseDown={handleMouseDownOnImage}
-          onMouseMove={handleMouseMoveOnImage}
-        />
         <Rect
           x={rect.x}
           y={rect.y}
@@ -119,26 +139,7 @@ const ImageWithRectangle = () => {
         />
         {renderBoundingBoxes()}
       </Layer>
-    </Stage>
-
-    // <BaseImageComponent
-    //   imageUrl={imageUrl}
-    //   width={800}
-    //   height={600}
-    //   handleMouseDownOnImage={handleMouseDownOnImage}
-    //   handleMouseMoveOnImage={handleMouseMoveOnImage}
-    // >
-    //   <Layer>
-    //     <Rect
-    //       onMouseDown={handleMouseDownOnImage}
-    //       x={rect.x}
-    //       y={rect.y}
-    //       width={rect.width}
-    //       height={rect.height}
-    //       stroke="red"
-    //     />
-    //   </Layer>
-    // </BaseImageComponent>
+    </BaseImageComponent>
   );
 };
 
