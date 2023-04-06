@@ -1,10 +1,10 @@
-import { useLayoutEffect, useState, useMemo, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 // import { Stage, Image, Layer } from "react-konva";
 import { Layer } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
 import { Rectangle } from "../Rectangle";
 
-const Polygon = ({ imageUrl }) => {
+const TestRect = ({ imageUrl }) => {
   const [initialRectangles, setInitialRectangles] = useState([]);
   const [selectedId, setSelectId] = useState();
 
@@ -57,4 +57,4 @@ const Polygon = ({ imageUrl }) => {
   );
 };
 
-export default Polygon;
+export default TestRect;
