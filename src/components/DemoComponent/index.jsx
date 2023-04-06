@@ -3,7 +3,6 @@ import { Layer, Rect } from "react-konva";
 import BaseImageComponent from "../../features/BaseImageComponent";
 
 const ImageWithRectangle = () => {
-  // const [image, setImage] = useState(null);
   // Create the default image.
   const [rect, setRect] = useState({
     id: "0",
