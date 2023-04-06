@@ -2,11 +2,9 @@ import "./App.css";
 import { Route, NavLink, Routes } from "react-router-dom";
 import LoginFeature from "./features/Login";
 import Canvas from "./features/Annotation";
-import Polygon from "./features/Polygon";
 // import Button from "./features/Annotation/components/ButtonComponent";
 import ImageWithRectangle from "./components/DemoComponent";
-import KonvaToolbar from "./components/ImageWithToolbar";
-import KonvaImage from "./components/ImageRendering";
+import PolygonsAnnotation from "./features/Polygons";
 
 const _img =
   "https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/games_15/nintendo_switch_4/2x1_NSwitch_TloZTearsOfTheKingdom_Gamepage_image1600w.jpg";
@@ -16,8 +14,7 @@ function App() {
       <NavLink to="/login">Login</NavLink>
       <NavLink to="/annotation"> - Annotation</NavLink>
       <NavLink to="/demo-bounding-boxes"> - Demo Bounding Box</NavLink>
-      <NavLink to="/demo-toolbar-image"> - Demo Toolbar Image</NavLink>
-      <NavLink to="/demo-image-render"> - Demo Image Render</NavLink>
+      <NavLink to="/test-polygon"> - Demo Polygons</NavLink>
 
       <Routes>
         <Route path="/login" element={<LoginFeature />} />
@@ -27,7 +24,7 @@ function App() {
         <Route path="/demo-image-render" element={<KonvaImage />} />
         <Route
           path="/test-polygon"
-          element={<Polygon imageUrl={_img}></Polygon>}
+          element={<PolygonsAnnotation imageUrl={_img}></PolygonsAnnotation>}
         />
       </Routes>
     </div>
