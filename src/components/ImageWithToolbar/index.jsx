@@ -50,12 +50,12 @@ function KonvaToolbar() {
       <button onClick={() => handleFlip("flipY")}>Flip Vertically</button>
       <button onClick={() => handleRotate(-1)}>Rotate Left</button>
       <button onClick={() => handleRotate(1)}>Rotate Right</button>
-      <Stage width={500} height={500}>
+      <Stage x={0} y={0} width={imageProps.width} height={imageProps.height}>
         <Layer>
           <Image
             image={imageProps.image}
-            x={250}
-            y={250}
+            x={imageProps.width / 2}
+            y={imageProps.height / 2}
             width={imageProps.width * imageProps.scale}
             height={imageProps.height * imageProps.scale}
             rotation={imageProps.rotation}
