@@ -5,12 +5,14 @@ import Canvas from "./features/Annotation";
 // import Button from "./features/Annotation/components/ButtonComponent";
 import ImageWithRectangle from "./components/DemoComponent";
 import PolygonsAnnotation from "./features/Polygons";
+import { Button } from "antd";
 
 const _img =
   "https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/games_15/nintendo_switch_4/2x1_NSwitch_TloZTearsOfTheKingdom_Gamepage_image1600w.jpg";
 function App() {
   return (
     <div className="App">
+      <Button>This is a Ant-D Button</Button>
       <NavLink to="/login">Login</NavLink>
       <NavLink to="/annotation"> - Annotation</NavLink>
       <NavLink to="/demo-bounding-boxes"> - Demo Bounding Box</NavLink>
