@@ -20,8 +20,6 @@ function App() {
         <Route path="/login" element={<LoginFeature />} />
         <Route path="/annotation" element={<Canvas />} />
         <Route path="/demo-bounding-boxes" element={<ImageWithRectangle />} />
-        <Route path="/demo-toolbar-image" element={<KonvaToolbar />} />
-        <Route path="/demo-image-render" element={<KonvaImage />} />
         <Route
           path="/test-polygon"
           element={<PolygonsAnnotation imageUrl={_img}></PolygonsAnnotation>}
