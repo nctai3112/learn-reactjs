@@ -14,6 +14,7 @@ function App() {
       <NavLink to="/login">Login</NavLink>
       <NavLink to="/annotation"> - Annotation</NavLink>
       <NavLink to="/demo-bounding-boxes"> - Demo Bounding Box</NavLink>
+      <NavLink to="/test-polygon"> - Demo Polygons</NavLink>
 
       <Routes>
         <Route path="/login" element={<LoginFeature />} />

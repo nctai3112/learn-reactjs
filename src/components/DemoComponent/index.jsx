@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Stage, Layer, Image, Rect } from "react-konva";
+import React, { useState } from "react";
+import { Layer, Rect } from "react-konva";
 import BaseImageComponent from "../../features/BaseImageComponent";
 
 const ImageWithRectangle = () => {
@@ -17,24 +17,16 @@ const ImageWithRectangle = () => {
   // Array to store all bounding boxes.
   const [boundingBoxes, setBoundingBoxes] = useState([]);
 
-  // Load the image for annotating.
   const imageUrl =
     "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
-  // useEffect(() => {
-  //   const img = new window.Image();
-  //   img.src =
-  //     "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
-  //   img.onload = () => {
-  //     setImage(img);
-  //   };
-  // }, []);
 
   // Handle event click on image
   // --> (get position x, y for the first time create bounding box)
-  const handleMouseDownOnImage = (e) => {
+  const handleMouseDownOnImage = (pos) => {
     // if starting drawing (first click) --> get first location to create rect position.
     if (!isEditing) {
-      let { x, y } = e.target.getStage().getPointerPosition();
+      // let { x, y } = e.target.getStage().getPointerPosition();
+      let [x, y] = pos;
       setRect({
         id: String(boundingBoxes.length + 1),
         x: x,
@@ -59,12 +51,12 @@ const ImageWithRectangle = () => {
     }
   };
 
-  const handleMouseMoveOnImage = (e) => {
+  const handleMouseMoveOnImage = (pos) => {
     if (!isEditing) {
       return;
     }
     if (isEditing) {
-      const { x, y } = e.target.getStage().getPointerPosition();
+      const [x, y] = pos;
       setRect({
         id: String(boundingBoxes.length + 1),
         x: Math.min(rect.x, x),
@@ -76,51 +68,27 @@ const ImageWithRectangle = () => {
   };
 
   const renderBoundingBoxes = () => {
-    if (boundingBoxes.length > 0) {
-      return boundingBoxes.map(({ id, x, y, width, height }) => {
-        console.log("in rectangle rendering");
-        console.log({ id, x, y, width, height });
-        if (x !== 0 && y !== 0) {
-          return (
-            <Rect
-              onMouseDown={handleMouseDownOnRect}
-              key={String(id)}
-              id={String(id)}
-              x={x}
-              y={y}
-              width={width}
-              height={height}
-              stroke="black"
-              strokeWidth={3}
-            />
-          );
-        }
-        return <></>;
+    if (!boundingBoxes.length) return <></>;
+    return boundingBoxes
+      .filter((prop) => prop.x !== 0 && prop.y !== 0)
+      .map(({ id, x, y, width, height }) => {
+        return (
+          <Rect
+            onMouseDown={handleMouseDownOnRect}
+            key={String(id)}
+            id={String(id)}
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            stroke="black"
+            strokeWidth={3}
+          />
+        );
       });
-    }
-    return <></>;
   };
 
   return (
-    // <Stage width={800} height={600}>
-    //   <Layer>
-    //     <Image
-    //       image={image}
-    //       onMouseDown={handleMouseDownOnImage}
-    //       onMouseMove={handleMouseMoveOnImage}
-    //     />
-    //     <Rect
-    //       x={rect.x}
-    //       y={rect.y}
-    //       width={rect.width}
-    //       height={rect.height}
-    //       stroke="red"
-    //       onMouseDown={handleMouseDownOnRect}
-    //     />
-    //     {renderBoundingBoxes()}
-    //   </Layer>
-    // </Stage>
-
     <BaseImageComponent
       imageUrl={imageUrl}
       width={800}
