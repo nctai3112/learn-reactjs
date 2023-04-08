@@ -16,11 +16,18 @@ const ImageWithRectangle = () => {
   // Array to store all bounding boxes.
   const [boundingBoxes, setBoundingBoxes] = useState([]);
 
+  // Width, height for handling dragBoundFunc.
+  const [currentDraggingWidth, setCurrentDraggingWidth] = useState(0);
+  const [currentDraggingHeight, setCurrentDraggingHeight] = useState(0);
+
   const _id = String(Math.random());
   const _name = `group-${_id}`;
 
   const imageUrl =
     "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
+
+  const stageWidth = 800;
+  const stageHeight = 600;
 
   // Handle event click on image
   // --> (get position x, y for the first time create bounding box)
@@ -99,9 +106,22 @@ const ImageWithRectangle = () => {
   };
 
   // Not use yet.
-  const handleGroupDragStart = (e) => {};
   const handleGroupDragMove = (e) => {};
-  const groupDragBound = (e) => {};
+  const handleRectDragStart = (e) => {
+    setCurrentDraggingHeight(e.target.height());
+    setCurrentDraggingWidth(e.target.width());
+  };
+  const rectDragBound = (pos) => {
+    let { x, y } = pos;
+
+    if (x < 0) x = 0.1;
+    if (y < 0) y = 0.1;
+    if (x + currentDraggingWidth > stageWidth)
+      x = stageWidth - currentDraggingWidth + 0.1;
+    if (y + currentDraggingHeight > stageHeight)
+      y = stageHeight - currentDraggingHeight + 0.1;
+    return { x, y };
+  };
 
   const renderBoundingBoxes = () => {
     if (!boundingBoxes.length) return <></>;
@@ -110,19 +130,19 @@ const ImageWithRectangle = () => {
       .map(({ id, x, y, width, height }) => {
         return (
           <Group
-            id={_id}
+            id={"group_" + _id}
             name={"bounding_box"}
-            draggable={!isEditing}
+            draggable={false}
             onMouseOver={handleGroupMouseOver}
             onMouseOut={handleGroupMouseOut}
-            // dragBoundFunc={groupDragBound}
           >
             <Rect
               onMouseDown={handleMouseDownOnRect}
               onDragMove={handleGroupDragMove}
-              onDragStart={handleGroupDragStart}
+              onDragStart={handleRectDragStart}
               onDragEnd={handleRectDragEnd}
-              key={String(id)}
+              dragBoundFunc={rectDragBound}
+              key={"rect_" + String(id)}
               id={String(id)}
               x={x}
               y={y}
@@ -141,8 +161,8 @@ const ImageWithRectangle = () => {
   return (
     <BaseImageComponent
       imageUrl={imageUrl}
-      width={800}
-      height={600}
+      width={stageWidth}
+      height={stageHeight}
       handleMouseDownOnImage={handleMouseDownOnImage}
       handleMouseMoveOnImage={handleMouseMoveOnImage}
     >
