@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 // import { Stage, Image, Layer } from "react-konva";
-import { Layer } from "react-konva";
+import { Stage, Layer, Line } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "./Polygon";
@@ -35,8 +35,11 @@ const PolygonsAnnotation = ({ imageUrl }) => {
   const handleMouseDownOnImage = (pos) => {
     if (isPolyComplete) return;
     if (points.length >= 3 && isMouseOverPoint) {
-      console.log("completed", pos, points[0]);
       setPolyComplete(true);
+      setPolygons([...polygons, points]);
+      setPoints([]);
+      // setPolyComplete(false);
+      setMouseOverPoint(false);
       return;
     }
 
@@ -58,9 +61,29 @@ const PolygonsAnnotation = ({ imageUrl }) => {
     setPoints([...points.slice(0, index), pos, ...points.slice(index + 1)]);
   };
 
+  const handleGroupDragEnd = (e) => {
+    //drag end listens other children circles' drag end event
+    //...that's, why 'name' attr is added, see in polygon annotation part
+    if (e.target.name() === "polygon") {
+      let result = [];
+      let copyPoints = [...points];
+      copyPoints.map((point) =>
+        result.push([point[0] + e.target.x(), point[1] + e.target.y()])
+      );
+      polygons.map((pointArr) => {
+        if (pointArr.every((element) => points.includes(element))) {
+          pointArr = result;
+        }
+        return pointArr;
+      });
+      e.target.position({ x: 0, y: 0 }); //needs for mouse position otherwise when click undo you will see that mouse click position is not normal:)
+      setPoints(result);
+    }
+  };
+
   return (
     <>
-      <button
+      {/* <button
         onClick={(e) => {
           setPolygons([...polygons, points]);
           setPoints([]);
@@ -69,9 +92,10 @@ const PolygonsAnnotation = ({ imageUrl }) => {
         }}
       >
         Update
-      </button>
+      </button> */}
       <BaseImageComponent
-        handleMouseDownOnStage={handleMouseDownOnImage}
+        // handleMouseDownOnStage={handleMouseDownOnImage}
+        handleMouseDownOnImage={handleMouseDownOnImage}
         handleMouseMoveOnImage={handleMouseMoveOnImage}
         imageUrl={imageUrl}
         width={width}
@@ -85,6 +109,7 @@ const PolygonsAnnotation = ({ imageUrl }) => {
               flattenedPoints={_.flatten([...polygon])}
               points={polygon}
               width={width}
+              stroke={"red"}
               height={height}
             />
           ))}
@@ -94,9 +119,12 @@ const PolygonsAnnotation = ({ imageUrl }) => {
             points={points}
             width={width}
             height={height}
+            stroke={"black"}
             handlePointDragMove={handlePointDragMove}
+            handleGroupDragEnd={handleGroupDragEnd}
             handleMouseOverStartPoint={handleMouseOverStartPoint}
             handleMouseOutStartPoint={handleMouseOutStartPoint}
+            handlePointMouseDown={handleMouseDownOnImage}
           />
         </Layer>
       </BaseImageComponent>
