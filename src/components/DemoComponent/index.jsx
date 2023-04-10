@@ -46,21 +46,6 @@ const ImageWithRectangle = () => {
     }
   };
 
-  const handleMouseDownOnRect = (e) => {
-    // Mouse down on rect == end drawing a rect.
-    if (isEditing) {
-      setBoundingBoxes([...boundingBoxes, rect]);
-      setRect({
-        id: "0",
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-      });
-      setIsEditing(false);
-    }
-  };
-
   const handleMouseMoveOnImage = (pos) => {
     if (!isEditing) {
       return;
@@ -74,6 +59,21 @@ const ImageWithRectangle = () => {
         width: Math.abs(rect.x - x),
         height: Math.abs(rect.y - y),
       });
+    }
+  };
+
+  const handleMouseDownOnRect = (e) => {
+    // Mouse down on rect == end drawing a rect.
+    if (isEditing) {
+      setBoundingBoxes([...boundingBoxes, rect]);
+      setRect({
+        id: "0",
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      });
+      setIsEditing(false);
     }
   };
 
