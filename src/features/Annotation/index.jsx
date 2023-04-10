@@ -1,23 +1,3 @@
-// import React from "react";
-// import PropTypes from "prop-types";
-// import ImageLoadingComponent from "./components/ImageLoadingComponent";
-// import Button from "./components/ButtonComponent";
-// import PolygonAnnotation from "./components/AnnotationDrawingComponent";
-
-// AnnotationFeature.propTypes = {};
-
-// function AnnotationFeature(props) {
-//   return (
-//     <div className="annotation-feature">
-//       <ImageLoadingComponent />
-//       <PolygonAnnotation />
-//       <Button />
-//     </div>
-//   );
-// }
-
-// export default AnnotationFeature;
-
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import PolygonAnnotation from "./components/AnnotationDrawingComponent";
 import { Stage, Layer, Image } from "react-konva";
