@@ -4,6 +4,9 @@ import BaseImageComponent from "../../features/BaseImageComponent";
 
 const ImageWithRectangle = () => {
   // Create the default image.
+  // Array to store all bounding boxes.
+  const [boundingBoxes, setBoundingBoxes] = useState([]);
+  // Create the default rectangle for drawing.
   const [rect, setRect] = useState({
     id: "0",
     x: 0,
@@ -13,9 +16,6 @@ const ImageWithRectangle = () => {
   });
   // Check the current bounding box is editing or not.
   const [isEditing, setIsEditing] = useState(false);
-  // Array to store all bounding boxes.
-  const [boundingBoxes, setBoundingBoxes] = useState([]);
-
   // Width, height for handling dragBoundFunc.
   const [currentDraggingWidth, setCurrentDraggingWidth] = useState(0);
   const [currentDraggingHeight, setCurrentDraggingHeight] = useState(0);
@@ -29,12 +29,10 @@ const ImageWithRectangle = () => {
   const stageWidth = 800;
   const stageHeight = 600;
 
-  // Handle event click on image
-  // --> (get position x, y for the first time create bounding box)
+  // Handle event click on image.
   const handleMouseDownOnImage = (pos) => {
     // if starting drawing (first click) --> get first location to create rect position.
     if (!isEditing) {
-      // let { x, y } = e.target.getStage().getPointerPosition();
       let [x, y] = pos;
       setRect({
         id: String(boundingBoxes.length + 1),
@@ -44,10 +42,6 @@ const ImageWithRectangle = () => {
         height: 1,
       });
       setIsEditing(true);
-      return;
-    }
-    if (isEditing) {
-      setIsEditing(false);
       return;
     }
   };
