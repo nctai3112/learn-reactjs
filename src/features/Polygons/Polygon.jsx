@@ -13,6 +13,7 @@ export const Polygon = ({
   handlePointDragMove = function () {},
   handleMouseOverStartPoint = function () {},
   handleMouseOutStartPoint = function () {},
+  handlePointMouseDown = function () {},
 }) => {
   const [stage, setStage] = useState();
   const [minMaxX, setMinMaxX] = useState([0, 0]); //min and max in x axis
@@ -33,8 +34,6 @@ export const Polygon = ({
   };
 
   const handleGroupDragStart = (e) => {
-    console.log("handleGroupStart");
-    // console.log(points);
     let arrX = points.map((p) => p[0]);
     let arrY = points.map((p) => p[1]);
     setMinMaxX(minMax(arrX));
@@ -42,7 +41,6 @@ export const Polygon = ({
   };
 
   const groupDragBound = (pos) => {
-    // console.log(pos);
     let { x, y } = pos;
     const sw = stage.width();
     const sh = stage.height();
@@ -93,6 +91,7 @@ export const Polygon = ({
               fill="#FF019A"
               stroke="#00F1FF"
               strokeWidth={2}
+              onMouseDown={handlePointMouseDown}
               {...startPointAttr}
               onDragMove={handlePointDragMove}
               dragBoundFunc={(pos) =>
