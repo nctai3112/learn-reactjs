@@ -30,20 +30,20 @@ const PolygonsAnnotation = ({ imageUrl }) => {
   useEffect(() => {
     const _flatten = _.flatten(points.concat(isPolyComplete ? [] : position));
     setFlattenedPoints(_flatten);
+    if (isPolyComplete) setPolyComplete(false);
   }, [points, isPolyComplete, position]);
 
   const handleMouseDownOnImage = (pos) => {
     if (isPolyComplete) return;
-    if (points.length >= 3 && isMouseOverPoint) {
+    setPoints([...points, pos]);
+  };
+  const handleMouseDownOnFirstPoint = (pos) => {
+    if (points.length >= 3) {
       setPolyComplete(true);
       setPolygons([...polygons, points]);
       setPoints([]);
-      // setPolyComplete(false);
-      setMouseOverPoint(false);
       return;
     }
-
-    setPoints([...points, pos]);
   };
 
   const handleMouseMoveOnImage = (pos) => {
@@ -124,7 +124,7 @@ const PolygonsAnnotation = ({ imageUrl }) => {
             handleGroupDragEnd={handleGroupDragEnd}
             handleMouseOverStartPoint={handleMouseOverStartPoint}
             handleMouseOutStartPoint={handleMouseOutStartPoint}
-            handlePointMouseDown={handleMouseDownOnImage}
+            handlePointMouseDown={handleMouseDownOnFirstPoint}
           />
         </Layer>
       </BaseImageComponent>

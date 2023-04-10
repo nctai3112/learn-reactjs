@@ -79,6 +79,7 @@ export const Polygon = ({
                   hitStrokeWidth: 12,
                   onMouseOver: handleMouseOverStartPoint,
                   onMouseOut: handleMouseOutStartPoint,
+                  onMouseDown: handlePointMouseDown,
                 }
               : null;
 
@@ -91,7 +92,6 @@ export const Polygon = ({
               fill="#FF019A"
               stroke="#00F1FF"
               strokeWidth={2}
-              onMouseDown={handlePointMouseDown}
               {...startPointAttr}
               onDragMove={handlePointDragMove}
               dragBoundFunc={(pos) =>
