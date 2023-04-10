@@ -8,6 +8,7 @@ export const Polygon = ({
   height,
   flattenedPoints,
   isFinished,
+  stroke,
   handleGroupDragEnd = function () {},
   handlePointDragMove = function () {},
   handleMouseOverStartPoint = function () {},
@@ -32,6 +33,8 @@ export const Polygon = ({
   };
 
   const handleGroupDragStart = (e) => {
+    console.log("handleGroupStart");
+    // console.log(points);
     let arrX = points.map((p) => p[0]);
     let arrY = points.map((p) => p[1]);
     setMinMaxX(minMax(arrX));
@@ -39,6 +42,7 @@ export const Polygon = ({
   };
 
   const groupDragBound = (pos) => {
+    // console.log(pos);
     let { x, y } = pos;
     const sw = stage.width();
     const sh = stage.height();
@@ -53,7 +57,7 @@ export const Polygon = ({
     <>
       <Group
         id={_id}
-        name={_name}
+        name={"polygon"}
         draggable={isFinished}
         onDragStart={handleGroupDragStart}
         onDragEnd={handleGroupDragEnd}
@@ -63,7 +67,7 @@ export const Polygon = ({
       >
         <Line
           points={flattenedPoints}
-          stroke="#00F1FF"
+          stroke={stroke}
           strokeWidth={3}
           closed={isFinished}
           fill="rgb(140,30,255,0.5)"
