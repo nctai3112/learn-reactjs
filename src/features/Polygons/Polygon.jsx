@@ -14,6 +14,7 @@ export const Polygon = ({
   handleMouseOverStartPoint = function () {},
   handleMouseOutStartPoint = function () {},
   handlePointMouseDown = function () {},
+  handleLineMouseDown = function () {},
 }) => {
   const [stage, setStage] = useState();
   const [minMaxX, setMinMaxX] = useState([0, 0]); //min and max in x axis
@@ -69,6 +70,7 @@ export const Polygon = ({
           strokeWidth={3}
           closed={isFinished}
           fill="rgb(140,30,255,0.5)"
+          onMouseDown={handleLineMouseDown}
         />
         {points.map((point, index) => {
           const x = point[0] - vertexRadius / 2;
