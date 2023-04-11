@@ -10,6 +10,27 @@ import { Polygon } from "../Polygons/Polygon";
 AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
+  // EXPORT DATA.
+  const [annotationData, setAnnotationData] = useState([]);
+
+  function handleDownloadClick() {
+    if (annotationData) {
+      const jsonBlob = new Blob([JSON.stringify(annotationData, null, 2)], {
+        type: "application/json",
+      });
+      const downloadUrl = URL.createObjectURL(jsonBlob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = downloadUrl;
+      downloadLink.download = "layer.json";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(downloadUrl);
+    }
+  }
+
+  const layerRef = React.useRef();
+
   // GLOBAL.
   const [modeController, setModeController] = useState("bounding-box");
   const width = 800;
@@ -266,10 +287,36 @@ function AnnotationMerge(props) {
     setPoints([...points, pos]);
   };
 
-  // RETURN ONE ELEMENT BASE IMAGE COMPONENT.
+  useEffect(() => {
+    setAnnotationData({
+      "bounding-box": boundingBoxes,
+      polygon: polygons,
+    });
+  }, [boundingBoxes, polygons]);
+
+  const [jsonData, setJsonData] = useState(null);
+
+  function handleFileChange(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target.result;
+      try {
+        const data = JSON.parse(content);
+        setJsonData(data);
+        setBoundingBoxes(data["bounding-box"]);
+        setPolygons(data["polygon"]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    reader.readAsText(file);
+  }
 
   return (
     <>
+      <br></br>
+      <input type="file" accept=".json" onChange={handleFileChange} />
       <button
         onClick={(e) => {
           setModeController("bounding-box");
@@ -284,6 +331,9 @@ function AnnotationMerge(props) {
       >
         Polygon
       </button>
+      <button onClick={handleDownloadClick} disabled={!annotationData}>
+        Download JSON
+      </button>
       <BaseImageComponent
         imageUrl={imageUrl}
         width={width}
@@ -291,7 +341,7 @@ function AnnotationMerge(props) {
         handleMouseDownOnImage={handleMouseDownOnImage}
         handleMouseMoveOnImage={handleMouseMoveOnImage}
       >
-        <Layer>
+        <Layer ref={layerRef}>
           {polygons.map((polygon, index) => (
             <Polygon
               key={index}
