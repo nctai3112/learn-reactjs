@@ -9,6 +9,7 @@ export const Polygon = ({
   flattenedPoints,
   isFinished,
   stroke,
+  fill,
   handlePolygonDragEnd = function () {},
   handlePointDragMove = function () {},
   handleMouseOverStartPoint = function () {},
@@ -69,7 +70,7 @@ export const Polygon = ({
           stroke={stroke}
           strokeWidth={3}
           closed={isFinished}
-          fill="rgb(140,30,255,0.5)"
+          fill={fill}
           onMouseDown={handleLineMouseDown}
         />
         {points.map((point, index) => {

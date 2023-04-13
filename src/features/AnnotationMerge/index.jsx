@@ -74,7 +74,12 @@ function AnnotationMerge(props) {
     if (points.length >= 3) {
       setIsPopupVisible(true);
       setPolyComplete(true);
-      setPolygons([...polygons, points]);
+      setPolygons([
+        ...polygons,
+        {
+          points: points,
+        },
+      ]);
       setPoints([]);
       return;
     }
@@ -104,35 +109,35 @@ function AnnotationMerge(props) {
   };
 
   const handlePolygonDragEnd = (e) => {
-    const eChildren = e.target.children;
-    const currentLine = eChildren.filter((shapeObject) => {
-      if (shapeObject.className === "Line") {
-        return shapeObject;
-      }
-      return null;
-    });
-    const currentPoints = currentLine[0].attrs.points;
-    const pointsArray = currentPoints.reduce((result, value, index, array) => {
-      if (index % 2 === 0) {
-        result.push([array[index], array[index + 1]]);
-      }
-      return result;
-    }, []);
-    if (e.target.name() === "polygon") {
-      let result = [];
-      let copyPoints = pointsArray;
-      copyPoints.map((point) => {
-        result.push([point[0] + e.target.x(), point[1] + e.target.y()]);
-      });
-      const newPolygons = polygons.map((pointArr) => {
-        if (JSON.stringify(pointArr) === JSON.stringify(copyPoints)) {
-          pointArr = result;
-        }
-        return pointArr;
-      });
-      setPolygons(newPolygons);
-      e.target.position({ x: 0, y: 0 }); //needs for mouse position otherwise when click undo you will see that mouse click position is not normal:)
-    }
+    // const eChildren = e.target.children;
+    // const currentLine = eChildren.filter((shapeObject) => {
+    //   if (shapeObject.className === "Line") {
+    //     return shapeObject;
+    //   }
+    //   return null;
+    // });
+    // const currentPoints = currentLine[0].attrs.points;
+    // const pointsArray = currentPoints.reduce((result, value, index, array) => {
+    //   if (index % 2 === 0) {
+    //     result.push([array[index], array[index + 1]]);
+    //   }
+    //   return result;
+    // }, []);
+    // if (e.target.name() === "polygon") {
+    //   let result = [];
+    //   let copyPoints = pointsArray;
+    //   copyPoints.map((point) => {
+    //     result.push([point[0] + e.target.x(), point[1] + e.target.y()]);
+    //   });
+    //   const newPolygons = polygons.map((pointArr) => {
+    //     if (JSON.stringify(pointArr) === JSON.stringify(copyPoints)) {
+    //       pointArr = result;
+    //     }
+    //     return pointArr;
+    //   });
+    //   setPolygons(newPolygons);
+    //   e.target.position({ x: 0, y: 0 }); //needs for mouse position otherwise when click undo you will see that mouse click position is not normal:)
+    // }
   };
 
   // BOUNDING BOXES IMPLEMENTATION.
@@ -327,10 +332,10 @@ function AnnotationMerge(props) {
     console.log(polygons);
   }, [polygons]);
 
-  // useEffect(() => {
-  //   console.log("boundingBox tracking");
-  //   console.log(boundingBoxes);
-  // }, [boundingBoxes]);
+  useEffect(() => {
+    console.log("boundingBox tracking");
+    console.log(boundingBoxes);
+  }, [boundingBoxes]);
 
   // HANDLE POPUP FORM TO INPUT LABELLING ANNOTATION INFO.
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -349,9 +354,7 @@ function AnnotationMerge(props) {
         })
       );
     } else if (modeController === "polygon") {
-      console.log("HEREEEE");
-      console.log(formData);
-      const currentLabelItem = polygons[boundingBoxes.length - 1];
+      const currentLabelItem = polygons[polygons.length - 1];
       currentLabelItem["label"] = formData["label"];
       currentLabelItem["color"] = formData["color"] + "7D";
       setPolygons(
@@ -408,11 +411,12 @@ function AnnotationMerge(props) {
             <Polygon
               key={index}
               isFinished={true}
-              flattenedPoints={_.flatten([...polygon])}
-              points={polygon}
+              flattenedPoints={_.flatten([...polygon["points"]])}
+              points={polygon["points"]}
               width={width}
               stroke={"red"}
               height={height}
+              fill={polygon.color}
               handlePointDragMove={handlePointDragMove}
               handlePolygonDragEnd={handlePolygonDragEnd}
               handleMouseOverStartPoint={handleMouseOverStartPoint}
