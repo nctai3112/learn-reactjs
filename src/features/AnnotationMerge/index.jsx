@@ -109,35 +109,35 @@ function AnnotationMerge(props) {
   };
 
   const handlePolygonDragEnd = (e) => {
-    // const eChildren = e.target.children;
-    // const currentLine = eChildren.filter((shapeObject) => {
-    //   if (shapeObject.className === "Line") {
-    //     return shapeObject;
-    //   }
-    //   return null;
-    // });
-    // const currentPoints = currentLine[0].attrs.points;
-    // const pointsArray = currentPoints.reduce((result, value, index, array) => {
-    //   if (index % 2 === 0) {
-    //     result.push([array[index], array[index + 1]]);
-    //   }
-    //   return result;
-    // }, []);
-    // if (e.target.name() === "polygon") {
-    //   let result = [];
-    //   let copyPoints = pointsArray;
-    //   copyPoints.map((point) => {
-    //     result.push([point[0] + e.target.x(), point[1] + e.target.y()]);
-    //   });
-    //   const newPolygons = polygons.map((pointArr) => {
-    //     if (JSON.stringify(pointArr) === JSON.stringify(copyPoints)) {
-    //       pointArr = result;
-    //     }
-    //     return pointArr;
-    //   });
-    //   setPolygons(newPolygons);
-    //   e.target.position({ x: 0, y: 0 }); //needs for mouse position otherwise when click undo you will see that mouse click position is not normal:)
-    // }
+    const eChildren = e.target.children;
+    const currentLine = eChildren.filter((shapeObject) => {
+      if (shapeObject.className === "Line") {
+        return shapeObject;
+      }
+      return null;
+    });
+    const currentPoints = currentLine[0].attrs.points;
+    const pointsArray = currentPoints.reduce((result, value, index, array) => {
+      if (index % 2 === 0) {
+        result.push([array[index], array[index + 1]]);
+      }
+      return result;
+    }, []);
+    if (e.target.name() === "polygon") {
+      let result = [];
+      let copyPoints = pointsArray;
+      copyPoints.map((point) => {
+        result.push([point[0] + e.target.x(), point[1] + e.target.y()]);
+      });
+      const newPolygons = polygons.map((pointArr) => {
+        if (JSON.stringify(pointArr) === JSON.stringify(copyPoints)) {
+          pointArr = result;
+        }
+        return pointArr;
+      });
+      setPolygons(newPolygons);
+      e.target.position({ x: 0, y: 0 }); //needs for mouse position otherwise when click undo you will see that mouse click position is not normal:)
+    }
   };
 
   // BOUNDING BOXES IMPLEMENTATION.
