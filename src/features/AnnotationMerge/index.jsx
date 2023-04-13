@@ -1,13 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 // import { Stage, Image, Layer } from "react-konva";
-import { Stage, Layer, Line, Group, Rect } from "react-konva";
+import { Layer, Group, Rect } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
+import PopupForm from "../../components/PopupForm";
 
-AnnotationMerge.propTypes = {};
+// AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
   // EXPORT DATA.
@@ -71,6 +72,7 @@ function AnnotationMerge(props) {
   }, [points, isPolyComplete, position]);
   const handleMouseDownOnFirstPoint = (pos) => {
     if (points.length >= 3) {
+      setIsPopupVisible(true);
       setPolyComplete(true);
       setPolygons([...polygons, points]);
       setPoints([]);
@@ -107,6 +109,7 @@ function AnnotationMerge(props) {
       if (shapeObject.className === "Line") {
         return shapeObject;
       }
+      return null;
     });
     const currentPoints = currentLine[0].attrs.points;
     const pointsArray = currentPoints.reduce((result, value, index, array) => {
@@ -182,6 +185,7 @@ function AnnotationMerge(props) {
         height: 0,
       });
       setIsEditing(false);
+      setIsPopupVisible(true);
     }
   };
 
@@ -227,7 +231,7 @@ function AnnotationMerge(props) {
     if (!boundingBoxes.length) return <></>;
     return boundingBoxes
       .filter((prop) => prop.x !== 0 && prop.y !== 0)
-      .map(({ id, x, y, width, height }) => {
+      .map(({ id, x, y, width, height, color }) => {
         return (
           <Group
             id={"group_" + _id}
@@ -248,9 +252,9 @@ function AnnotationMerge(props) {
               draggable={true}
               width={width}
               height={height}
-              stroke="#00F1FF"
+              stroke={"#00F1FF"}
               strokeWidth={3}
-              fill="rgb(140,30,255,0.5)"
+              fill={color}
             />
           </Group>
         );
@@ -271,6 +275,7 @@ function AnnotationMerge(props) {
         height: 1,
       });
       setIsEditing(true);
+      setIsPopupVisible(false);
       return;
     }
     if (isEditing) {
@@ -283,6 +288,7 @@ function AnnotationMerge(props) {
         height: 0,
       });
       setIsEditing(false);
+      setIsPopupVisible(true);
       return;
     }
   };
@@ -317,12 +323,61 @@ function AnnotationMerge(props) {
 
   // FIXING UPDATE POLYGONS AFTER DRAGGING.
   useEffect(() => {
+    console.log("Polygons tracking");
     console.log(polygons);
   }, [polygons]);
+
+  // useEffect(() => {
+  //   console.log("boundingBox tracking");
+  //   console.log(boundingBoxes);
+  // }, [boundingBoxes]);
+
+  // HANDLE POPUP FORM TO INPUT LABELLING ANNOTATION INFO.
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const handleSubmitPopupForm = (formData) => {
+    // Handle form data here, e.g. update the polygons state
+    if (modeController === "bounding-box") {
+      const currentLabelItem = boundingBoxes[boundingBoxes.length - 1];
+      currentLabelItem["label"] = formData["label"];
+      currentLabelItem["color"] = formData["color"] + "7D";
+      setBoundingBoxes(
+        boundingBoxes.map((boundingBox) => {
+          if (boundingBox.id === boundingBox.length - 1) {
+            return currentLabelItem;
+          }
+          return boundingBox;
+        })
+      );
+    } else if (modeController === "polygon") {
+      console.log("HEREEEE");
+      console.log(formData);
+      const currentLabelItem = polygons[boundingBoxes.length - 1];
+      currentLabelItem["label"] = formData["label"];
+      currentLabelItem["color"] = formData["color"] + "7D";
+      setPolygons(
+        polygons.map((polygon, index) => {
+          if (index === polygon.length - 1) {
+            return currentLabelItem;
+          }
+          return polygon;
+        })
+      );
+    }
+  };
+
+  const handleClosePopupForm = () => {
+    setIsPopupVisible(false);
+  };
 
   return (
     <>
       <br></br>
+      {isPopupVisible && (
+        <PopupForm
+          onSubmit={handleSubmitPopupForm}
+          onClose={handleClosePopupForm}
+        />
+      )}
       <input type="file" accept=".json" onChange={handleFileChange} />
       <button onClick={handleDownloadClick} disabled={!annotationData}>
         Export JSON
