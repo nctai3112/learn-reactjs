@@ -9,7 +9,7 @@ export const Polygon = ({
   flattenedPoints,
   isFinished,
   stroke,
-  handleGroupDragEnd = function () {},
+  handlePolygonDragEnd = function () {},
   handlePointDragMove = function () {},
   handleMouseOverStartPoint = function () {},
   handleMouseOutStartPoint = function () {},
@@ -59,7 +59,7 @@ export const Polygon = ({
         name={"polygon"}
         draggable={isFinished}
         onDragStart={handleGroupDragStart}
-        onDragEnd={handleGroupDragEnd}
+        onDragEnd={handlePolygonDragEnd}
         dragBoundFunc={groupDragBound}
         onMouseOver={handleGroupMouseOver}
         onMouseOut={handleGroupMouseOut}

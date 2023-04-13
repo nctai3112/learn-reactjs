@@ -12,7 +12,6 @@ AnnotationMerge.propTypes = {};
 function AnnotationMerge(props) {
   // EXPORT DATA.
   const [annotationData, setAnnotationData] = useState([]);
-
   function handleDownloadClick() {
     if (annotationData) {
       const jsonBlob = new Blob([JSON.stringify(annotationData, null, 2)], {
@@ -28,8 +27,6 @@ function AnnotationMerge(props) {
       URL.revokeObjectURL(downloadUrl);
     }
   }
-
-  const layerRef = React.useRef();
 
   // GLOBAL.
   const [modeController, setModeController] = useState("bounding-box");
@@ -104,23 +101,34 @@ function AnnotationMerge(props) {
     setPoints([...points.slice(0, index), pos, ...points.slice(index + 1)]);
   };
 
-  const handleGroupDragEnd = (e) => {
-    //drag end listens other children circles' drag end event
-    //...that's, why 'name' attr is added, see in polygon annotation part
+  const handlePolygonDragEnd = (e) => {
+    const eChildren = e.target.children;
+    const currentLine = eChildren.filter((shapeObject) => {
+      if (shapeObject.className === "Line") {
+        return shapeObject;
+      }
+    });
+    const currentPoints = currentLine[0].attrs.points;
+    const pointsArray = currentPoints.reduce((result, value, index, array) => {
+      if (index % 2 === 0) {
+        result.push([array[index], array[index + 1]]);
+      }
+      return result;
+    }, []);
     if (e.target.name() === "polygon") {
       let result = [];
-      let copyPoints = [...points];
-      copyPoints.map((point) =>
-        result.push([point[0] + e.target.x(), point[1] + e.target.y()])
-      );
-      polygons.map((pointArr) => {
-        if (pointArr.every((element) => points.includes(element))) {
+      let copyPoints = pointsArray;
+      copyPoints.map((point) => {
+        result.push([point[0] + e.target.x(), point[1] + e.target.y()]);
+      });
+      const newPolygons = polygons.map((pointArr) => {
+        if (JSON.stringify(pointArr) === JSON.stringify(copyPoints)) {
           pointArr = result;
         }
         return pointArr;
       });
+      setPolygons(newPolygons);
       e.target.position({ x: 0, y: 0 }); //needs for mouse position otherwise when click undo you will see that mouse click position is not normal:)
-      setPoints(result);
     }
   };
 
@@ -280,22 +288,17 @@ function AnnotationMerge(props) {
   };
   // 2. HANDLE EVENT MOVING ON IMAGE.
   const handleMouseDownOnImagePolygon = (pos) => {
-    console.log("handleMouseDownOnImagePolygon");
-    console.log(pos);
-    console.log(points);
     if (isPolyComplete) return;
     setPoints([...points, pos]);
   };
 
+  // HANDLE IMPORT JSON DATA FILE.
   useEffect(() => {
     setAnnotationData({
       "bounding-box": boundingBoxes,
       polygon: polygons,
     });
   }, [boundingBoxes, polygons]);
-
-  const [jsonData, setJsonData] = useState(null);
-
   function handleFileChange(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -303,7 +306,6 @@ function AnnotationMerge(props) {
       const content = event.target.result;
       try {
         const data = JSON.parse(content);
-        setJsonData(data);
         setBoundingBoxes(data["bounding-box"]);
         setPolygons(data["polygon"]);
       } catch (error) {
@@ -313,10 +315,18 @@ function AnnotationMerge(props) {
     reader.readAsText(file);
   }
 
+  // FIXING UPDATE POLYGONS AFTER DRAGGING.
+  useEffect(() => {
+    console.log(polygons);
+  }, [polygons]);
+
   return (
     <>
       <br></br>
       <input type="file" accept=".json" onChange={handleFileChange} />
+      <button onClick={handleDownloadClick} disabled={!annotationData}>
+        Export JSON
+      </button>
       <button
         onClick={(e) => {
           setModeController("bounding-box");
@@ -331,9 +341,6 @@ function AnnotationMerge(props) {
       >
         Polygon
       </button>
-      <button onClick={handleDownloadClick} disabled={!annotationData}>
-        Download JSON
-      </button>
       <BaseImageComponent
         imageUrl={imageUrl}
         width={width}
@@ -341,7 +348,7 @@ function AnnotationMerge(props) {
         handleMouseDownOnImage={handleMouseDownOnImage}
         handleMouseMoveOnImage={handleMouseMoveOnImage}
       >
-        <Layer ref={layerRef}>
+        <Layer>
           {polygons.map((polygon, index) => (
             <Polygon
               key={index}
@@ -351,6 +358,12 @@ function AnnotationMerge(props) {
               width={width}
               stroke={"red"}
               height={height}
+              handlePointDragMove={handlePointDragMove}
+              handlePolygonDragEnd={handlePolygonDragEnd}
+              handleMouseOverStartPoint={handleMouseOverStartPoint}
+              handleMouseOutStartPoint={handleMouseOutStartPoint}
+              handlePointMouseDown={handleMouseDownOnFirstPoint}
+              handleLineMouseDown={handleMouseDownOnLine}
             />
           ))}
           <Polygon
@@ -361,7 +374,7 @@ function AnnotationMerge(props) {
             height={height}
             stroke={"black"}
             handlePointDragMove={handlePointDragMove}
-            handleGroupDragEnd={handleGroupDragEnd}
+            handlePolygonDragEnd={handlePolygonDragEnd}
             handleMouseOverStartPoint={handleMouseOverStartPoint}
             handleMouseOutStartPoint={handleMouseOutStartPoint}
             handlePointMouseDown={handleMouseDownOnFirstPoint}
