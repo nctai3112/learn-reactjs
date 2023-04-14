@@ -1,0 +1,8 @@
+div.function-controller {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    1fr
+  ); /* this will create 3 columns with equal width */
+  grid-gap: 10px; /* you can adjust the gap between the columns */
+}

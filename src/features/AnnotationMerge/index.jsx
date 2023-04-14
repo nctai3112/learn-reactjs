@@ -7,6 +7,8 @@ import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
 import PopupForm from "../../components/PopupForm";
+import SelectionList from "../../components/SelectionList";
+import "./styles.css";
 
 // AnnotationMerge.propTypes = {};
 
@@ -371,34 +373,80 @@ function AnnotationMerge(props) {
   const handleClosePopupForm = () => {
     setIsPopupVisible(false);
   };
+  const [selected, setSelected] = useState(-1);
+  const [labelList, setLabelList] = useState([]);
+  const [text, setText] = useState("");
+  const addLabelTermAnnotation = (term) => {
+    setLabelList([...labelList, term]);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    addLabelTermAnnotation(text);
+    setText("");
+  };
+
+  const [labelingMethod, setLabelingMethod] = "default";
+
+  const handleChange = (event) => {
+    setText(event.target.value);
+  };
 
   return (
     <>
-      <br></br>
-      {isPopupVisible && (
-        <PopupForm
-          onSubmit={handleSubmitPopupForm}
-          onClose={handleClosePopupForm}
-        />
-      )}
-      <input type="file" accept=".json" onChange={handleFileChange} />
-      <button onClick={handleDownloadClick} disabled={!annotationData}>
-        Export JSON
-      </button>
-      <button
-        onClick={(e) => {
-          setModeController("bounding-box");
-        }}
-      >
-        BoundingBox
-      </button>
-      <button
-        onClick={(e) => {
-          setModeController("polygon");
-        }}
-      >
-        Polygon
-      </button>
+      <div className="function-controller">
+        <div className="json-data">
+          <h2>Data JSON Function</h2>
+          <input type="file" accept=".json" onChange={handleFileChange} />
+          <button onClick={handleDownloadClick} disabled={!annotationData}>
+            Export JSON
+          </button>
+        </div>
+        <div className="annotation-method">
+          <h2>Annotation Method</h2>
+          <button
+            className="bounding-box-method"
+            onClick={(e) => {
+              setModeController("bounding-box");
+            }}
+          >
+            BoundingBox
+          </button>
+          <button
+            className="polygon-method"
+            onClick={(e) => {
+              setModeController("polygon");
+            }}
+          >
+            Polygon
+          </button>
+        </div>
+        <div className="labeling-method">
+          <h2>Labeling Method</h2>
+          <div className="default">
+            {isPopupVisible && (
+              <PopupForm
+                onSubmit={handleSubmitPopupForm}
+                onClose={handleClosePopupForm}
+              />
+            )}
+          </div>
+          <div className="auto">
+            <form onSubmit={handleSubmit}>
+              <label>
+                Enter Label Item:
+                <input type="text" value={text} onChange={handleChange} />
+              </label>
+              <button type="submit">Submit</button>
+            </form>
+            <SelectionList
+              items={labelList}
+              selected={selected}
+              onChange={setSelected}
+            />
+          </div>
+        </div>
+      </div>
       <BaseImageComponent
         imageUrl={imageUrl}
         width={width}
