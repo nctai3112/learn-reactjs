@@ -1,13 +1,13 @@
 import React from "react";
 // import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-// import { Stage, Image, Layer } from "react-konva";
 import { Layer, Group, Rect } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
 import PopupForm from "../../components/PopupForm";
 import SelectionList from "../../components/SelectionList";
+import { Button, Modal, Form, Input } from "antd";
 import "./styles.css";
 
 // AnnotationMerge.propTypes = {};
@@ -74,7 +74,6 @@ function AnnotationMerge(props) {
   }, [points, isPolyComplete, position]);
   const handleMouseDownOnFirstPoint = (pos) => {
     if (points.length >= 3) {
-      setIsPopupVisible(true);
       setPolyComplete(true);
       setPolygons([
         ...polygons,
@@ -83,6 +82,11 @@ function AnnotationMerge(props) {
         },
       ]);
       setPoints([]);
+      if (labelingMethod === "default") {
+        setIsPopupVisible(true);
+      } else if (labelingMethod === "auto") {
+        setIsAnnotateAuto(true);
+      }
       return;
     }
   };
@@ -132,8 +136,8 @@ function AnnotationMerge(props) {
         result.push([point[0] + e.target.x(), point[1] + e.target.y()]);
       });
       const newPolygons = polygons.map((pointArr) => {
-        if (JSON.stringify(pointArr) === JSON.stringify(copyPoints)) {
-          pointArr = result;
+        if (JSON.stringify(pointArr.points) === JSON.stringify(copyPoints)) {
+          pointArr.points = result;
         }
         return pointArr;
       });
@@ -192,7 +196,11 @@ function AnnotationMerge(props) {
         height: 0,
       });
       setIsEditing(false);
-      setIsPopupVisible(true);
+      if (labelingMethod === "default") {
+        setIsPopupVisible(true);
+      } else if (labelingMethod === "auto") {
+        setIsAnnotateAuto(true);
+      }
     }
   };
 
@@ -295,7 +303,11 @@ function AnnotationMerge(props) {
         height: 0,
       });
       setIsEditing(false);
-      setIsPopupVisible(true);
+      if (labelingMethod === "default") {
+        setIsPopupVisible(true);
+      } else if (labelingMethod === "auto") {
+        setIsAnnotateAuto(true);
+      }
       return;
     }
   };
@@ -328,21 +340,23 @@ function AnnotationMerge(props) {
     reader.readAsText(file);
   }
 
-  // FIXING UPDATE POLYGONS AFTER DRAGGING.
-  useEffect(() => {
-    console.log("Polygons tracking");
-    console.log(polygons);
-  }, [polygons]);
+  // ANNOTATION TRACKING.
+  // useEffect(() => {
+  //   console.log("Polygons tracking");
+  //   console.log(polygons);
+  // }, [polygons]);
 
-  useEffect(() => {
-    console.log("boundingBox tracking");
-    console.log(boundingBoxes);
-  }, [boundingBoxes]);
+  // useEffect(() => {
+  //   console.log("boundingBox tracking");
+  //   console.log(boundingBoxes);
+  // }, [boundingBoxes]);
 
   // HANDLE POPUP FORM TO INPUT LABELLING ANNOTATION INFO.
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [isAnnotateAuto, setIsAnnotateAuto] = useState(false);
   const handleSubmitPopupForm = (formData) => {
     // Handle form data here, e.g. update the polygons state
+    setLabelList([...labelList, formData]);
     if (modeController === "bounding-box") {
       const currentLabelItem = boundingBoxes[boundingBoxes.length - 1];
       currentLabelItem["label"] = formData["label"];
@@ -368,29 +382,56 @@ function AnnotationMerge(props) {
         })
       );
     }
-  };
-
-  const handleClosePopupForm = () => {
     setIsPopupVisible(false);
   };
+
   const [selected, setSelected] = useState(-1);
   const [labelList, setLabelList] = useState([]);
-  const [text, setText] = useState("");
-  const addLabelTermAnnotation = (term) => {
-    setLabelList([...labelList, term]);
+  const handleSubmitAddLabelItem = (submitData) => {
+    setLabelList([
+      ...labelList,
+      {
+        label: submitData["label"],
+        color: submitData["color"],
+      },
+    ]);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    addLabelTermAnnotation(text);
-    setText("");
-  };
-
-  const [labelingMethod, setLabelingMethod] = "default";
-
-  const handleChange = (event) => {
-    setText(event.target.value);
-  };
+  const [labelingMethod, setLabelingMethod] = useState("default");
+  // SELECT LIST TRACKING ITEM
+  useEffect(() => {
+    if (isAnnotateAuto) {
+      if (selected !== -1) {
+        const formData = labelList[selected];
+        if (modeController === "bounding-box") {
+          const currentLabelItem = boundingBoxes[boundingBoxes.length - 1];
+          currentLabelItem["label"] = formData["label"];
+          currentLabelItem["color"] = formData["color"] + "7D";
+          setBoundingBoxes(
+            boundingBoxes.map((boundingBox) => {
+              if (boundingBox.id === boundingBox.length - 1) {
+                return currentLabelItem;
+              }
+              return boundingBox;
+            })
+          );
+        } else if (modeController === "polygon") {
+          const currentLabelItem = polygons[polygons.length - 1];
+          currentLabelItem["label"] = formData["label"];
+          currentLabelItem["color"] = formData["color"] + "7D";
+          setPolygons(
+            polygons.map((polygon, index) => {
+              if (index === polygon.length - 1) {
+                return currentLabelItem;
+              }
+              return polygon;
+            })
+          );
+        }
+      }
+      setIsAnnotateAuto(false);
+    }
+  }, [isAnnotateAuto]);
 
   return (
     <>
@@ -398,107 +439,155 @@ function AnnotationMerge(props) {
         <div className="json-data">
           <h2>Data JSON Function</h2>
           <input type="file" accept=".json" onChange={handleFileChange} />
-          <button onClick={handleDownloadClick} disabled={!annotationData}>
+          <Button onClick={handleDownloadClick} disabled={!annotationData}>
             Export JSON
-          </button>
+          </Button>
         </div>
         <div className="annotation-method">
           <h2>Annotation Method</h2>
-          <button
+          <Button
+            type={modeController === "bounding-box" ? "primary" : "default"}
             className="bounding-box-method"
             onClick={(e) => {
               setModeController("bounding-box");
             }}
           >
-            BoundingBox
-          </button>
-          <button
+            Bounding Box
+          </Button>
+          <Button
+            type={modeController === "polygon" ? "primary" : "default"}
             className="polygon-method"
             onClick={(e) => {
               setModeController("polygon");
             }}
           >
             Polygon
-          </button>
+          </Button>
         </div>
         <div className="labeling-method">
           <h2>Labeling Method</h2>
-          <div className="default">
-            {isPopupVisible && (
-              <PopupForm
-                onSubmit={handleSubmitPopupForm}
-                onClose={handleClosePopupForm}
-              />
-            )}
-          </div>
-          <div className="auto">
-            <form onSubmit={handleSubmit}>
-              <label>
-                Enter Label Item:
-                <input type="text" value={text} onChange={handleChange} />
-              </label>
-              <button type="submit">Submit</button>
-            </form>
-            <SelectionList
-              items={labelList}
-              selected={selected}
-              onChange={setSelected}
-            />
-          </div>
+          <Button
+            type={labelingMethod === "default" ? "primary" : "default"}
+            className="default-label-method"
+            onClick={(e) => {
+              setLabelingMethod("default");
+            }}
+          >
+            Create New Label
+          </Button>
+          <Button
+            type={labelingMethod === "auto" ? "primary" : "default"}
+            className="auto-label-method"
+            onClick={(e) => {
+              setLabelingMethod("auto");
+            }}
+          >
+            Label From List
+          </Button>
+          <Modal
+            title="Label Information"
+            visible={isPopupVisible}
+            onCancel={() => setIsPopupVisible(false)}
+            footer={null}
+          >
+            <Form onFinish={handleSubmitPopupForm}>
+              <Form.Item label="Label" name="label" required>
+                <Input type="text" />
+              </Form.Item>
+              <Form.Item label="Color" name="color" required>
+                <Input type="color" />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Save
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
         </div>
       </div>
-      <BaseImageComponent
-        imageUrl={imageUrl}
-        width={width}
-        height={height}
-        handleMouseDownOnImage={handleMouseDownOnImage}
-        handleMouseMoveOnImage={handleMouseMoveOnImage}
-      >
-        <Layer>
-          {polygons.map((polygon, index) => (
-            <Polygon
-              key={index}
-              isFinished={true}
-              flattenedPoints={_.flatten([...polygon["points"]])}
-              points={polygon["points"]}
-              width={width}
-              stroke={"red"}
-              height={height}
-              fill={polygon.color}
-              handlePointDragMove={handlePointDragMove}
-              handlePolygonDragEnd={handlePolygonDragEnd}
-              handleMouseOverStartPoint={handleMouseOverStartPoint}
-              handleMouseOutStartPoint={handleMouseOutStartPoint}
-              handlePointMouseDown={handleMouseDownOnFirstPoint}
-              handleLineMouseDown={handleMouseDownOnLine}
-            />
-          ))}
-          <Polygon
-            isFinished={isPolyComplete}
-            flattenedPoints={flattenedPoints}
-            points={points}
+      <div group-column>
+        <div className="image-konva-region">
+          <BaseImageComponent
+            imageUrl={imageUrl}
             width={width}
             height={height}
-            stroke={"black"}
-            handlePointDragMove={handlePointDragMove}
-            handlePolygonDragEnd={handlePolygonDragEnd}
-            handleMouseOverStartPoint={handleMouseOverStartPoint}
-            handleMouseOutStartPoint={handleMouseOutStartPoint}
-            handlePointMouseDown={handleMouseDownOnFirstPoint}
-            handleLineMouseDown={handleMouseDownOnLine}
+            handleMouseDownOnImage={handleMouseDownOnImage}
+            handleMouseMoveOnImage={handleMouseMoveOnImage}
+          >
+            <Layer>
+              {polygons.map((polygon, index) => (
+                <Polygon
+                  key={index}
+                  isFinished={true}
+                  flattenedPoints={_.flatten([...polygon["points"]])}
+                  points={polygon["points"]}
+                  width={width}
+                  stroke={"red"}
+                  height={height}
+                  fill={polygon.color}
+                  handlePointDragMove={handlePointDragMove}
+                  handlePolygonDragEnd={handlePolygonDragEnd}
+                  handleMouseOverStartPoint={handleMouseOverStartPoint}
+                  handleMouseOutStartPoint={handleMouseOutStartPoint}
+                  handlePointMouseDown={handleMouseDownOnFirstPoint}
+                  handleLineMouseDown={handleMouseDownOnLine}
+                />
+              ))}
+              <Polygon
+                isFinished={isPolyComplete}
+                flattenedPoints={flattenedPoints}
+                points={points}
+                width={width}
+                height={height}
+                stroke={"black"}
+                handlePointDragMove={handlePointDragMove}
+                handlePolygonDragEnd={handlePolygonDragEnd}
+                handleMouseOverStartPoint={handleMouseOverStartPoint}
+                handleMouseOutStartPoint={handleMouseOutStartPoint}
+                handlePointMouseDown={handleMouseDownOnFirstPoint}
+                handleLineMouseDown={handleMouseDownOnLine}
+              />
+              <Rect
+                x={rect.x}
+                y={rect.y}
+                width={rect.width}
+                height={rect.height}
+                stroke="black"
+                strokeWidth={3}
+                onMouseDown={handleMouseDownOnRect}
+              />
+              {renderBoundingBoxes()}
+            </Layer>
+          </BaseImageComponent>
+        </div>
+        <div className="select-list-label-region">
+          <h2>Labeling List</h2>
+          <SelectionList
+            items={labelList.map((labelItem) => {
+              return labelItem.label;
+            })}
+            selected={selected}
+            onChange={setSelected}
           />
-          <Rect
-            x={rect.x}
-            y={rect.y}
-            width={rect.width}
-            height={rect.height}
-            stroke="black"
-            strokeWidth={3}
-            onMouseDown={handleMouseDownOnRect}
-          />
-          {renderBoundingBoxes()}
-        </Layer>
-      </BaseImageComponent>
+        </div>
+      </div>
+      <div className="add-label-form">
+        <h2 add-label-form-title>Add Label Item</h2>
+        <Form onFinish={handleSubmitAddLabelItem}>
+          <Form.Item label="Label" name="label">
+            <Input type="text" />
+          </Form.Item>
+          <Form.Item label="Color" name="color">
+            <Input type="color" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Save
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </>
   );
 }

@@ -6,3 +6,12 @@ div.function-controller {
   ); /* this will create 3 columns with equal width */
   grid-gap: 10px; /* you can adjust the gap between the columns */
 }
+
+div.group-column {
+  display: grid;
+  grid-template-columns: repeat(
+    2,
+    1fr
+  ); /* this will create 3 columns with equal width */
+  grid-gap: 10px; /* you can adjust the gap between the columns */
+}
