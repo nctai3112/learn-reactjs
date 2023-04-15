@@ -433,16 +433,14 @@ function AnnotationMerge(props) {
     }
   }, [isAnnotateAuto]);
 
+  useEffect(() => {
+    console.log("tracking labelList");
+    console.log(labelList);
+  }, [labelList]);
+
   return (
     <>
       <div className="function-controller">
-        <div className="json-data">
-          <h2>Data JSON Function</h2>
-          <input type="file" accept=".json" onChange={handleFileChange} />
-          <Button onClick={handleDownloadClick} disabled={!annotationData}>
-            Export JSON
-          </Button>
-        </div>
         <div className="annotation-method">
           <h2>Annotation Method</h2>
           <Button
@@ -505,9 +503,45 @@ function AnnotationMerge(props) {
             </Form>
           </Modal>
         </div>
+        <div className="add-label-form">
+          <h2 add-label-form-title>Add Label Item</h2>
+          <Form onFinish={handleSubmitAddLabelItem}>
+            <Form.Item label="Label" name="label" required>
+              <Input type="text" />
+            </Form.Item>
+            <Form.Item label="Color" name="color" required>
+              <Input type="color" />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Add
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+        <div className="json-data">
+          <h2>Import/Export</h2>
+          <div className="import-json">
+            <label className="button-import" for="import">
+              Import
+            </label>
+            <input
+              type="file"
+              accept=".json"
+              id="import"
+              onChange={handleFileChange}
+              hidden
+            />
+          </div>
+          <div className="export-json">
+            <Button onClick={handleDownloadClick} disabled={!annotationData}>
+              Export
+            </Button>
+          </div>
+        </div>
       </div>
-      <div group-column>
-        <div className="image-konva-region">
+      <div style={{ display: "flex" }}>
+        <div className="image-konva-region" style={{ marginRight: "100px" }}>
           <BaseImageComponent
             imageUrl={imageUrl}
             width={width}
@@ -562,31 +596,13 @@ function AnnotationMerge(props) {
           </BaseImageComponent>
         </div>
         <div className="select-list-label-region">
-          <h2>Labeling List</h2>
+          {labelList.length === 0 ? <h2></h2> : <h2>Labeling List</h2>}
           <SelectionList
-            items={labelList.map((labelItem) => {
-              return labelItem.label;
-            })}
+            items={labelList}
             selected={selected}
             onChange={setSelected}
           />
         </div>
-      </div>
-      <div className="add-label-form">
-        <h2 add-label-form-title>Add Label Item</h2>
-        <Form onFinish={handleSubmitAddLabelItem}>
-          <Form.Item label="Label" name="label">
-            <Input type="text" />
-          </Form.Item>
-          <Form.Item label="Color" name="color">
-            <Input type="color" />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
-          </Form.Item>
-        </Form>
       </div>
     </>
   );
