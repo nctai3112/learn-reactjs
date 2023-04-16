@@ -11,8 +11,7 @@ const SelectionList = ({ items, selected, onChange }) => {
             className="select-item-text"
             onClick={() => onChange(index)}
             style={{
-              backgroundColor:
-                selected === index ? item.color + "D7" : "transparent",
+              backgroundColor: selected === index ? item.color : "transparent",
               padding: "10px",
               borderRadius: "5px",
               margin: "5px",

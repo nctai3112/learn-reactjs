@@ -12,14 +12,14 @@ function App() {
     <div className="App">
       <NavLink to="/login">Login</NavLink>
       <NavLink to="/annotation"> - Annotation</NavLink>
-      <NavLink to="/annotation-ant"> - Annotation Ant</NavLink>
-      <NavLink to="/demo-annotation-merge"> - Demo Annotation Merge</NavLink>
+      {/* <NavLink to="/annotation-ant"> - Annotation Ant</NavLink>
+      <NavLink to="/demo-annotation-merge"> - Demo Annotation Merge</NavLink> */}
 
       <Routes>
         <Route path="/login" element={<LoginFeature />} />
-        <Route path="/annotation" element={<Canvas />} />
-        <Route path="/annotation-ant" element={<DemoPage />} />
-        <Route path="/demo-annotation-merge" element={<AnnotationMerge />} />
+        {/* <Route path="/annotation" element={<Canvas />} />
+        <Route path="/annotation-ant" element={<DemoPage />} /> */}
+        <Route path="/annotation" element={<AnnotationMerge />} />
       </Routes>
     </div>
   );
