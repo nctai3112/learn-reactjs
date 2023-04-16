@@ -331,6 +331,45 @@ function AnnotationMerge(props) {
       const content = event.target.result;
       try {
         const data = JSON.parse(content);
+        let arrayLabel = [];
+        data["bounding-box"].map((boundingBox) => {
+          let currentLabelObject = {
+            label: boundingBox.label,
+            color: boundingBox.color,
+          };
+          let isExistItem = arrayLabel.some((element) => {
+            if (
+              JSON.stringify(element) === JSON.stringify(currentLabelObject)
+            ) {
+              return true;
+            }
+            return false;
+          });
+          if (!isExistItem) {
+            arrayLabel.push(currentLabelObject);
+          }
+        });
+        data["polygon"].map((boundingBox) => {
+          let currentLabelObject = {
+            label: boundingBox.label,
+            color: boundingBox.color,
+          };
+          let isExistItem = arrayLabel.some((element) => {
+            if (
+              JSON.stringify(element) === JSON.stringify(currentLabelObject)
+            ) {
+              return true;
+            }
+            return false;
+          });
+          if (!isExistItem) {
+            arrayLabel.push(currentLabelObject);
+          }
+        });
+        setLabelList(arrayLabel);
+        if (arrayLabel.length > 0) {
+          setSelected(0);
+        }
         setBoundingBoxes(data["bounding-box"]);
         setPolygons(data["polygon"]);
       } catch (error) {
@@ -356,11 +395,14 @@ function AnnotationMerge(props) {
   const [isAnnotateAuto, setIsAnnotateAuto] = useState(false);
   const handleSubmitPopupForm = (formData) => {
     // Handle form data here, e.g. update the polygons state
+    if (formData["color"]) {
+      formData["color"] += "B3";
+    }
     setLabelList([...labelList, formData]);
     if (modeController === "bounding-box") {
       const currentLabelItem = boundingBoxes[boundingBoxes.length - 1];
       currentLabelItem["label"] = formData["label"];
-      currentLabelItem["color"] = formData["color"] + "7D";
+      currentLabelItem["color"] = formData["color"];
       setBoundingBoxes(
         boundingBoxes.map((boundingBox) => {
           if (boundingBox.id === boundingBox.length - 1) {
@@ -372,7 +414,7 @@ function AnnotationMerge(props) {
     } else if (modeController === "polygon") {
       const currentLabelItem = polygons[polygons.length - 1];
       currentLabelItem["label"] = formData["label"];
-      currentLabelItem["color"] = formData["color"] + "7D";
+      currentLabelItem["color"] = formData["color"];
       setPolygons(
         polygons.map((polygon, index) => {
           if (index === polygon.length - 1) {
@@ -392,7 +434,7 @@ function AnnotationMerge(props) {
       ...labelList,
       {
         label: submitData["label"],
-        color: submitData["color"],
+        color: submitData["color"] + "B3",
       },
     ]);
   };
@@ -406,7 +448,7 @@ function AnnotationMerge(props) {
         if (modeController === "bounding-box") {
           const currentLabelItem = boundingBoxes[boundingBoxes.length - 1];
           currentLabelItem["label"] = formData["label"];
-          currentLabelItem["color"] = formData["color"] + "7D";
+          currentLabelItem["color"] = formData["color"];
           setBoundingBoxes(
             boundingBoxes.map((boundingBox) => {
               if (boundingBox.id === boundingBox.length - 1) {
@@ -418,7 +460,7 @@ function AnnotationMerge(props) {
         } else if (modeController === "polygon") {
           const currentLabelItem = polygons[polygons.length - 1];
           currentLabelItem["label"] = formData["label"];
-          currentLabelItem["color"] = formData["color"] + "7D";
+          currentLabelItem["color"] = formData["color"];
           setPolygons(
             polygons.map((polygon, index) => {
               if (index === polygon.length - 1) {
@@ -433,10 +475,10 @@ function AnnotationMerge(props) {
     }
   }, [isAnnotateAuto]);
 
-  useEffect(() => {
-    console.log("tracking labelList");
-    console.log(labelList);
-  }, [labelList]);
+  // useEffect(() => {
+  //   console.log("tracking labelList");
+  //   console.log(labelList);
+  // }, [labelList]);
 
   return (
     <>
