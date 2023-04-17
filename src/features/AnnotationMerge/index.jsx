@@ -522,7 +522,7 @@ function AnnotationMerge(props) {
               setLabelingMethod("auto");
             }}
           >
-            Label From List
+            Label From Select List
           </Button>
           <Modal
             title="Label Information"
