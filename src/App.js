@@ -27,15 +27,18 @@ import React, { useState, useEffect } from "react";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import PrivateRoutes from "./utils/PrivateRoutes";
+import Project from "./features/Project";
 
 function App() {
   return (
     <div className="demo-app">
       <NavLink to="/login">Login</NavLink>
+      <NavLink to="/create-project">- Project</NavLink>
       <NavLink to="/annotation"> - Annotation</NavLink>
 
       <Routes>
         <Route element={<PrivateRoutes />}>
+          <Route element={<Project />} path="/create-project" exact />
           <Route element={<AnnotationMerge />} path="/annotation" exact />
         </Route>
 
