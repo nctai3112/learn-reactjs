@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { GoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
@@ -6,11 +7,13 @@ import loginSlice from "../../loginSlice";
 
 function GoogleLoginComponent(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const responseMessage = (response) => {
-    console.log("Receive response from gg login");
-    console.log(response);
-    dispatch(loginSlice.actions.GoogleLogin(response));
+    if (response !== undefined && response !== null) {
+      dispatch(loginSlice.actions.GoogleLogin(response));
+      navigate("/create-project");
+    }
   };
   const errorMessage = (error) => {
     console.log(error);
