@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, Input } from "antd";
 import ProjectList from "./components/ProjectList";
+import { googleLoginSelector } from "../../redux/selectors";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 Project.propTypes = {};
 
 function Project(props) {
+  const navigate = useNavigate();
+  const googleLoginData = useSelector(googleLoginSelector);
   const [isProjectVisible, setProjectVisible] = useState(false);
 
   const [projectTitle, setProjectTitle] = useState("");
@@ -18,6 +23,7 @@ function Project(props) {
   };
 
   const submitCreateProject = (submitData) => {
+    let data = [];
     setProjectList([
       ...projectList,
       {
@@ -25,6 +31,70 @@ function Project(props) {
         projectDescription: projectDescription,
       },
     ]);
+    console.log("Get googleLoginData from Redux:");
+    console.log(googleLoginData);
+    const email = googleLoginData.email;
+    console.log("Get email from Redux:")
+    console.log(email)
+    // If exists  email -> create project!
+    if (email) {
+      fetch("http://localhost:5000/projects", {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          Connection: "keep-alive",
+          "Content-Type": "application/json",
+          "user-agent": "Chrome",
+        },
+        body: JSON.stringify({
+          title: projectTitle,
+          description: projectDescription,
+          urlData: "",
+          author: email
+        }),
+      })
+        .then(async (response) => {
+          // Handle the response
+          const jsonRes = await response.json();
+          data = jsonRes.data;
+          if (
+            data.project._id !== null &&
+            data.project._id !== "" &&
+            data.project._id !== undefined
+          ) {
+            console.log("this is project id: " + data.project._id);
+            fetch("http://localhost:5000/drive", {
+              method: "POST",
+              headers: {
+                Accept: "*/*",
+                Connection: "keep-alive",
+                "Content-Type": "application/json",
+                "user-agent": "Chrome",
+              },
+              body: JSON.stringify({
+                folderName: data.project._id,
+              }),
+            })
+              .then(async (response) => {
+                const dataResponse = await response.json();
+                console.log("Response Creating Folder: ");
+                console.log(dataResponse);
+              })
+              .catch((error) => {
+                console.log("This this error creating folder");
+                console.log(error);
+              });
+          }
+        })
+        .catch((error) => {
+          // Handle the error
+          console.log("Error creating project:");
+          console.log(error);
+        });
+    }
+    else {
+      navigate('/login');
+    }
     setProjectTitle("");
     setProjectDescription("");
     setProjectVisible(false);
