@@ -4,7 +4,7 @@ import { googleLoginSelector } from "../redux/selectors";
 
 const PrivateRoutes = () => {
   const googleLoginData = useSelector(googleLoginSelector);
-  return googleLoginData != undefined ? <Outlet /> : <Navigate to="/login" />;
+  return (googleLoginData !== undefined && googleLoginData !== null) ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoutes;

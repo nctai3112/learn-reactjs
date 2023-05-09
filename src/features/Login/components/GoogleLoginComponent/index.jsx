@@ -20,7 +20,7 @@ function GoogleLoginComponent(props) {
   //       console.log(profile);
   //       dispatch(loginSlice.actions.GoogleLogin(profile));
   //     }
-  //     navigate("/create-project");
+  //     navigate("/projects");
   //   }
   // };
   // const errorMessage = (error) => {
@@ -78,8 +78,8 @@ function GoogleLoginComponent(props) {
                 console.log(error);
               });
           }
-          dispatch(loginSlice.actions.GoogleLogin(profile));
-          navigate("/create-project");
+          dispatch(loginSlice.actions.GoogleLogin(res.data));
+          navigate("/projects");
         })
         .catch((err) => console.log(err));
     }
