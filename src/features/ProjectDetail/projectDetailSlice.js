@@ -1,17 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const loginSlice = createSlice({
-  name: "login",
+const projectDetailSlide = createSlice({
+  name: "projectDetail",
   initialState: {
-    userData: undefined,
+    currentProjectId: "",
   },
   reducers: {
-    GoogleLogin: (state, action) => {
-      state.userData = action.payload;
+    CurrentProject: (state, action) => {
+      state.currentProject = action.payload;
     },
   },
 });
-export default loginSlice;
+export default projectDetailSlide;
 // const initState = {
 //   userData: [],
 // };

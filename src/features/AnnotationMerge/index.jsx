@@ -9,10 +9,15 @@ import PopupForm from "../../components/PopupForm";
 import SelectionList from "../../components/SelectionList";
 import { Button, Modal, Form, Input } from "antd";
 import "./styles.css";
+import { useParams } from "react-router-dom"
+import { useSelector } from "react-redux";
+import { currentProjectSelector } from "../../redux/selectors";
 
 // AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
+  const currentProject = useSelector(currentProjectSelector);
+  const { id } = useParams();
   // EXPORT DATA.
   const [annotationData, setAnnotationData] = useState([]);
   function handleDownloadClick() {
@@ -30,6 +35,100 @@ function AnnotationMerge(props) {
       URL.revokeObjectURL(downloadUrl);
     }
   }
+  const annotationId = currentProject.urlData;
+  const [currentAnnotationData, setCurrentAnnotationData] = useState([]);
+  const getCurrentAnnotationData = (annotationId) => {
+    console.log("getCurrentAnnotationData...");
+    if (annotationId) {
+      console.log("Get json file data with id: " + annotationId);
+      fetch(`http://localhost:5000/drive/get-json/${annotationId}`, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          Connection: "keep-alive",
+          "Content-Type": "application/json",
+          "user-agent": "Chrome",
+        },
+      })
+        .then(async (response) => {
+          // Handle the response
+          console.log("Get file json data success");
+          const jsonRes = await response.json();
+          let data = jsonRes.data;
+          let dataJson = data.response.data;
+          console.log(dataJson);
+          const fileItem = dataJson.find(
+            (file) => file.id === id && file.annotationData
+          );
+          console.log("HERE")
+          console.log(fileItem)
+          if (fileItem) {
+            console.log("Set Annotation Data!!!")
+
+            setAnnotationData(fileItem.annotationData);
+            let data = fileItem.annotationData;
+            let arrayLabel = [];
+            data["bounding-box"].map((boundingBox) => {
+              let currentLabelObject = {
+                label: boundingBox.label,
+                color: boundingBox.color,
+              };
+              let isExistItem = arrayLabel.some((element) => {
+                if (
+                  JSON.stringify(element) ===
+                  JSON.stringify(currentLabelObject)
+                ) {
+                  return true;
+                }
+                return false;
+              });
+              if (!isExistItem) {
+                arrayLabel.push(currentLabelObject);
+              }
+            });
+            data["polygon"].map((boundingBox) => {
+              let currentLabelObject = {
+                label: boundingBox.label,
+                color: boundingBox.color,
+              };
+              let isExistItem = arrayLabel.some((element) => {
+                if (
+                  JSON.stringify(element) ===
+                  JSON.stringify(currentLabelObject)
+                ) {
+                  return true;
+                }
+                return false;
+              });
+              if (!isExistItem) {
+                arrayLabel.push(currentLabelObject);
+              }
+            });
+            setLabelList(arrayLabel);
+            if (arrayLabel.length > 0) {
+              setSelected(0);
+            }
+            setBoundingBoxes(fileItem.annotationData['bounding-box']);
+            setPolygons(fileItem.annotationData['polygon']);
+          }
+          if (data.response.data) {
+            setCurrentAnnotationData(data.response.data);
+          }
+        })
+        .catch((error) => {
+          // Handle the error
+          console.log("Error get json data:");
+          console.log(error);
+          setCurrentAnnotationData([]);
+        });
+    }
+  };
+
+  useEffect(() => {
+    if (annotationId) {
+      getCurrentAnnotationData(annotationId);
+    }
+  }, [annotationId])
 
   // GLOBAL.
   const [modeController, setModeController] = useState("bounding-box");
@@ -165,8 +264,7 @@ function AnnotationMerge(props) {
   const _id = String(Math.random());
   const _name = `group-${_id}`;
 
-  const imageUrl =
-    "https://www.cleverfiles.com/howto/wp-content/uploads/2018/03/minion.jpg";
+  const imageUrl = `https://drive.google.com/uc?export=view&id=${id}`;
 
   const handleMouseMoveOnImageBB = (pos) => {
     if (!isEditing) {
@@ -479,6 +577,42 @@ function AnnotationMerge(props) {
   //   console.log("tracking labelList");
   //   console.log(labelList);
   // }, [labelList]);
+  const handleSaveDataAnnotation = (e) => {
+    console.log("Save :D")
+    const annotationDataDataData = currentAnnotationData;
+
+    const newAnnotation = annotationDataDataData.map((annotationItem) => {
+      if (annotationItem.id === id) {
+        annotationItem.annotationData = annotationData;
+      }
+      return annotationItem;
+    });
+    console.log(newAnnotation);
+    fetch("http://localhost:5000/drive/update-json", {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        "user-agent": "Chrome",
+      },
+      body: JSON.stringify({
+        annotationFileId: annotationId,
+        fileContent: JSON.stringify(newAnnotation),
+      }),
+    })
+      .then(async (response) => {
+        // Handle the response
+        const jsonRes = await response.json();
+        let data = jsonRes.data;
+        console.log("Update annotation.json success!");
+      })
+      .catch((error) => {
+        // Handle the error
+        console.log("Error update annotation.json");
+        console.log(error);
+      });
+  }
 
   return (
     <>
@@ -526,7 +660,7 @@ function AnnotationMerge(props) {
           </Button>
           <Modal
             title="Label Information"
-            visible={isPopupVisible}
+            open={isPopupVisible}
             onCancel={() => setIsPopupVisible(false)}
             footer={null}
           >
@@ -546,7 +680,7 @@ function AnnotationMerge(props) {
           </Modal>
         </div>
         <div className="add-label-form">
-          <h2 add-label-form-title>Add Label Item</h2>
+          <h2 className="add-label-form-title">Add Label Item</h2>
           <Form onFinish={handleSubmitAddLabelItem}>
             <Form.Item label="Label" name="label" required>
               <Input type="text" />
@@ -578,6 +712,11 @@ function AnnotationMerge(props) {
           <div className="export-json">
             <Button onClick={handleDownloadClick} disabled={!annotationData}>
               Export
+            </Button>
+          </div>
+          <div className="save-json">
+            <Button onClick={handleSaveDataAnnotation}>
+              Save Data Annotation
             </Button>
           </div>
         </div>

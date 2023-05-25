@@ -18,24 +18,47 @@ function Project(props) {
 
   const [projectList, setProjectList] = useState([]);
 
+  useEffect(() => {
+    getProjectListFromDB(googleLoginData.email);
+  }, []);
+
   const onClickCreateProject = (e) => {
     setProjectVisible(true);
   };
 
+  const getProjectListFromDB = (email) => {
+    let data = [];
+    fetch("http://localhost:5000/projects/author", {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        "user-agent": "Chrome",
+      },
+      body: JSON.stringify({
+        author: email,
+      }),
+    })
+      .then(async (response) => {
+        // Handle the response
+        const jsonRes = await response.json();
+        data = jsonRes.data;
+        if (data.projects !== null && data.projects !== undefined) {
+          setProjectList(data.projects)
+        }
+      })
+      .catch((error) => {
+        // Handle the error
+        console.log("Error get project:");
+        console.log(error);
+      });
+  }
+
   const submitCreateProject = (submitData) => {
     let data = [];
-    setProjectList([
-      ...projectList,
-      {
-        projectTitle: projectTitle,
-        projectDescription: projectDescription,
-      },
-    ]);
-    console.log("Get googleLoginData from Redux:");
-    console.log(googleLoginData);
+
     const email = googleLoginData.email;
-    console.log("Get email from Redux:")
-    console.log(email)
     // If exists  email -> create project!
     if (email) {
       fetch("http://localhost:5000/projects", {
@@ -57,12 +80,14 @@ function Project(props) {
           // Handle the response
           const jsonRes = await response.json();
           data = jsonRes.data;
+
+          getProjectListFromDB(email);
+
           if (
             data.project._id !== null &&
             data.project._id !== "" &&
             data.project._id !== undefined
           ) {
-            console.log("this is project id: " + data.project._id);
             fetch("http://localhost:5000/drive", {
               method: "POST",
               headers: {
@@ -73,12 +98,40 @@ function Project(props) {
               },
               body: JSON.stringify({
                 folderName: data.project._id,
+                email_permission: email,
               }),
             })
               .then(async (response) => {
                 const dataResponse = await response.json();
-                console.log("Response Creating Folder: ");
+                console.log("Create folder success!");
+                console.log("Start update db with parent folder id")
                 console.log(dataResponse);
+                fetch("http://localhost:5000/projects/update-project", {
+                  method: "POST",
+                  headers: {
+                    Accept: "*/*",
+                    Connection: "keep-alive",
+                    "Content-Type": "application/json",
+                    "user-agent": "Chrome",
+                  },
+                  body: JSON.stringify({
+                    project_id: data.project._id,
+                    parent_drive_folder: dataResponse.data.responseFolder.data.id,
+                    json_id: dataResponse.data.responseFile.data.id,
+                  }),
+                })
+                  .then(async (response) => {
+                    const dataResponse = await response.json();
+                    // Update project list after create a new project
+                    getProjectListFromDB(email);
+                    // End
+                    console.log("Response update project info: ");
+                    console.log(dataResponse);
+                  })
+                  .catch((error) => {
+                    console.log("This this error update project info");
+                    console.log(error);
+                  });
               })
               .catch((error) => {
                 console.log("This this error creating folder");
@@ -88,7 +141,7 @@ function Project(props) {
         })
         .catch((error) => {
           // Handle the error
-          console.log("Error creating project:");
+          console.log("Error creating project!");
           console.log(error);
         });
     }
@@ -110,6 +163,7 @@ function Project(props) {
 
   return (
     <div>
+      <h2>Projects Page</h2>
       <Button onClick={onClickCreateProject}>Create Project</Button>
       <Modal
         title="Create Project"

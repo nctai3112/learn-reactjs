@@ -1,0 +1,22 @@
+.project-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Divide into 3 columns */
+  grid-gap: 10px; /* Adjust the gap between items */
+}
+
+.project-item {
+  /* Add styling for the items as needed */
+  background-color: #f1f1f1;
+  padding: 10px;
+}
+
+.project-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.project-description {
+  font-size: 16px;
+  line-height: 1.5;
+}
