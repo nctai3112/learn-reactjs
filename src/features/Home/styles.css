@@ -1,0 +1,43 @@
+.home-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Adjust the height as desired */
+  width: auto;
+  background: linear-gradient(to bottom, #29282668, #ababab25);
+  background-size: cover;
+  background-position: center center; /* Center the background image horizontally and vertically */
+  border-radius: 10px; /* Adjust the border radius as desired */
+  overflow: hidden; /* Hide any overflowing content */
+}
+
+.content {
+  border-radius: 20px;
+  width: 150vh;
+  height: 80vh;
+  text-align: center;
+  background-image: url('./images/background-image.jpg'); /* Replace with your background image */
+   /* Adjust the background color and opacity as desired */
+  padding: 20px;
+}
+
+.title {
+  font-size: 24px; /* Adjust the font size of the title as desired */
+}
+
+.login-button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid #000; /* Adjust the border color and width as desired */
+  background-color: transparent;
+  color: #000; /* Adjust the button text color as desired */
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease; /* Add transition for smooth hover effect */
+}
+
+.login-button:hover {
+  background-color: #ff6481;
+  font-weight: bold;
+  color: #fff; /* Adjust the hover text color as desired */
+}

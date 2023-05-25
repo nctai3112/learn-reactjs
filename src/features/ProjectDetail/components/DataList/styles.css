@@ -1,0 +1,23 @@
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Adjust the gap between the image and text as desired */
+  padding: 20px; /* Add padding to the section */
+  background-color: #f5f5f5; /* Set a background color for the section */
+  margin-bottom: 20px;
+}
+
+.file-image {
+  max-width: 150px; /* Adjust the maximum width of the image as desired */
+  border-radius: 5px; /* Apply a border radius to the image if desired */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.file-content {
+  flex: 1;
+}
+
+.file-title {
+  font-size: 24px; /* Adjust the font size of the title as desired */
+  margin: 0; /* Remove any default margins to align with the image */
+}

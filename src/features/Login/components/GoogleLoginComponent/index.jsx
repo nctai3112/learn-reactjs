@@ -10,7 +10,7 @@ function GoogleLoginComponent(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState({});
   const [profile, setProfile] = useState([]);
 
   // const responseMessage = (response) => {
@@ -35,7 +35,7 @@ function GoogleLoginComponent(props) {
   });
 
   useEffect(() => {
-    if (user) {
+    if (Object.keys(user).length > 0) {
       axios
         .get(
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
@@ -47,7 +47,6 @@ function GoogleLoginComponent(props) {
           }
         )
         .then(async (res) => {
-          console.log("setProfile")
           if (res.data) {
             setProfile(res.data);
             fetch(
@@ -67,10 +66,7 @@ function GoogleLoginComponent(props) {
               }
             )
               .then((response) => {
-                // Handle the response
-                // ...
-                console.log("Response");
-                console.log(response);
+                console.log("Login Success!")
               })
               .catch((error) => {
                 // Handle the error

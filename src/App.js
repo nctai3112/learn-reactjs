@@ -4,6 +4,7 @@ import LoginFeature from "./features/Login";
 // import Canvas from "./features/Annotation";
 import AnnotationMerge from "./features/AnnotationMerge";
 import ProjectDetail from "./features/ProjectDetail";
+import Home from "./features/Home";
 // import DemoPage from "./features/Demo";
 
 // const _img =
@@ -33,19 +34,20 @@ import Project from "./features/Project";
 function App() {
   return (
     <div className="demo-app">
-      <NavLink to="/login">Login</NavLink>
-      <NavLink to="/projects">- Project</NavLink>
-      <NavLink to="/project-detail"> - Project Detail</NavLink>
-      <NavLink to="/annotation"> - Annotation</NavLink>
+      {/* <NavLink to="/login">Login</NavLink>
+      <NavLink to="/projects">- Project</NavLink> */}
+      {/* <NavLink to="/project-detail"> - Project Detail</NavLink> */}
+      {/* <NavLink to="/annotation"> - Annotation</NavLink> */}
 
       <Routes>
         <Route element={<PrivateRoutes />}>
           <Route element={<Project />} path="/projects" exact />
-          <Route element={<ProjectDetail />} path="/project-detail" exact />
-          <Route element={<AnnotationMerge />} path="/annotation" exact />
+          <Route element={<ProjectDetail />} path="/project/:id" exact />
+          <Route element={<AnnotationMerge />} path="/annotation/:id" exact />
         </Route>
 
         <Route element={<LoginFeature />} path="/login" />
+        <Route element={<Home />} path="/" />
       </Routes>
     </div>
   );

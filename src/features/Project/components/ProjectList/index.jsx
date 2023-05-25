@@ -1,20 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
+import './styles.css'
+import { useNavigate } from "react-router-dom";
 
 ProjectList.propTypes = {};
 
 function ProjectList({ projectList }) {
+  const navigate = useNavigate();
+
+  const accessProjectDetail = (projectItem) => {
+    navigate(`/project/${projectItem._id}`);
+  }
+
   return (
-    <div>
+    <div className="project-list">
       {projectList.map((projectItem) => {
-        // console.log("Debuggggg");
-        // console.log(projectItem);
         return (
-          <div className="project-item">
-            <h1 className="project-title">{projectItem.projectTitle}</h1>
-            <h2 className="project-description">
-              {projectItem.projectDescription}
-            </h2>
+          <div id={projectItem._id}
+            key={projectItem._id}
+            className="project-item grey-section"
+            onClick={() => accessProjectDetail(projectItem)}>
+            <h2 className="project-title">{projectItem.title}</h2>
+            <p className="project-description">{projectItem.description}</p>
           </div>
         );
       })}

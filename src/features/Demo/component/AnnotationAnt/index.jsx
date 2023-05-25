@@ -31,7 +31,7 @@ const AnnotationApp = () => {
       </Stage>
       <Modal
         title="Add Rectangle"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
