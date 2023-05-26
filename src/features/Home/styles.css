@@ -1,15 +1,14 @@
-.home-page {
+/* .home-page {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh; /* Adjust the height as desired */
+  height: 100vh;
   width: auto;
-  background: linear-gradient(to bottom, #29282668, #ababab25);
   background-size: cover;
-  background-position: center center; /* Center the background image horizontally and vertically */
-  border-radius: 10px; /* Adjust the border radius as desired */
-  overflow: hidden; /* Hide any overflowing content */
-}
+  background-position: center center;
+  border-radius: 10px;
+  overflow: hidden;
+} */
 
 .content {
   border-radius: 20px;
@@ -34,6 +33,7 @@
   text-decoration: none;
   font-weight: bold;
   transition: background-color 0.3s ease; /* Add transition for smooth hover effect */
+  border-radius: 4px;
 }
 
 .login-button:hover {
@@ -41,3 +41,13 @@
   font-weight: bold;
   color: #fff; /* Adjust the hover text color as desired */
 }
+
+/* .login-button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+} */

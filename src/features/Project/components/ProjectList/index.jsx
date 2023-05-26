@@ -16,12 +16,16 @@ function ProjectList({ projectList }) {
     <div className="project-list">
       {projectList.map((projectItem) => {
         return (
-          <div id={projectItem._id}
+          <div
+            id={projectItem._id}
             key={projectItem._id}
             className="project-item grey-section"
-            onClick={() => accessProjectDetail(projectItem)}>
+            onClick={() => accessProjectDetail(projectItem)}
+          >
             <h2 className="project-title">{projectItem.title}</h2>
-            <p className="project-description">{projectItem.description}</p>
+            <p className="project-description">
+              {projectItem.description}
+            </p>
           </div>
         );
       })}
