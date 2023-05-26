@@ -3,7 +3,7 @@ import GoogleLoginComponent from "./components/GoogleLoginComponent";
 
 function LoginFeature(props) {
   return (
-    <div className="login-feature">
+    <div className="login-page">
       <h2>Login Page</h2>
       <GoogleLoginComponent />
     </div>

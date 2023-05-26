@@ -49,7 +49,7 @@ function ProjectDetail(props) {
         <p>{projectDetail.description}</p>
       </div>
       <UploadImages projectDetail={projectDetail} />
-      <DataList projectDetail={projectDetail} key={projectDetail._id}/>
+      <DataList projectDetail={projectDetail} id={projectDetail._id}/>
     </div>
   );
 }

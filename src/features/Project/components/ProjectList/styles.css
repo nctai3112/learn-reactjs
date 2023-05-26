@@ -1,4 +1,6 @@
 .project-list {
+  margin-top: 10px;
+  padding: 10px 10px 10px 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Divide into 3 columns */
   grid-gap: 10px; /* Adjust the gap between items */
@@ -6,6 +8,10 @@
 
 .project-item {
   /* Add styling for the items as needed */
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 10px;
   background-color: #f1f1f1;
   padding: 10px;
 }
@@ -19,4 +25,5 @@
 .project-description {
   font-size: 16px;
   line-height: 1.5;
+  height: 20px;
 }

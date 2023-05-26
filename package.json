@@ -16,10 +16,13 @@
     "react-dom": "^18.2.0",
     "react-google-drive-picker": "^1.2.2",
     "react-konva": "^18.2.5",
+    "react-loading": "^2.0.3",
+    "react-lottie": "^1.2.3",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.9.0",
     "react-scripts": "5.0.1",
     "redux": "^4.2.1",
+    "redux-persist": "^6.0.0",
     "source-map-loader": "^4.0.1",
     "web-vitals": "^2.1.4"
   },
