@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Button, Modal, Form, Input } from "antd";
+import { Button, Modal, Form, Input, Divider, Space } from "antd";
 import ProjectList from "./components/ProjectList";
 import { googleLoginSelector } from "../../redux/selectors";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Footer from './../../components/Footer';
+import TopBar from "./../../components/TopBar";
+import './styles.css'
 
 Project.propTypes = {};
 
@@ -155,42 +158,67 @@ function Project(props) {
   };
 
   return (
-    <div>
-      <h2>Projects Page</h2>
-      <Button onClick={onClickCreateProject}>Create Project</Button>
-      <Modal
-        title="Create Project"
-        open={isProjectVisible}
-        onCancel={() => setProjectVisible(false)}
-        footer={null}
-      >
-        <Form layout="vertical">
-          <Form.Item label="Project Title" name="project-title" required>
-            <Input
-              type="text"
-              value={projectTitle}
-              onChange={handleInputProjectTitle}
-            />
-          </Form.Item>
-          <Form.Item label="Description" name="project-description">
-            <Input.TextArea
-              placeholder="Optional description of your project"
-              value={projectDescription}
-              onChange={handleInputProjectDescription}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={submitCreateProject}
-            >
-              Save
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-      <ProjectList projectList={projectList} />
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <header>
+        <TopBar topText="Projects" />
+      </header>
+      <Divider className="divider-custom" />
+      <div style={{ flex: 1, marginTop: "20px", marginBottom: "50px" }}>
+        <Space
+          className="project-section"
+          direction="vertical"
+          size="large"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <div className="project-above-section">
+            <div className="left-section">
+              <img src="/images/all-projects.png" />
+              <h3 className="all-project-text">All Projects</h3>
+            </div>
+            <div className="right-section">
+              <Button className="button-create-project" onClick={onClickCreateProject}>
+                Create Project
+              </Button>
+            </div>
+          </div>
+          <Modal
+            title="Create Project"
+            open={isProjectVisible}
+            onCancel={() => setProjectVisible(false)}
+            footer={null}
+          >
+            <Form layout="vertical">
+              <Form.Item label="Project Title" name="project-title" required>
+                <Input
+                  type="text"
+                  value={projectTitle}
+                  onChange={handleInputProjectTitle}
+                />
+              </Form.Item>
+              <Form.Item label="Description" name="project-description">
+                <Input.TextArea
+                  placeholder="Optional description of your project"
+                  value={projectDescription}
+                  onChange={handleInputProjectDescription}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={submitCreateProject}
+                >
+                  Save
+                </Button>
+              </Form.Item>
+            </Form>
+          </Modal>
+          <ProjectList projectList={projectList} />
+        </Space>
+      </div>
+      <footer>
+        <Footer />
+      </footer>
     </div>
   );
 }
