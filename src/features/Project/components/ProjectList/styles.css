@@ -1,29 +1,72 @@
-.project-list {
-  margin-top: 10px;
-  padding: 10px 10px 10px 10px;
+.projects-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Divide into 3 columns */
-  grid-gap: 10px; /* Adjust the gap between items */
+  grid-template-columns: repeat(3, 1fr); /* Change the number of columns here */
+  grid-gap: 50px;
+  width: calc(100% - 100px); /* Set the width to 100% to span the full width */
+  max-width: 100%; /* Optional: Limit the maximum width to the width of the browser */
+  margin-left: 50px;
+  margin-right: 50px;
+  overflow-x: hidden;
 }
 
 .project-item {
-  /* Add styling for the items as needed */
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: 10px;
-  background-color: #f1f1f1;
-  padding: 10px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 0px 12px;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
 }
 
-.project-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.project-item .project-title-region {
+  height: 2em;
+  background-color: #D3D3D3;
+  border-radius: 5px;
+  margin-bottom: 20px;
+
+  /* Animation hover trial*/
+  opacity: 0.8;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.project-description {
-  font-size: 16px;
-  line-height: 1.5;
-  height: 20px;
+.project-item:hover {
+  cursor: pointer;
+}
+
+.project-item:hover .project-title-region {
+  transform: scale(1.03);
+  opacity: 1;
+}
+
+.project-item .project-title-region .project-title {
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 2em;
+  line-height: 2em;
+  margin-top: 10px;font-weight: bold;
+}
+
+.project-item .project-description-region {
+  height: 4em;
+  background-color: #D3D3D3;
+  border-radius: 5px;
+  margin-bottom: 20px;
+
+  opacity: 0.8;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.project-item:hover .project-description-region {
+  transform: scale(1.03);
+  opacity: 1;
+}
+
+.project-item .project-description-region .project-description{
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  max-height: 4em;
+  line-height: 2em;
+  margin-top: 10px;
 }

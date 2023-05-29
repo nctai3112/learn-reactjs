@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 import DataList from './components/DataList';
-import { Modal } from "antd";
+import { Modal, Divider } from "antd";
+import TopBar from '../../components/TopBar';
+import Footer from "../../components/Footer";
+import "./styles.css"
 
 ProjectDetail.propTypes = {
 
@@ -43,14 +46,15 @@ function ProjectDetail(props) {
 
   return (
     <div className="project-detail-page-wrapper">
-      <h2>
-        Project Detail Page
-      </h2>
-      <div className="project-detail">
-        <h2>{projectDetail.title}</h2>
-        <p>{projectDetail.description}</p>
+      <TopBar topText={`Projects / ${projectDetail.title}`} />
+      <Divider className="divider-custom" />
+      <div className="project-description-wrapper">
+        <p className="project-description-text">
+          {projectDetail.description}
+        </p>
       </div>
-      <DataList projectDetail={projectDetail} id={projectDetail._id}/>
+      <DataList projectDetail={projectDetail} id={projectDetail._id} />
+      <Footer />
     </div>
   );
 }

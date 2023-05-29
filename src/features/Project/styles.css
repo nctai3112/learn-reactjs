@@ -1,0 +1,29 @@
+.divider-custom {
+  margin: 0 0;
+}
+
+.project-above-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0px 50px;
+}
+
+.project-above-section .left-section {
+  display: flex;
+  flex-direction: row;
+}
+
+.project-above-section .left-section .all-project-text {
+  padding-left: 10px;
+}
+
+.project-above-section .right-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.project-above-section .right-section .button-create-project {
+  text-align: center;
+}

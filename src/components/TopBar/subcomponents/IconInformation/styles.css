@@ -1,0 +1,24 @@
+.icon-information {
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 50px;
+}
+
+.icon-information .border-text{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid black;
+}
+
+.icon-information .border-text :hover{
+  cursor:pointer;
+}
+
+.icon-information .border-text .text {
+  text-align: center;
+  padding: 5px;
+}
