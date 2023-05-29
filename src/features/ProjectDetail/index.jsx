@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
-import UploadImages from './components/UploadImages';
 import DataList from './components/DataList';
+import { Modal } from "antd";
 
 ProjectDetail.propTypes = {
 
@@ -33,14 +33,16 @@ function ProjectDetail(props) {
         })
         .catch((error) => {
           // Handle the error
-          console.log("Error get project:");
-          console.log(error);
+          Modal.error({
+            title: "ERROR",
+            content: "Server error when trying to get project detail.",
+          });
         });
     } catch {}
   }, [id]);
 
   return (
-    <div>
+    <div className="project-detail-page-wrapper">
       <h2>
         Project Detail Page
       </h2>
@@ -48,7 +50,6 @@ function ProjectDetail(props) {
         <h2>{projectDetail.title}</h2>
         <p>{projectDetail.description}</p>
       </div>
-      <UploadImages projectDetail={projectDetail} />
       <DataList projectDetail={projectDetail} id={projectDetail._id}/>
     </div>
   );
