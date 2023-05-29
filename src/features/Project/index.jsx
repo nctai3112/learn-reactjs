@@ -49,9 +49,9 @@ function Project(props) {
         }
       })
       .catch((error) => {
-        // Handle the error
-        console.log("Error get project:");
         console.log(error);
+        console.log("Error when trying to get projects from author");
+        Modal.error({title:"ERROR", content: "Error when trying to get projects from user. Please, try again by reloading this page."});
       });
   }
 
@@ -103,9 +103,6 @@ function Project(props) {
             })
               .then(async (response) => {
                 const dataResponse = await response.json();
-                console.log("Create folder success!");
-                console.log("Start update db with parent folder id")
-                console.log(dataResponse);
                 fetch("http://localhost:5000/projects/update-project", {
                   method: "POST",
                   headers: {
@@ -129,20 +126,16 @@ function Project(props) {
                     console.log(dataResponse);
                   })
                   .catch((error) => {
-                    console.log("This this error update project info");
-                    console.log(error);
+                    Modal.error({title:"ERROR", content: "Error when trying to update project information"});
                   });
               })
               .catch((error) => {
-                console.log("This this error creating folder");
-                console.log(error);
+                Modal.error({title:"ERROR", content: "Error when creating drive folder for project."});
               });
           }
         })
         .catch((error) => {
-          // Handle the error
-          console.log("Error creating project!");
-          console.log(error);
+          Modal.error({title:"ERROR", content: "Server error when creating a project. Please try again!"});
         });
     }
     else {
@@ -171,7 +164,7 @@ function Project(props) {
         onCancel={() => setProjectVisible(false)}
         footer={null}
       >
-        <Form>
+        <Form layout="vertical">
           <Form.Item label="Project Title" name="project-title" required>
             <Input
               type="text"

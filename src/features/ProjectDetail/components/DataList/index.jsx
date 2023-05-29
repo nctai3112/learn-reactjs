@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import projectDetailSlide from '../../projectDetailSlice';
+import { Modal, Table } from "antd";
+import UploadImages from "./../UploadImages";
 
 DataList.propTypes = {
-
 
 };
 
@@ -18,6 +19,7 @@ function DataList(props) {
   const driveParentId = projectDetail.driveParent;
   const annotationFileId = projectDetail.urlData;
   const [fileItems, setFileItems] = useState([]);
+  const [dataTable, setDataTable] = useState([]);
 
   useEffect(() => {
 
@@ -43,6 +45,12 @@ function DataList(props) {
             }),
           }
         );
+        if (!responseFilesFromFolder.ok) {
+          Modal.error({
+            title: "ERROR",
+            content: "Server error when trying to files from drive folder.",
+          });
+        }
         const dataResponse = await responseFilesFromFolder.json();
         if (dataResponse.data.response.data.files.length > 1) {
           setFileItems(dataResponse.data.response.data.files);
@@ -64,6 +72,12 @@ function DataList(props) {
                 },
               }
             );
+            if (!responseJsonData.ok) {
+              Modal.error({
+                title: "ERROR",
+                content: "Server error when trying to get annotation file.",
+              });
+            }
             const dataResponseJson = await responseJsonData.json();
             annotationContent = dataResponseJson.data.response.data;
             dataResponse.data.response.data.files.map((fileItem) => {
@@ -91,6 +105,12 @@ function DataList(props) {
             fileContent: JSON.stringify(annotationContent),
           }),
         });
+        if (!responseUpdateJson.ok) {
+          Modal.error({
+            title: "ERROR",
+            content: "Server error when trying to update annotation file.",
+          });
+        }
         const dataUpdateJson = await responseUpdateJson.json();
       }
       }
@@ -126,6 +146,13 @@ function DataList(props) {
           }),
         }
       );
+      if (!responseFilesFromFolder.ok) {
+        Modal.error({
+          title: "ERROR",
+          content:
+            "Server error when trying to files from drive folder.",
+        });
+      }
       const dataResponse = await responseFilesFromFolder.json();
       if (dataResponse.data.response.data.files.length > 1) {
         setFileItems(dataResponse.data.response.data.files);
@@ -147,6 +174,13 @@ function DataList(props) {
               },
             }
           );
+          if (!responseJsonData.ok) {
+            Modal.error({
+              title: "ERROR",
+              content:
+                "Server error when trying to get annotation file.",
+            });
+          }
           const dataResponseJson = await responseJsonData.json();
           annotationContent = dataResponseJson.data.response.data;
           dataResponse.data.response.data.files.map((fileItem) => {
@@ -177,35 +211,84 @@ function DataList(props) {
             }),
           }
         );
+        if (!responseUpdateJson.ok) {
+          Modal.error({
+            title: "ERROR",
+            content: "Server error when trying to update annotation file.",
+          });
+        }
         const dataUpdateJson = await responseUpdateJson.json();
       }
     }
   }
 
-  return (
-    <div >
-      <Button type="primary" name="Refresh" onClick={refresh}>Refresh</Button>
-      <h1>This is list of files</h1>
-      {fileItems.map((fileItem) => {
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      width: 100,
+    },
+    {
+      title: "FILE NAME",
+      dataIndex: "name",
+      width: 100,
+    },
+    {
+      title: "IMAGE",
+      dataIndex: "image",
+      render: (imageSrc) => (
+        <img
+          src={imageSrc}
+          alt="Image"
+          style={{ width: "100px", height: "100px" }}
+        />
+      ),
+      width: 200,
+    },
+  ];
 
-        return (
-          !fileItem.name.includes(".json") ?
-          <div
-            className="file-item"
-            key={fileItem.id}
-            onClick={() => chooseAnnotateImage(fileItem.id)}
-          >
-            <img
-              src={`https://drive.google.com/uc?export=view&id=${fileItem.id}`}
-              alt="invalid"
-              className="file-image"
-            />
-            <div className="file-content">
-              <h2 className="file-title">{fileItem.name}</h2>
-            </div>
-          </div> : <></>
-        );
-      })}
+  useEffect(()=> {
+    if (fileItems.length > 0) {
+      const dataTableTmp = [];
+      fileItems.map((fileItem) => {
+        if (!fileItem.name.includes(".json")) {
+          const tableItem = {
+            id: fileItem.id,
+            name: fileItem.name,
+            image: `https://drive.google.com/uc?export=view&id=${fileItem.id}`,
+          };
+          dataTableTmp.push(tableItem);
+        }
+      });
+      if (dataTableTmp.length > 0) {
+        setDataTable(dataTableTmp);
+      }
+    }
+  }, [fileItems]);
+
+  const rowProps = (record) => ({
+    onClick: () => chooseAnnotateImage(record.id),
+  });
+
+  return (
+    <div className="data-manager-region">
+      <div className="data-manager-above">
+        <h3 className="data-title">Data Manager</h3>
+        <div className="buttons-data-manager">
+          <UploadImages projectDetail={projectDetail} />
+          <Button name="Refresh" onClick={refresh} className="button-refresh">
+            <img src="/icons/refresh.svg" width="10px" height="10px" />
+            <span className="button-refresh-text">Refresh</span>
+          </Button>
+        </div>
+      </div>
+      <Table
+        columns={columns}
+        dataSource={dataTable}
+        onRow={rowProps}
+        className="custom-table"
+        rowClassName="custom-table-row"
+      />
     </div>
   );
 }

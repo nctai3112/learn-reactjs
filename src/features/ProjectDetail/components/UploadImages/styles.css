@@ -1,0 +1,21 @@
+.button-upload-drive {
+  margin-left: 5px;
+}
+
+.button-upload-drive-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  visibility: hidden;
+  color: black;
+  padding-bottom: 60px;
+  font-size: 12px;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s ease;
+}
+
+.button-upload-drive:hover .button-upload-drive-text {
+  visibility: visible;
+  opacity: 1;
+}

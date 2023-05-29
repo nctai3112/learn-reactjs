@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import useDrivePicker from "react-google-drive-picker";
+import { Button } from "antd";
+import './styles.css'
 
 function UploadImages(props) {
   const {projectDetail} = props;
@@ -42,9 +44,12 @@ function UploadImages(props) {
   }, [data]);
 
   return (
-    <div>
-      <button onClick={() => handleOpenPicker()}>Open Picker</button>
-    </div>
+    <Button onClick={() => handleOpenPicker()} className="button-upload-drive">
+      <img src="/icons/upload_cloud.svg" width="10px" height="10px"/>
+      <span className="button-upload-drive-text">
+        Upload Drive
+      </span>
+    </Button>
   );
 }
 

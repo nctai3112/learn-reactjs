@@ -5,6 +5,8 @@ import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import loginSlice from "../../loginSlice";
 import axios from "axios";
+import { Modal } from "antd";
+import { current } from "@reduxjs/toolkit";
 
 function GoogleLoginComponent(props) {
   const dispatch = useDispatch();
@@ -13,19 +15,7 @@ function GoogleLoginComponent(props) {
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState([]);
 
-  // const responseMessage = (response) => {
-  //   if (response !== undefined && response !== null) {
-  //     setUser(response);
-  //     if (profile) {
-  //       console.log(profile);
-  //       dispatch(loginSlice.actions.GoogleLogin(profile));
-  //     }
-  //     navigate("/projects");
-  //   }
-  // };
-  // const errorMessage = (error) => {
-  //   console.log(error);
-  // };
+  const [currentError, setCurrentError] = useState(false);
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
@@ -67,25 +57,27 @@ function GoogleLoginComponent(props) {
             )
               .then((response) => {
                 console.log("Login Success!")
+                dispatch(loginSlice.actions.GoogleLogin(res.data));
+                navigate("/projects");
               })
               .catch((error) => {
-                // Handle the error
-                console.log("This this error");
-                console.log(error);
+                Modal.error({
+                  title: "ERROR",
+                  content: "There is problem with server. Please try again later!",
+                });
+                setCurrentError(true);
               });
           }
-          dispatch(loginSlice.actions.GoogleLogin(res.data));
-          navigate("/projects");
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          Modal.error({
+            title: "ERROR",
+            content: "There is error when you log in. Please try again later!",
+          })
+          setCurrentError(true);
+        });
     }
   }, [user]);
-
-  // // log out function to log the user out of google and set the profile array to null
-  // const logOut = () => {
-  //   googleLogout();
-  //   setProfile(null);
-  // };
 
   return (
     <div className="login-container">
@@ -95,9 +87,6 @@ function GoogleLoginComponent(props) {
       </button>
       {" "}
     </div>
-    // <div className="google-login">
-    //   <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
-    // </div>
   );
 }
 
