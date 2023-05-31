@@ -158,12 +158,12 @@ function Project(props) {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div className="project-page" style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <header>
         <TopBar topText="Projects" />
       </header>
       <Divider className="divider-custom" />
-      <div style={{ flex: 1, marginTop: "20px", marginBottom: "50px" }}>
+      <div className="project-wrapper" style={{ flex: 1}}>
         <Space
           className="project-section"
           direction="vertical"

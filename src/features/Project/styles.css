@@ -2,11 +2,15 @@
   margin: 0 0;
 }
 
+/* .project-page .project-wrapper {
+  background: linear-gradient(to bottom, #4599e8, #9acdef);
+} */
+
 .project-above-section {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 0px 50px;
+  padding: 20px 50px;
 }
 
 .project-above-section .left-section {

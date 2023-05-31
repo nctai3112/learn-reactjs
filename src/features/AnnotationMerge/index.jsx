@@ -7,18 +7,22 @@ import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
 import PopupForm from "../../components/PopupForm";
 import SelectionList from "../../components/SelectionList";
-import { Button, Modal, Form, Input } from "antd";
+import { Button, Modal, Form, Input, Divider, Layout, Row, Col } from "antd";
 import "./styles.css";
 import { useParams } from "react-router-dom"
 import { useSelector } from "react-redux";
 import { currentProjectSelector } from "../../redux/selectors";
+import TopBar from "../../components/TopBar";
+import Footer from "../../components/Footer";
 
 // AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
+  const { Header, Content, Sider } = Layout;
   const currentProject = useSelector(currentProjectSelector);
   const { id } = useParams();
-  // EXPORT DATA.
+
+  // EXPORT ANNOTATION DATA.
   const [annotationData, setAnnotationData] = useState([]);
   function handleDownloadClick() {
     if (annotationData) {
@@ -36,11 +40,11 @@ function AnnotationMerge(props) {
     }
   }
   const annotationId = currentProject.urlData;
+
+  // GET ANNOTATION DATA FROM GOOGLE DRIVE
   const [currentAnnotationData, setCurrentAnnotationData] = useState([]);
   const getCurrentAnnotationData = (annotationId) => {
-    console.log("getCurrentAnnotationData...");
     if (annotationId) {
-      console.log("Get json file data with id: " + annotationId);
       fetch(`http://localhost:5000/drive/get-json/${annotationId}`, {
         method: "GET",
         headers: {
@@ -123,18 +127,18 @@ function AnnotationMerge(props) {
         });
     }
   };
-
   useEffect(() => {
     if (annotationId) {
       getCurrentAnnotationData(annotationId);
     }
   }, [annotationId])
 
-  // GLOBAL.
+  // SET ANNOTATION METHOD (DEFAULT: BOUNDING-BOX)
   const [modeController, setModeController] = useState("bounding-box");
   const width = 800;
   const height = 600;
 
+  // HANDLE ANNOTATION EVENT.
   const handleMouseDownOnImage = (pos) => {
     if (modeController === "bounding-box") {
       handleMouseDownOnImageBB(pos);
@@ -161,7 +165,6 @@ function AnnotationMerge(props) {
     if (isPolyComplete || points.length < 3) return;
     e.target.scale({ x: 3, y: 3 });
   };
-
   const handleMouseOutStartPoint = (e) => {
     e.target.scale({ x: 1, y: 1 });
   };
@@ -197,11 +200,9 @@ function AnnotationMerge(props) {
     // const position = stage.getPointerPosition();
     // setPoints([...points, position]);
   };
-
   const handleMouseMoveOnImagePolygon = (pos) => {
     if (!isPolyComplete) setPosition(pos);
   };
-
   const handlePointDragMove = (e) => {
     const stage = e.target.getStage();
     const index = e.target.index - 1;
@@ -212,7 +213,6 @@ function AnnotationMerge(props) {
     if (pos[1] > stage.height()) pos[1] = stage.height();
     setPoints([...points.slice(0, index), pos, ...points.slice(index + 1)]);
   };
-
   const handlePolygonDragEnd = (e) => {
     const eChildren = e.target.children;
     const currentLine = eChildren.filter((shapeObject) => {
@@ -422,6 +422,8 @@ function AnnotationMerge(props) {
       polygon: polygons,
     });
   }, [boundingBoxes, polygons]);
+
+  // IMPORT JSON  FILE HANDLING.
   function handleFileChange(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -476,17 +478,6 @@ function AnnotationMerge(props) {
     };
     reader.readAsText(file);
   }
-
-  // ANNOTATION TRACKING.
-  // useEffect(() => {
-  //   console.log("Polygons tracking");
-  //   console.log(polygons);
-  // }, [polygons]);
-
-  // useEffect(() => {
-  //   console.log("boundingBox tracking");
-  //   console.log(boundingBoxes);
-  // }, [boundingBoxes]);
 
   // HANDLE POPUP FORM TO INPUT LABELLING ANNOTATION INFO.
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -573,12 +564,7 @@ function AnnotationMerge(props) {
     }
   }, [isAnnotateAuto]);
 
-  // useEffect(() => {
-  //   console.log("tracking labelList");
-  //   console.log(labelList);
-  // }, [labelList]);
   const handleSaveDataAnnotation = (e) => {
-    console.log("Save :D")
     const annotationDataDataData = currentAnnotationData;
 
     const newAnnotation = annotationDataDataData.map((annotationItem) => {
@@ -587,7 +573,6 @@ function AnnotationMerge(props) {
       }
       return annotationItem;
     });
-    console.log(newAnnotation);
     fetch("http://localhost:5000/drive/update-json", {
       method: "POST",
       headers: {
@@ -615,177 +600,257 @@ function AnnotationMerge(props) {
   }
 
   return (
-    <>
-      <div className="function-controller">
-        <div className="annotation-method">
-          <h2>Annotation Method</h2>
-          <Button
-            type={modeController === "bounding-box" ? "primary" : "default"}
-            className="bounding-box-method"
-            onClick={(e) => {
-              setModeController("bounding-box");
-            }}
-          >
-            Bounding Box
-          </Button>
-          <Button
-            type={modeController === "polygon" ? "primary" : "default"}
-            className="polygon-method"
-            onClick={(e) => {
-              setModeController("polygon");
-            }}
-          >
-            Polygon
-          </Button>
-        </div>
-        <div className="labeling-method">
-          <h2>Labeling Method</h2>
-          <Button
-            type={labelingMethod === "default" ? "primary" : "default"}
-            className="default-label-method"
-            onClick={(e) => {
-              setLabelingMethod("default");
-            }}
-          >
-            Create New Label
-          </Button>
-          <Button
-            type={labelingMethod === "auto" ? "primary" : "default"}
-            className="auto-label-method"
-            onClick={(e) => {
-              setLabelingMethod("auto");
-            }}
-          >
-            Label From Select List
-          </Button>
-          <Modal
-            title="Label Information"
-            open={isPopupVisible}
-            onCancel={() => setIsPopupVisible(false)}
-            footer={null}
-          >
-            <Form onFinish={handleSubmitPopupForm}>
-              <Form.Item label="Label" name="label" required>
-                <Input type="text" />
-              </Form.Item>
-              <Form.Item label="Color" name="color" required>
-                <Input type="color" />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Save
-                </Button>
-              </Form.Item>
-            </Form>
-          </Modal>
-        </div>
-        <div className="add-label-form">
-          <h2 className="add-label-form-title">Add Label Item</h2>
-          <Form onFinish={handleSubmitAddLabelItem}>
-            <Form.Item label="Label" name="label" required>
-              <Input type="text" />
-            </Form.Item>
-            <Form.Item label="Color" name="color" required>
-              <Input type="color" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Add
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-        <div className="json-data">
-          <h2>Import/Export</h2>
-          <div className="import-json">
-            <label className="button-import" for="import">
-              Import
-            </label>
-            <input
-              type="file"
-              accept=".json"
-              id="import"
-              onChange={handleFileChange}
-              hidden
-            />
-          </div>
-          <div className="export-json">
-            <Button onClick={handleDownloadClick} disabled={!annotationData}>
-              Export
-            </Button>
-          </div>
-          <div className="save-json">
-            <Button onClick={handleSaveDataAnnotation}>
-              Save Data Annotation
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div style={{ display: "flex" }}>
-        <div className="image-konva-region" style={{ marginRight: "100px" }}>
-          <BaseImageComponent
-            imageUrl={imageUrl}
-            width={width}
-            height={height}
-            handleMouseDownOnImage={handleMouseDownOnImage}
-            handleMouseMoveOnImage={handleMouseMoveOnImage}
-          >
-            <Layer>
-              {polygons.map((polygon, index) => (
-                <Polygon
-                  key={index}
-                  isFinished={true}
-                  flattenedPoints={_.flatten([...polygon["points"]])}
-                  points={polygon["points"]}
-                  width={width}
-                  stroke={"red"}
-                  height={height}
-                  fill={polygon.color}
-                  handlePointDragMove={handlePointDragMove}
-                  handlePolygonDragEnd={handlePolygonDragEnd}
-                  handleMouseOverStartPoint={handleMouseOverStartPoint}
-                  handleMouseOutStartPoint={handleMouseOutStartPoint}
-                  handlePointMouseDown={handleMouseDownOnFirstPoint}
-                  handleLineMouseDown={handleMouseDownOnLine}
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      <TopBar
+        topText={`Projects / ${currentProject.title} / Annotation Image`}
+      />
+      <Divider className="custom-divider" />
+      <Row gutter={[16, 16]}>
+        <Col span={6} className="sidebar">
+          <div className="column">
+            <div className="header">
+              <div className="add-label-form function-item">
+                <p className="item-title">Add Label Item</p>
+                <div className="item-content">
+                  <Form onFinish={handleSubmitAddLabelItem}>
+                    <Form.Item label="Label" name="label" required>
+                      <Input type="text" />
+                    </Form.Item>
+                    <Form.Item label="Color" name="color" required>
+                      <Input type="color" />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button type="primary" htmlType="submit">
+                        Add
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </div>
+              </div>
+            </div>
+            <div className="body">
+              <div className="select-list-label-region">
+                {labelList.length === 0 ? <h2></h2> : <h2>Labeling List</h2>}
+                <SelectionList
+                  items={labelList}
+                  selected={selected}
+                  onChange={setSelected}
                 />
-              ))}
-              <Polygon
-                isFinished={isPolyComplete}
-                flattenedPoints={flattenedPoints}
-                points={points}
+              </div>
+            </div>
+          </div>
+        </Col>
+        <Col span={12} className="wrapper-middle">
+          <div className="column-middle">
+            <div className="header">
+              <div className="function-controller">
+                <div className="annotation-method function-item">
+                  <p className="item-title">Annotation Method</p>
+                  <div className="item-content">
+                    <Button
+                      type={
+                        modeController === "bounding-box"
+                          ? "primary"
+                          : "default"
+                      }
+                      className="button-bounding-box"
+                      onClick={(e) => {
+                        setModeController("bounding-box");
+                      }}
+                    >
+                      <img
+                        src="/icons/rectangle.svg"
+                        width="10px"
+                        height="10px"
+                      />
+                      <span className="button-bounding-box-text">
+                        Bounding Box
+                      </span>
+                    </Button>
+                    <Button
+                      type={
+                        modeController === "polygon" ? "primary" : "default"
+                      }
+                      className="button-polygon"
+                      onClick={(e) => {
+                        setModeController("polygon");
+                      }}
+                    >
+                      <img
+                        src="/icons/polygon.svg"
+                        width="10px"
+                        height="10px"
+                      />
+                      <span className="button-polygon-text">Polygon</span>
+                    </Button>
+                  </div>
+                </div>
+                <div className="labeling-method function-item">
+                  <p className="item-title">Labeling Method</p>
+                  <div className="item-content">
+                    <Button
+                      type={
+                        labelingMethod === "default" ? "primary" : "default"
+                      }
+                      className="default-label-method"
+                      onClick={(e) => {
+                        setLabelingMethod("default");
+                      }}
+                    >
+                      Create New Label
+                    </Button>
+                    <Button
+                      type={labelingMethod === "auto" ? "primary" : "default"}
+                      className="auto-label-method"
+                      onClick={(e) => {
+                        setLabelingMethod("auto");
+                      }}
+                    >
+                      Label From Select List
+                    </Button>
+                    <Modal
+                      title="Label Information"
+                      open={isPopupVisible}
+                      onCancel={() => setIsPopupVisible(false)}
+                      footer={null}
+                    >
+                      <Form onFinish={handleSubmitPopupForm}>
+                        <Form.Item label="Label" name="label" required>
+                          <Input type="text" />
+                        </Form.Item>
+                        <Form.Item label="Color" name="color" required>
+                          <Input type="color" />
+                        </Form.Item>
+                        <Form.Item>
+                          <Button type="primary" htmlType="submit">
+                            Save
+                          </Button>
+                        </Form.Item>
+                      </Form>
+                    </Modal>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="body">
+              <BaseImageComponent
+                imageUrl={imageUrl}
                 width={width}
                 height={height}
-                stroke={"black"}
-                handlePointDragMove={handlePointDragMove}
-                handlePolygonDragEnd={handlePolygonDragEnd}
-                handleMouseOverStartPoint={handleMouseOverStartPoint}
-                handleMouseOutStartPoint={handleMouseOutStartPoint}
-                handlePointMouseDown={handleMouseDownOnFirstPoint}
-                handleLineMouseDown={handleMouseDownOnLine}
-              />
-              <Rect
-                x={rect.x}
-                y={rect.y}
-                width={rect.width}
-                height={rect.height}
-                stroke="black"
-                strokeWidth={3}
-                onMouseDown={handleMouseDownOnRect}
-              />
-              {renderBoundingBoxes()}
-            </Layer>
-          </BaseImageComponent>
-        </div>
-        <div className="select-list-label-region">
-          {labelList.length === 0 ? <h2></h2> : <h2>Labeling List</h2>}
-          <SelectionList
-            items={labelList}
-            selected={selected}
-            onChange={setSelected}
-          />
-        </div>
-      </div>
-    </>
+                handleMouseDownOnImage={handleMouseDownOnImage}
+                handleMouseMoveOnImage={handleMouseMoveOnImage}
+              >
+                <Layer>
+                  {polygons.map((polygon, index) => (
+                    <Polygon
+                      key={index}
+                      isFinished={true}
+                      flattenedPoints={_.flatten([...polygon["points"]])}
+                      points={polygon["points"]}
+                      width={width}
+                      stroke={"red"}
+                      height={height}
+                      fill={polygon.color}
+                      handlePointDragMove={handlePointDragMove}
+                      handlePolygonDragEnd={handlePolygonDragEnd}
+                      handleMouseOverStartPoint={handleMouseOverStartPoint}
+                      handleMouseOutStartPoint={handleMouseOutStartPoint}
+                      handlePointMouseDown={handleMouseDownOnFirstPoint}
+                      handleLineMouseDown={handleMouseDownOnLine}
+                    />
+                  ))}
+                  <Polygon
+                    isFinished={isPolyComplete}
+                    flattenedPoints={flattenedPoints}
+                    points={points}
+                    width={width}
+                    height={height}
+                    stroke={"black"}
+                    handlePointDragMove={handlePointDragMove}
+                    handlePolygonDragEnd={handlePolygonDragEnd}
+                    handleMouseOverStartPoint={handleMouseOverStartPoint}
+                    handleMouseOutStartPoint={handleMouseOutStartPoint}
+                    handlePointMouseDown={handleMouseDownOnFirstPoint}
+                    handleLineMouseDown={handleMouseDownOnLine}
+                  />
+                  <Rect
+                    x={rect.x}
+                    y={rect.y}
+                    width={rect.width}
+                    height={rect.height}
+                    stroke="black"
+                    strokeWidth={3}
+                    onMouseDown={handleMouseDownOnRect}
+                  />
+                  {renderBoundingBoxes()}
+                </Layer>
+              </BaseImageComponent>
+            </div>
+          </div>
+        </Col>
+        <Col span={6} className="sidebar-right">
+          <div className="column">
+            <div className="header">
+              <div className="json-data function-item">
+                <p className="item-title">Import/Export</p>
+                <div className="item-content">
+                  <div className="import-json">
+                    <label className="button-import" for="import">
+                      Import
+                    </label>
+                    <input
+                      type="file"
+                      accept=".json"
+                      id="import"
+                      onChange={handleFileChange}
+                      hidden
+                    />
+                  </div>
+                  <div className="export-json">
+                    <Button
+                      onClick={handleDownloadClick}
+                      disabled={!annotationData}
+                    >
+                      Export
+                    </Button>
+                  </div>
+                  <div className="save-json">
+                    <Button onClick={handleSaveDataAnnotation}>
+                      Save Data Annotation
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="body"></div>
+          </div>
+        </Col>
+      </Row>
+      <Footer />
+      {/* <Layout className="annotation-section">
+        <Sider
+          width="20%"
+          style={{ background: "#f0f2f5" }}
+          className="auto-height"
+        ></Sider>
+        <Content
+          style={{ padding: "0 24px", background: "#fff" }}
+          className="auto-height"
+        >
+
+          <div style={{ height: "100%" }}>
+
+          </div>
+        </Content>
+        <Sider
+          width="20%"
+          style={{ background: "#f0f2f5" }}
+          className="auto-height"
+        >
+
+        </Sider>
+      </Layout> */}
+    </div>
   );
 }
 

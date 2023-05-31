@@ -1,0 +1,56 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.login-page {
+  display: flex;
+  height: 100vh;
+}
+
+.login-page .left-section {
+  font-family: Poppins,"Helvetica Neue","Lucida Grande",Arial,Verdana,sans-serif;
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #73a5c6; */
+  background: linear-gradient(to right, #247ccf, #8fc9ef);
+}
+
+.login-page .left-section h1 {
+  color: #19233e;
+  font-size: 60px;
+  line-height: 70px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.login-page .left-section h2 {
+  display: block;
+  font-size: 1.5em;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+
+.login-page .right-section {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #91bad6; */
+  background: linear-gradient(to left, #247ccf, #8fc9ef);
+}
+
+.login-page .vertical-line {
+  width: 1px;
+  background-color: lightgray;
+}
