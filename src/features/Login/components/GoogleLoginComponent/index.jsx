@@ -7,6 +7,7 @@ import loginSlice from "../../loginSlice";
 import axios from "axios";
 import { Modal } from "antd";
 import { current } from "@reduxjs/toolkit";
+import './styles.css';
 
 function GoogleLoginComponent(props) {
   const dispatch = useDispatch();

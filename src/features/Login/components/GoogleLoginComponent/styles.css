@@ -1,0 +1,18 @@
+.login-container .login-button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid #000; /* Adjust the border color and width as desired */
+  background-color: transparent;
+  color: #000; /* Adjust the button text color as desired */
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease; /* Add transition for smooth hover effect */
+  border-radius: 4px;
+}
+
+.login-container .login-button:hover {
+  cursor: pointer;
+  background-color: #19233e;
+  font-weight: bold;
+  color: #fff; /* Adjust the hover text color as desired */
+}

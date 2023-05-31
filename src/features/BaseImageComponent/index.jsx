@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState, useMemo, useRef } from "react";
-import { Stage, Image, Layer } from "react-konva";
+import { Stage, Image, Layer, Rect } from "react-konva";
 
 const BaseImageComponent = ({
   imageUrl,
@@ -108,6 +108,14 @@ const BaseImageComponent = ({
         onMouseMove={baseHandleMouseMove}
       >
         <Layer>
+          <Rect
+            width={size.width}
+            height={size.height}
+            x={0}
+            y={0}
+            stroke="black"
+            strokeWidth={4}
+          />
           <Image
             onMouseDown={baseHandleMouseDownOnImage}
             onMouseMove={baseHandleMouseMoveOnImage}
