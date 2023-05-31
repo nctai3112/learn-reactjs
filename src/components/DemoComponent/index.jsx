@@ -3,7 +3,6 @@ import { Layer, Rect, Group } from "react-konva";
 import BaseImageComponent from "../../features/BaseImageComponent";
 
 const ImageWithRectangle = () => {
-  // Create the default image.
   // Array to store all bounding boxes.
   const [boundingBoxes, setBoundingBoxes] = useState([]);
   // Create the default rectangle for drawing.

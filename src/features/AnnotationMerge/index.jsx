@@ -2,7 +2,7 @@ import React from "react";
 // import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { Layer, Group, Rect } from "react-konva";
-import BaseImageComponent from "../../components/BaseImageComponent";
+import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
 import PopupForm from "../../components/PopupForm";
