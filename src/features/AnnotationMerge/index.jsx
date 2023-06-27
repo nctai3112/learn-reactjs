@@ -1,6 +1,6 @@
 import React from "react";
 // import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Layer, Group, Rect } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
@@ -64,8 +64,6 @@ function AnnotationMerge(props) {
           const fileItem = dataJson.find(
             (file) => file.id === id && file.annotationData
           );
-          console.log("HERE")
-          console.log(fileItem)
           if (fileItem) {
             console.log("Set Annotation Data!!!")
 
@@ -599,6 +597,26 @@ function AnnotationMerge(props) {
       });
   }
 
+  const middleColRef = useRef(null);
+  const [middleColWidth, setMiddleColWidth] = useState(0);
+
+  useEffect(() => {
+    const handleGetColWidth = () => {
+      console.log("Calling handleGetColWidth!!!");
+      if (middleColRef.current) {
+        console.log(middleColRef.current.clientWidth);
+        setMiddleColWidth(middleColRef.current.clientWidth);
+      }
+    };
+
+    handleGetColWidth(); // Initial width calculation
+    window.addEventListener("resize", handleGetColWidth);
+
+    return () => {
+      window.removeEventListener("resize", handleGetColWidth);
+    };
+  }, []);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <TopBar
@@ -732,8 +750,12 @@ function AnnotationMerge(props) {
                 </div>
               </div>
             </div>
-            <div className="body">
+            <div
+              ref={middleColRef}
+              className="body-annotate"
+            >
               <BaseImageComponent
+                containerWidth={middleColWidth}
                 imageUrl={imageUrl}
                 width={width}
                 height={height}
@@ -792,9 +814,9 @@ function AnnotationMerge(props) {
           <div className="column">
             <div className="header">
               <div className="json-data function-item">
-                <p className="item-title">Import/Export</p>
+                <p className="item-title">Save Data</p>
                 <div className="item-content">
-                  <div className="import-json">
+                  {/* <div className="import-json">
                     <label className="button-import" for="import">
                       Import
                     </label>
@@ -813,10 +835,10 @@ function AnnotationMerge(props) {
                     >
                       Export
                     </Button>
-                  </div>
+                  </div> */}
                   <div className="save-json">
                     <Button onClick={handleSaveDataAnnotation}>
-                      Save Data Annotation
+                      Save Annotation
                     </Button>
                   </div>
                 </div>
@@ -827,29 +849,6 @@ function AnnotationMerge(props) {
         </Col>
       </Row>
       <Footer />
-      {/* <Layout className="annotation-section">
-        <Sider
-          width="20%"
-          style={{ background: "#f0f2f5" }}
-          className="auto-height"
-        ></Sider>
-        <Content
-          style={{ padding: "0 24px", background: "#fff" }}
-          className="auto-height"
-        >
-
-          <div style={{ height: "100%" }}>
-
-          </div>
-        </Content>
-        <Sider
-          width="20%"
-          style={{ background: "#f0f2f5" }}
-          className="auto-height"
-        >
-
-        </Sider>
-      </Layout> */}
     </div>
   );
 }

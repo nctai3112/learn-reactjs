@@ -8,10 +8,12 @@ import { useNavigate } from "react-router-dom";
 import Footer from './../../components/Footer';
 import TopBar from "./../../components/TopBar";
 import './styles.css'
+import { ClimbingBoxLoader } from "react-spinners";
 
 Project.propTypes = {};
 
 function Project(props) {
+  const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
   const googleLoginData = useSelector(googleLoginSelector);
   const [isProjectVisible, setProjectVisible] = useState(false);
@@ -22,7 +24,9 @@ function Project(props) {
   const [projectList, setProjectList] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     getProjectListFromDB(googleLoginData.email);
+    setLoading(false);
   }, []);
 
   const onClickCreateProject = (e) => {
@@ -31,6 +35,7 @@ function Project(props) {
 
   const getProjectListFromDB = (email) => {
     let data = [];
+    setLoading(true);
     fetch("http://localhost:5000/projects/author", {
       method: "POST",
       headers: {
@@ -49,6 +54,7 @@ function Project(props) {
         data = jsonRes.data;
         if (data.projects !== null && data.projects !== undefined) {
           setProjectList(data.projects)
+          setLoading(false);
         }
       })
       .catch((error) => {
@@ -63,6 +69,7 @@ function Project(props) {
 
     const email = googleLoginData.email;
     // If exists  email -> create project!
+    setLoading(true);
     if (email) {
       fetch("http://localhost:5000/projects", {
         method: "POST",
@@ -127,9 +134,11 @@ function Project(props) {
                     // End
                     console.log("Response update project info: ");
                     console.log(dataResponse);
+                    setLoading(false);
                   })
                   .catch((error) => {
                     Modal.error({title:"ERROR", content: "Error when trying to update project information"});
+                    setLoading(false);
                   });
               })
               .catch((error) => {
@@ -139,6 +148,7 @@ function Project(props) {
         })
         .catch((error) => {
           Modal.error({title:"ERROR", content: "Server error when creating a project. Please try again!"});
+          setLoading(false);
         });
     }
     else {
@@ -158,67 +168,83 @@ function Project(props) {
   };
 
   return (
-    <div className="project-page" style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-      <header>
-        <TopBar topText="Projects" />
-      </header>
-      <Divider className="divider-custom" />
-      <div className="project-wrapper" style={{ flex: 1}}>
-        <Space
-          className="project-section"
-          direction="vertical"
-          size="large"
-          style={{ width: "100%", height: "100%" }}
+    <div className="outer-wrapper">
+      {isLoading ? (
+        <ClimbingBoxLoader size={30} color={"#000"} loading={isLoading}/>
+      ) : (
+        <div
+          className="project-page"
+          style={{ display: "flex", flexDirection: "column", height: "100vh" }}
         >
-          <div className="project-above-section">
-            <div className="left-section">
-              <img src="/images/all-projects.png" />
-              <h3 className="all-project-text">All Projects</h3>
-            </div>
-            <div className="right-section">
-              <Button className="button-create-project" onClick={onClickCreateProject}>
-                Create Project
-              </Button>
-            </div>
+          <header>
+            <TopBar topText="Projects" />
+          </header>
+          <Divider className="divider-custom" />
+          <div className="project-wrapper" style={{ flex: 1 }}>
+            <Space
+              className="project-section"
+              direction="vertical"
+              size="large"
+              style={{ width: "100%", height: "100%" }}
+            >
+              <div className="project-above-section">
+                <div className="left-section">
+                  <img src="/images/all-projects.png" />
+                  <h3 className="all-project-text">All Projects</h3>
+                </div>
+                <div className="right-section">
+                  <Button
+                    className="button-create-project"
+                    onClick={onClickCreateProject}
+                  >
+                    Create Project
+                  </Button>
+                </div>
+              </div>
+              <Modal
+                title="Create Project"
+                open={isProjectVisible}
+                onCancel={() => setProjectVisible(false)}
+                footer={null}
+              >
+                <Form layout="vertical">
+                  <Form.Item
+                    label="Project Title"
+                    name="project-title"
+                    required
+                  >
+                    <Input
+                      type="text"
+                      value={projectTitle}
+                      onChange={handleInputProjectTitle}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Description" name="project-description">
+                    <Input.TextArea
+                      placeholder="Optional description of your project"
+                      value={projectDescription}
+                      onChange={handleInputProjectDescription}
+                    />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      onClick={submitCreateProject}
+                    >
+                      Save
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Modal>
+              <ProjectList projectList={projectList} />
+            </Space>
           </div>
-          <Modal
-            title="Create Project"
-            open={isProjectVisible}
-            onCancel={() => setProjectVisible(false)}
-            footer={null}
-          >
-            <Form layout="vertical">
-              <Form.Item label="Project Title" name="project-title" required>
-                <Input
-                  type="text"
-                  value={projectTitle}
-                  onChange={handleInputProjectTitle}
-                />
-              </Form.Item>
-              <Form.Item label="Description" name="project-description">
-                <Input.TextArea
-                  placeholder="Optional description of your project"
-                  value={projectDescription}
-                  onChange={handleInputProjectDescription}
-                />
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  onClick={submitCreateProject}
-                >
-                  Save
-                </Button>
-              </Form.Item>
-            </Form>
-          </Modal>
-          <ProjectList projectList={projectList} />
-        </Space>
-      </div>
-      <footer>
-        <Footer />
-      </footer>
+          <footer>
+            <Footer />
+          </footer>
+        </div>
+      )}
     </div>
   );
 }
