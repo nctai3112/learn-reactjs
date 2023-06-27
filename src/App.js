@@ -10,6 +10,7 @@ import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import Project from "./features/Project";
+import SendAPI from "./features/SendAPI";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         </Route>
 
         <Route element={<LoginFeature />} path="/" />
+        <Route element={<SendAPI />} path="/send-api"/>
       </Routes>
     </div>
   );
