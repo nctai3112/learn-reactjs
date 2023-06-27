@@ -1,7 +1,8 @@
-import { useLayoutEffect, useState, useMemo, useRef } from "react";
+import { useLayoutEffect, useState, useMemo, useRef, useEffect } from "react";
 import { Stage, Image, Layer, Rect } from "react-konva";
 
 const BaseImageComponent = ({
+  containerWidth,
   imageUrl,
   width,
   height,
@@ -34,6 +35,15 @@ const BaseImageComponent = ({
   const imageRef = useRef(null);
   const [image, setImage] = useState();
   const [size, setSize] = useState({});
+  const [scaleRate, setScaleRate] = useState(1);
+
+  useEffect(() => {
+    if (containerWidth) {
+      console.log("Scale rate set!");
+      console.log((containerWidth) / width);
+      setScaleRate((containerWidth) / width);
+    }
+  }, [containerWidth]);
 
   const imageElement = useMemo(() => {
     const element = new window.Image();
@@ -94,7 +104,7 @@ const BaseImageComponent = ({
   };
 
   return (
-    <>
+    <div>
       <button onClick={() => handleZoom(1.1)}>Zoom In</button>
       <button onClick={() => handleZoom(0.9)}>Zoom Out</button>
       <button onClick={() => handleFlip("flipX")}>Flip Horizontally</button>
@@ -114,7 +124,9 @@ const BaseImageComponent = ({
             x={0}
             y={0}
             stroke="black"
-            strokeWidth={4}
+            strokeWidth={1}
+            scaleX={scaleRate}
+            scaleY={scaleRate}
           />
           <Image
             onMouseDown={baseHandleMouseDownOnImage}
@@ -134,7 +146,7 @@ const BaseImageComponent = ({
         </Layer>
         {children}
       </Stage>
-    </>
+    </div>
   );
 };
 
