@@ -13,7 +13,7 @@ function SendAPI(props) {
     console.log("Click button and sending API");
 
     const responseFromSendingAPI = await fetch(
-      "http://localhost:5000/demo/send-api",
+      "https://be-express.vercel.app/demo/send-api",
       {
         method: "POST",
         headers: {
