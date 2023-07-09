@@ -1,13 +1,14 @@
 import React from "react";
 import "./styles.css";
+import { v4 as uuidv4 } from "uuid";
 
 const SelectionList = ({ items, selected, onChange }) => {
+
   return (
-    <div className="select-list">
+    <div key={uuidv4()} className="select-list">
       {items.map((item, index) => (
-        <div className="select-item-wrapper">
+        <div key={"wrapper-" + uuidv4()} className="select-item-wrapper">
           <div
-            key={index}
             className="select-item-text"
             onClick={() => onChange(index)}
             style={{

@@ -1,15 +1,18 @@
-.wrapper-middle {
+.column-wrapper {
   background-color: #f0f2f5;
 }
 
-.column-middle {
+.middle-column {
   margin-top: 20px;
+  margin-bottom: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px;
   background-color: #fff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
 }
 
-.column-middle .body-annotate {
+.middle-column .body-annotate {
   margin-top: 20px;
 }
 
@@ -25,10 +28,6 @@
 
 .custom-divider {
   margin: 0 0;
-}
-
-.annotation-section {
-  margin-top: 20px;
 }
 
 .function-controller {

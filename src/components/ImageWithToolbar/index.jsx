@@ -56,8 +56,10 @@ function KonvaToolbar() {
             image={imageProps.image}
             x={imageProps.width / 2}
             y={imageProps.height / 2}
-            width={imageProps.width * imageProps.scale}
-            height={imageProps.height * imageProps.scale}
+            // width={imageProps.width * imageProps.scale}
+            // height={imageProps.height * imageProps.scale}
+            width={imageProps.width}
+            height={imageProps.height}
             rotation={imageProps.rotation}
             scaleX={imageProps.flipX ? -1 : 1}
             scaleY={imageProps.flipY ? -1 : 1}

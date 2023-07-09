@@ -5,20 +5,20 @@ import { Layer, Group, Rect } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
-import PopupForm from "../../components/PopupForm";
 import SelectionList from "../../components/SelectionList";
 import { Button, Modal, Form, Input, Divider, Layout, Row, Col } from "antd";
-import "./styles.css";
 import { useParams } from "react-router-dom"
 import { useSelector } from "react-redux";
 import { currentProjectSelector } from "../../redux/selectors";
 import TopBar from "../../components/TopBar";
 import Footer from "../../components/Footer";
+import "./styles.css";
 
 // AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
-  const { Header, Content, Sider } = Layout;
+  const [width, setWidth] = useState(513);
+  const [height, setHeight] = useState(513);
   const currentProject = useSelector(currentProjectSelector);
   const { id } = useParams();
 
@@ -56,11 +56,9 @@ function AnnotationMerge(props) {
       })
         .then(async (response) => {
           // Handle the response
-          console.log("Get file json data success");
           const jsonRes = await response.json();
           let data = jsonRes.data;
           let dataJson = data.response.data;
-          console.log(dataJson);
           const fileItem = dataJson.find(
             (file) => file.id === id && file.annotationData
           );
@@ -125,16 +123,41 @@ function AnnotationMerge(props) {
         });
     }
   };
+
   useEffect(() => {
     if (annotationId) {
       getCurrentAnnotationData(annotationId);
     }
-  }, [annotationId])
+    if (id) {
+      fetch(`http://localhost:5000/drive/get-json/${id}`, {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          Connection: "keep-alive",
+          "Content-Type": "application/json",
+          "user-agent": "Chrome",
+        },
+      })
+        .then(async (response) => {
+          // Handle the response
+          const jsonRes = await response.json();
+          if (jsonRes.data.imageInfo) {
+            const dataImgInfo = jsonRes.data.imageInfo;
+            setWidth(dataImgInfo.width);
+            setHeight(dataImgInfo.height);
+            console.log("Get width height image success!")
+          }
+        })
+        .catch((error) => {
+          // Handle the error
+          console.log("Error get width height image...");
+          console.log(error);
+        });
+    }
+  }, [annotationId, id])
 
   // SET ANNOTATION METHOD (DEFAULT: BOUNDING-BOX)
   const [modeController, setModeController] = useState("bounding-box");
-  const width = 800;
-  const height = 600;
 
   // HANDLE ANNOTATION EVENT.
   const handleMouseDownOnImage = (pos) => {
@@ -259,9 +282,6 @@ function AnnotationMerge(props) {
   const [currentDraggingWidth, setCurrentDraggingWidth] = useState(0);
   const [currentDraggingHeight, setCurrentDraggingHeight] = useState(0);
 
-  const _id = String(Math.random());
-  const _name = `group-${_id}`;
-
   const imageUrl = `https://drive.google.com/uc?export=view&id=${id}`;
 
   const handleMouseMoveOnImageBB = (pos) => {
@@ -345,7 +365,7 @@ function AnnotationMerge(props) {
       .map(({ id, x, y, width, height, color }) => {
         return (
           <Group
-            id={"group_" + _id}
+            key={id}
             name={"bounding_box"}
             draggable={false}
             onMouseOver={handleGroupMouseOver}
@@ -599,13 +619,13 @@ function AnnotationMerge(props) {
 
   const middleColRef = useRef(null);
   const [middleColWidth, setMiddleColWidth] = useState(0);
+  const [middleColHeight, setMiddleColHeight] = useState(0);
 
   useEffect(() => {
     const handleGetColWidth = () => {
-      console.log("Calling handleGetColWidth!!!");
       if (middleColRef.current) {
-        console.log(middleColRef.current.clientWidth);
         setMiddleColWidth(middleColRef.current.clientWidth);
+        setMiddleColHeight(middleColRef.current.clientHeight);
       }
     };
 
@@ -617,8 +637,38 @@ function AnnotationMerge(props) {
     };
   }, []);
 
+  const annotateImage = (e) => {
+
+    if (annotationId && id) {
+      fetch("http://localhost:5000/drive/annotate-image", {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          Connection: "keep-alive",
+          "Content-Type": "application/json",
+          "user-agent": "Chrome",
+        },
+        body: JSON.stringify({
+          annotationFileId: annotationId,
+          imageFileId: id,
+        }),
+      })
+        .then(async (response) => {
+          // Handle the response
+          const jsonRes = await response.json();
+          let data = jsonRes.data;
+          console.log("Annotate image successfully!");
+        })
+        .catch((error) => {
+          // Handle the error
+          console.log("Error annotating image!");
+          console.log(error);
+        });
+    }
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div key={id} style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <TopBar
         topText={`Projects / ${currentProject.title} / Annotation Image`}
       />
@@ -650,6 +700,7 @@ function AnnotationMerge(props) {
               <div className="select-list-label-region">
                 {labelList.length === 0 ? <h2></h2> : <h2>Labeling List</h2>}
                 <SelectionList
+                  key={id}
                   items={labelList}
                   selected={selected}
                   onChange={setSelected}
@@ -658,8 +709,8 @@ function AnnotationMerge(props) {
             </div>
           </div>
         </Col>
-        <Col span={12} className="wrapper-middle">
-          <div className="column-middle">
+        <Col span={12} className="column-wrapper">
+          <div className="middle-column">
             <div className="header">
               <div className="function-controller">
                 <div className="annotation-method function-item">
@@ -750,10 +801,7 @@ function AnnotationMerge(props) {
                 </div>
               </div>
             </div>
-            <div
-              ref={middleColRef}
-              className="body-annotate"
-            >
+            <div ref={middleColRef} className="body-annotate">
               <BaseImageComponent
                 containerWidth={middleColWidth}
                 imageUrl={imageUrl}
@@ -840,6 +888,9 @@ function AnnotationMerge(props) {
                     <Button onClick={handleSaveDataAnnotation}>
                       Save Annotation
                     </Button>
+                  </div>
+                  <div className="annotate">
+                    <Button onClick={annotateImage}>Annotate Image</Button>
                   </div>
                 </div>
               </div>

@@ -1,8 +1,11 @@
 import { useLayoutEffect, useState, useMemo, useRef, useEffect } from "react";
 import { Stage, Image, Layer, Rect } from "react-konva";
+import { Button } from "antd";
+import "./styles.css"
 
 const BaseImageComponent = ({
-  containerWidth,
+  // containerWidth,
+  // containerHeight,
   imageUrl,
   width,
   height,
@@ -11,6 +14,43 @@ const BaseImageComponent = ({
   handleMouseDownOnImage = function () {},
   handleMouseMoveOnImage = function () {},
 }) => {
+  const stageContainer = useRef(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
+  // Width to render an image!
+  const [imageMaxWidth, setImageMaxWidth] = useState(0);
+  // const [containerHeight, setContainerHeight] = useState(0);
+
+  // IMPLEMENTING
+  useEffect(() => {
+    // GET CONTAINER INFORMATION. (DIV CONTAINING THE STAGE)
+    const getContainerWidth = () => {
+      if (stageContainer.current) {
+        console.log("setContainerWidth?")
+        console.log("Container width:");
+        console.log(stageContainer.current.clientWidth);
+        setContainerWidth(stageContainer.current.clientWidth);
+        // setContainerHeight(stageContainer.current.clientHeight);
+      }
+    };
+    getContainerWidth(); // Initial width calculation
+    window.addEventListener("resize", getContainerWidth);
+
+    return () => {
+      window.removeEventListener("resize", getContainerWidth);
+    };
+  }, []);
+
+  // IMPLEMENTING
+  useEffect(() => {
+    if (containerWidth !== 0) {
+      console.log("setImageMaxWidth");
+      console.log("imageMaxWidth:")
+      console.log(Math.round((containerWidth * 4) / 5));
+      setImageMaxWidth(Math.round((containerWidth * 4) / 5));
+    }
+  }, [containerWidth]);
+
   // Image props for image customization.
   const [imageProps, setImageProps] = useState({
     image: new window.Image(),
@@ -34,21 +74,30 @@ const BaseImageComponent = ({
 
   const imageRef = useRef(null);
   const [image, setImage] = useState();
-  const [size, setSize] = useState({});
+  // Currently not use!
+  // const [size, setSize] = useState({});
   const [scaleRate, setScaleRate] = useState(1);
 
+  // Fixing the image width problem.
+  // IMPLEMENTING
   useEffect(() => {
-    if (containerWidth) {
-      console.log("Scale rate set!");
-      console.log((containerWidth) / width);
-      setScaleRate((containerWidth) / width);
+    console.log("imageWidth:")
+    console.log(width);
+    if (imageMaxWidth && width) {
+      // Check if the current image width exceeds the max width or not.
+      if (width > imageMaxWidth) {
+        console.log("setScaleRate:")
+        console.log("scaleRate:")
+        console.log(imageMaxWidth / width);
+        setScaleRate(imageMaxWidth / width);
+      }
     }
-  }, [containerWidth]);
+  }, [imageMaxWidth, width]);
 
   const imageElement = useMemo(() => {
     const element = new window.Image();
-    element.width = width || 650;
-    element.height = height || 302;
+    element.width = width || 512;
+    element.height = height || 512;
     element.src = imageUrl;
 
     setImageProps({
@@ -56,6 +105,7 @@ const BaseImageComponent = ({
       image: element,
       width: element.width,
       height: element.height,
+      scaleRate: scaleRate,
     });
     return element;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,10 +114,10 @@ const BaseImageComponent = ({
   // Run before update layout
   useLayoutEffect(() => {
     const onload = function () {
-      setSize({
-        width: imageElement.width,
-        height: imageElement.height,
-      });
+      // setSize({
+      //   width: imageElement.width,
+      //   height: imageElement.height,
+      // });
       setImage(imageElement);
       imageRef.current = imageElement;
     };
@@ -103,49 +153,81 @@ const BaseImageComponent = ({
     return [stage.getPointerPosition().x, stage.getPointerPosition().y];
   };
 
+  useEffect(() => {
+    console.log("setWidthImage ", width)
+    console.log("setHeightImage:", height);
+    // console.log("maxImageWidth:", imageMaxWidth);
+    // console.log("scaleRate: ", scaleRate);
+    // console.log("width*scaleRate:", width*scaleRate);
+    // console.log("height*scaleRate:", height * scaleRate);
+    console.log("Final Rendering...")
+    console.log("Width render: ", width * scaleRate);
+    console.log("Height rendering: ", height * scaleRate);
+  }, [width, height, scaleRate]);
+
   return (
-    <div>
-      <button onClick={() => handleZoom(1.1)}>Zoom In</button>
-      <button onClick={() => handleZoom(0.9)}>Zoom Out</button>
-      <button onClick={() => handleFlip("flipX")}>Flip Horizontally</button>
-      <button onClick={() => handleFlip("flipY")}>Flip Vertically</button>
-      <button onClick={() => handleRotate(-1)}>Rotate Left</button>
-      <button onClick={() => handleRotate(1)}>Rotate Right</button>
-      <Stage
-        width={size.width}
-        height={size.height}
-        onMouseDown={baseHandleMouseDown}
-        onMouseMove={baseHandleMouseMove}
-      >
-        <Layer>
-          <Rect
-            width={size.width}
-            height={size.height}
-            x={0}
-            y={0}
-            stroke="black"
-            strokeWidth={1}
-            scaleX={scaleRate}
-            scaleY={scaleRate}
+    <div className="outer-wrapper-konva">
+      <div className="buttons-wrapper">
+        <Button onClick={() => handleZoom(1.1)}>
+          <img src="/icons/zoom_in.svg" width="10px" height="10px" />
+        </Button>
+        <Button onClick={() => handleZoom(0.9)}>
+          <img src="/icons/zoom_out.svg" width="10px" height="10px" />
+        </Button>
+        <Button onClick={() => handleFlip("flipX")}>
+          <img src="/icons/flip_vertical.svg" width="10px" height="10px" />
+        </Button>
+        <Button onClick={() => handleFlip("flipY")}>
+          <img src="/icons/flip_horizontal.svg" width="10px" height="10px" />
+        </Button>
+        <Button onClick={() => handleRotate(-1)}>
+          <img
+            src="/icons/rotate_counterclockwise.svg"
+            width="10px"
+            height="10px"
           />
-          <Image
-            onMouseDown={baseHandleMouseDownOnImage}
-            onMouseMove={baseHandleMouseMoveOnImage}
-            ref={imageRef}
-            image={image}
-            x={imageProps.width / 2}
-            y={imageProps.height / 2}
-            width={imageProps.width * imageProps.scale}
-            height={imageProps.height * imageProps.scale}
-            rotation={imageProps.rotation}
-            scaleX={imageProps.flipX ? -1 : 1}
-            scaleY={imageProps.flipY ? -1 : 1}
-            offsetX={imageProps.width / 2}
-            offsetY={imageProps.height / 2}
-          />
-        </Layer>
-        {children}
-      </Stage>
+        </Button>
+        <Button onClick={() => handleRotate(1)}>
+          <img src="/icons/rotate_clockwise.svg" width="10px" height="10px" />
+        </Button>
+      </div>
+      <div className="stage-wrapper" ref={stageContainer}>
+        <Stage
+          className="konva-stage"
+          width={width * scaleRate}
+          height={height * scaleRate}
+          onMouseDown={baseHandleMouseDown}
+          onMouseMove={baseHandleMouseMove}
+        >
+          <Layer>
+            <Image
+              onMouseDown={baseHandleMouseDownOnImage}
+              onMouseMove={baseHandleMouseMoveOnImage}
+              ref={imageRef}
+              image={image}
+              scaleX={scaleRate}
+              scaleY={scaleRate}
+              width={width}
+              height={height}
+              rotation={imageProps.rotation}
+              // x={(width * scaleRate) / 2}
+              // y={(height * scaleRate) / 2}
+              // offsetX={(width * scaleRate) / 2}
+              // offsetY={(height * scaleRate) / 2}
+              // Debugging - Fixing ...
+              // width={imageProps.width * imageProps.scale}
+              // height={imageProps.height * imageProps.scale}
+
+              // scaleX={imageProps.flipX ? -1 : 1}
+              // x={(width) / 2}
+              // y={(height) / 2}
+              // offsetX={(width) / 2}
+              // offsetY={(height) / 2}
+            />
+          </Layer>
+          {children}
+        </Stage>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,9 @@
+.stage-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttons-wrapper {
+  padding-bottom: 5px;
+}
