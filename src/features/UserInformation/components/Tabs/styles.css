@@ -1,0 +1,44 @@
+.vertical-tab-block {
+  padding: 30px 40px;
+  background-color: hsl(0, 0%, 95%);
+}
+
+.vertical-tab-block .user-info-block {
+  padding-left: 200px;
+  padding-right: 200px;
+}
+
+.vertical-tab-block .user-info-block .first-line-wrapper {
+  display: grid; /* Use CSS grid */
+  grid-template-columns: 100px 100px; /* Automatically size the columns */
+  grid-gap: 10px;
+}
+
+.vertical-tab-block .user-info-block .first-line-wrapper .avatar-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  padding-top: 20px;
+}
+
+.vertical-tab-block .user-info-block .second-line-wrapper {
+  display: grid; /* Use CSS grid */
+  grid-template-columns: 1fr 1fr; /* Automatically size the columns */
+  grid-gap: 10px;
+}
+
+.item-left {
+  justify-self: left;
+}
+
+.item-right {
+  justify-self: right;
+}
+
+.form-item {
+  width: 250px;
+}
+
+.input {
+  width: 200px; /* Adjust the width as needed */
+}

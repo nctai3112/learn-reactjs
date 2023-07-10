@@ -170,7 +170,7 @@ function Project(props) {
   return (
     <div className="outer-wrapper">
       {isLoading ? (
-        <ClimbingBoxLoader size={30} color={"#000"} loading={isLoading}/>
+        <ClimbingBoxLoader size={30} color={"#000"} loading={isLoading} />
       ) : (
         <div
           className="project-page"
@@ -179,7 +179,7 @@ function Project(props) {
           <header>
             <TopBar topText="Projects" />
           </header>
-          <Divider className="divider-custom" />
+          <Divider className="custom-divider" />
           <div className="project-wrapper" style={{ flex: 1 }}>
             <Space
               className="project-section"

@@ -11,6 +11,7 @@ import axios from "axios";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import Project from "./features/Project";
 import SendAPI from "./features/SendAPI";
+import UserInformation from "./features/UserInformation";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
 
         <Route element={<LoginFeature />} path="/" />
         <Route element={<SendAPI />} path="/send-api"/>
+        <Route element={<UserInformation/>} path="/user"/>
       </Routes>
     </div>
   );

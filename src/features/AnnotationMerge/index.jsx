@@ -21,6 +21,7 @@ function AnnotationMerge(props) {
   const [height, setHeight] = useState(513);
   const currentProject = useSelector(currentProjectSelector);
   const { id } = useParams();
+  const [scaleRate, setScaleRate] = useState(1);
 
   // EXPORT ANNOTATION DATA.
   const [annotationData, setAnnotationData] = useState([]);
@@ -588,6 +589,8 @@ function AnnotationMerge(props) {
     const newAnnotation = annotationDataDataData.map((annotationItem) => {
       if (annotationItem.id === id) {
         annotationItem.annotationData = annotationData;
+        // ADDING SCALE RATE HERE.
+        annotationItem.scaleRate = scaleRate;
       }
       return annotationItem;
     });
@@ -616,26 +619,6 @@ function AnnotationMerge(props) {
         console.log(error);
       });
   }
-
-  const middleColRef = useRef(null);
-  const [middleColWidth, setMiddleColWidth] = useState(0);
-  const [middleColHeight, setMiddleColHeight] = useState(0);
-
-  useEffect(() => {
-    const handleGetColWidth = () => {
-      if (middleColRef.current) {
-        setMiddleColWidth(middleColRef.current.clientWidth);
-        setMiddleColHeight(middleColRef.current.clientHeight);
-      }
-    };
-
-    handleGetColWidth(); // Initial width calculation
-    window.addEventListener("resize", handleGetColWidth);
-
-    return () => {
-      window.removeEventListener("resize", handleGetColWidth);
-    };
-  }, []);
 
   const annotateImage = (e) => {
 
@@ -666,6 +649,11 @@ function AnnotationMerge(props) {
         });
     }
   };
+
+  const handleScaleRateFromBaseImage = (data) => {
+    console.log("Get Scale Rate in Parent!")
+    setScaleRate(data);
+  }
 
   return (
     <div key={id} style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -801,9 +789,9 @@ function AnnotationMerge(props) {
                 </div>
               </div>
             </div>
-            <div ref={middleColRef} className="body-annotate">
+            <div className="body-annotate">
               <BaseImageComponent
-                containerWidth={middleColWidth}
+                sendScaleRateToParent={handleScaleRateFromBaseImage}
                 imageUrl={imageUrl}
                 width={width}
                 height={height}

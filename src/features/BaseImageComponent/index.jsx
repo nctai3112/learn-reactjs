@@ -10,6 +10,7 @@ const BaseImageComponent = ({
   width,
   height,
   children,
+  sendScaleRateToParent = function() {},
   handleMouseDownOnStage = function () {},
   handleMouseDownOnImage = function () {},
   handleMouseMoveOnImage = function () {},
@@ -90,9 +91,10 @@ const BaseImageComponent = ({
         console.log("scaleRate:")
         console.log(imageMaxWidth / width);
         setScaleRate(imageMaxWidth / width);
+        sendScaleRateToParent(scaleRate);
       }
     }
-  }, [imageMaxWidth, width]);
+  }, [imageMaxWidth, width, scaleRate]);
 
   const imageElement = useMemo(() => {
     const element = new window.Image();

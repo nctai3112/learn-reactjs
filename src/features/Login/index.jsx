@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import GoogleLoginComponent from "./components/GoogleLoginComponent";
 import "./styles.css"
+import { googleLoginSelector } from "../../redux/selectors";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function LoginFeature(props) {
+
+  const googleLoginData = useSelector(googleLoginSelector);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (googleLoginData) {
+      navigate("/projects");
+    }
+  }, googleLoginData);
+
   return (
     <div className="login-page">
       <div className="left-section">
