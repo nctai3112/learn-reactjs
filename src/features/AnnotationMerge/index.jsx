@@ -1,7 +1,7 @@
 import React from "react";
 // import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
-import { Layer, Group, Rect } from "react-konva";
+import { Layer, Group, Rect, Image } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
@@ -17,6 +17,10 @@ import "./styles.css";
 // AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
+
+  // render image base 64 return from AI model.
+  const [base64str, setBase64str] = useState("");
+
   const [width, setWidth] = useState(513);
   const [height, setHeight] = useState(513);
   const currentProject = useSelector(currentProjectSelector);
@@ -590,7 +594,7 @@ function AnnotationMerge(props) {
       if (annotationItem.id === id) {
         annotationItem.annotationData = annotationData;
         // ADDING SCALE RATE HERE.
-        annotationItem.scaleRate = scaleRate;
+        annotationItem.annotationData.scaleRate = scaleRate;
       }
       return annotationItem;
     });
@@ -640,7 +644,10 @@ function AnnotationMerge(props) {
           // Handle the response
           const jsonRes = await response.json();
           let data = jsonRes.data;
-          console.log("Annotate image successfully!");
+          if (data && data.response.encoded_prediction) {
+            console.log("setBase64str !!!")
+            setBase64str(data.response.encoded_prediction);
+          }
         })
         .catch((error) => {
           // Handle the error
@@ -655,8 +662,34 @@ function AnnotationMerge(props) {
     setScaleRate(data);
   }
 
+
+  const [annotatedImage, setAnnotatedImage] = useState();
+
+  useEffect(() => {
+    if (base64str !== "") {
+      const imageObj = new window.Image();
+      imageObj.src = `data:image/jpeg;base64,${base64str}`;
+      // imageObj.onload = () => {
+      //   const image = new Konva.Image({
+      //     x: 0,
+      //     y: 0,
+      //     image: imageObj,
+      //     width: width,
+      //     height: height,
+      //     scaleX: scaleRate,
+      //     scaleY: scaleRate,
+      //   });
+      // };
+      console.log("setAnnotatedImage");
+      setAnnotatedImage(imageObj);
+    }
+  }, [base64str]);
+
   return (
-    <div key={id} style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <div
+      key={id}
+      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+    >
       <TopBar
         topText={`Projects / ${currentProject.title} / Annotation Image`}
       />
@@ -842,6 +875,21 @@ function AnnotationMerge(props) {
                   />
                   {renderBoundingBoxes()}
                 </Layer>
+                {/** Rendering the image after annotating above the image layers. */}
+                {base64str.trim().length > 0 ? (
+                  <Layer>
+                    <Image
+                      image={annotatedImage}
+                      width={width}
+                      height={height}
+                      scaleX={scaleRate}
+                      scaleY={scaleRate}
+                      opacity={0.5}
+                    />
+                  </Layer>
+                ) : (
+                  ""
+                )}
               </BaseImageComponent>
             </div>
           </div>

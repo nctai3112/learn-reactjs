@@ -3118,6 +3118,11 @@
   "resolved" "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz"
   "version" "1.0.2"
 
+"base64-to-image@^1.0.2":
+  "integrity" "sha512-6tYtXV9NId5tKs304trKlzQD47rrHOIgX/V1+AR6hAKhLRdCeJlHeva0v/ONGy5VVgaPlVlTE7PhnrULELshrg=="
+  "resolved" "https://registry.npmjs.org/base64-to-image/-/base64-to-image-1.0.2.tgz"
+  "version" "1.0.2"
+
 "batch@0.6.1":
   "integrity" "sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw=="
   "resolved" "https://registry.npmjs.org/batch/-/batch-0.6.1.tgz"

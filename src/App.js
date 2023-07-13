@@ -16,11 +16,6 @@ import UserInformation from "./features/UserInformation";
 function App() {
   return (
     <div className="demo-app">
-      {/* <NavLink to="/login">Login</NavLink>
-      <NavLink to="/projects">- Project</NavLink> */}
-      {/* <NavLink to="/project-detail"> - Project Detail</NavLink> */}
-      {/* <NavLink to="/annotation"> - Annotation</NavLink> */}
-
       <Routes>
         <Route element={<PrivateRoutes />}>
           <Route element={<Project />} path="/projects" exact />

@@ -26,7 +26,7 @@ function Footer(props) {
         </div> */}
         <ul className="list-inline">
           <li className="list-inline-item">
-            <a href="#">Home</a>
+            <a href="/projects">Home</a>
           </li>
           <li className="list-inline-item">
             <a href="#">Services</a>
