@@ -152,7 +152,7 @@ function Project(props) {
         });
     }
     else {
-      navigate('/login');
+      navigate('/');
     }
     setProjectTitle("");
     setProjectDescription("");

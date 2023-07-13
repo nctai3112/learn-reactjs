@@ -7,6 +7,8 @@ import { useDispatch } from 'react-redux';
 import projectDetailSlide from '../../projectDetailSlice';
 import { Modal, Table } from "antd";
 import UploadImages from "./../UploadImages";
+import { googleLoginSelector, accessTokenSelector } from "../../../../redux/selectors";
+import { useSelector } from "react-redux";
 
 DataList.propTypes = {
 
@@ -20,9 +22,9 @@ function DataList(props) {
   const annotationFileId = projectDetail.urlData;
   const [fileItems, setFileItems] = useState([]);
   const [dataTable, setDataTable] = useState([]);
+  const accessTokenData = useSelector(accessTokenSelector);
 
   useEffect(() => {
-
     const fetchData = async() => {
       let annotationContent = [];
       if (
@@ -247,11 +249,25 @@ function DataList(props) {
     },
   ];
 
-  useEffect(()=> {
+  useEffect(() => {
     if (fileItems.length > 0) {
+      console.log("Getting file items...!")
       const dataTableTmp = [];
-      fileItems.map((fileItem) => {
+      fileItems.map(async (fileItem) => {
         if (!fileItem.name.includes(".json")) {
+          // const metadataResponse = await fetch(
+          //   `https://www.googleapis.com/drive/v3/files/${fileItem.id}?fields=webContentLink`,
+          //   {
+          //     headers: {
+          //       Authorization: `Bearer ${accessTokenData.access_token}`,
+          //     },
+          //   }
+          // );
+
+          // const metadata = await metadataResponse.json();
+          // console.log("metadata: ..")
+          // console.log(metadata);
+
           const tableItem = {
             id: fileItem.id,
             name: fileItem.name,

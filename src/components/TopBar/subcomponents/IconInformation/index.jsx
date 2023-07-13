@@ -1,14 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./styles.css"
+import { googleLogout } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
 // import { Menu, Dropdown, Button } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Divider, Dropdown, Space, theme } from "antd";
-
+import { useDispatch } from "react-redux";
+import loginSlice from "../../../../features/Login/loginSlice";
 
 IconInformation.propTypes = {};
 
 function IconInformation(props) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {pictureUrl} = props;
 
   const { useToken } = theme;
@@ -34,19 +39,6 @@ function IconInformation(props) {
         </a>
       ),
     },
-    {
-      key: "2",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          Logout
-        </a>
-      ),
-      disabled: false,
-    },
   ];
 
   return (
@@ -70,7 +62,12 @@ function IconInformation(props) {
                 padding: 8,
               }}
             >
-              <Button type="primary">Log out</Button>
+              <Button type="primary" onClick={e => {
+                console.log("click Logout");
+                googleLogout();
+                dispatch(loginSlice.actions.DeleteGoogleLogin());
+                navigate('/');
+              }}>Log out</Button>
             </Space>
           </div>
         )}

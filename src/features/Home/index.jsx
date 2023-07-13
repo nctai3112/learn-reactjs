@@ -11,7 +11,7 @@ Home.propTypes = {
 function Home(props) {
   const navigate = useNavigate();
   const handleOnClickLogin = () => {
-    navigate('/login');
+    navigate('/');
   }
   return (
     <div className="home-page">

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import loginSlice from "../../loginSlice";
+import loginResponseSlice from "../../loginResponseSlice";
 import axios from "axios";
 import { Modal } from "antd";
 import { current } from "@reduxjs/toolkit";
@@ -20,6 +21,10 @@ function GoogleLoginComponent(props) {
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
+      console.log("codeResponse:")
+      console.log("dispatchAccessToken")
+      console.log(codeResponse)
+      dispatch(loginResponseSlice.actions.AccessToken(codeResponse));
       setUser(codeResponse);
     },
     onError: (error) => console.log("Login Failed:", error),
@@ -58,6 +63,7 @@ function GoogleLoginComponent(props) {
             )
               .then((response) => {
                 console.log("Login Success!")
+                console.log(res);
                 dispatch(loginSlice.actions.GoogleLogin(res.data));
                 navigate("/projects");
               })
