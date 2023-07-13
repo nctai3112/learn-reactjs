@@ -87,26 +87,34 @@ function DataList(props) {
               !fileItem.name.includes("json") &&
               !annotationContent.some((item) => item.id === fileItem.id)
             ) {
+              fileItem.annotationData ={
+                "bounding-box": [],
+                "polygon": [],
+              };
+              console.log("fileItem1:", fileItem)
               annotationContent.push(fileItem);
             }
           });
         }
       }
 
-      if (annotationFileId) {
-        const responseUpdateJson = await fetch("http://localhost:5000/drive/update-json", {
-          method: "POST",
-          headers: {
-            Accept: "*/*",
-            Connection: "keep-alive",
-            "Content-Type": "application/json",
-            "user-agent": "Chrome",
-          },
-          body: JSON.stringify({
-            annotationFileId: annotationFileId,
-            fileContent: JSON.stringify(annotationContent),
-          }),
-        });
+      if (annotationFileId && annotationContent.length > 0) {
+        const responseUpdateJson = await fetch(
+          "http://localhost:5000/drive/update-json",
+          {
+            method: "POST",
+            headers: {
+              Accept: "*/*",
+              Connection: "keep-alive",
+              "Content-Type": "application/json",
+              "user-agent": "Chrome",
+            },
+            body: JSON.stringify({
+              annotationFileId: annotationFileId,
+              fileContent: JSON.stringify(annotationContent),
+            }),
+          }
+        );
         if (!responseUpdateJson.ok) {
           Modal.error({
             title: "ERROR",
@@ -190,13 +198,18 @@ function DataList(props) {
               !fileItem.name.includes("json") &&
               !annotationContent.some((item) => item.id === fileItem.id)
             ) {
+              fileItem.annotationData={
+                "bounding-box": [],
+                "polygon": [],
+              };
+              console.log("fileitem2:", fileItem)
               annotationContent.push(fileItem);
             }
           });
         }
       }
 
-      if (annotationFileId) {
+      if (annotationFileId && annotationContent.length > 0) {
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
