@@ -27,9 +27,6 @@ const BaseImageComponent = ({
     // GET CONTAINER INFORMATION. (DIV CONTAINING THE STAGE)
     const getContainerWidth = () => {
       if (stageContainer.current) {
-        console.log("setContainerWidth?")
-        console.log("Container width:");
-        console.log(stageContainer.current.clientWidth);
         setContainerWidth(stageContainer.current.clientWidth);
         // setContainerHeight(stageContainer.current.clientHeight);
       }
@@ -45,9 +42,6 @@ const BaseImageComponent = ({
   // IMPLEMENTING
   useEffect(() => {
     if (containerWidth !== 0) {
-      console.log("setImageMaxWidth");
-      console.log("imageMaxWidth:")
-      console.log(Math.round((containerWidth * 4) / 5));
       setImageMaxWidth(Math.round((containerWidth * 4) / 5));
     }
   }, [containerWidth]);
@@ -79,17 +73,10 @@ const BaseImageComponent = ({
   // const [size, setSize] = useState({});
   const [scaleRate, setScaleRate] = useState(1);
 
-  // Fixing the image width problem.
-  // IMPLEMENTING
   useEffect(() => {
-    console.log("imageWidth:")
-    console.log(width);
     if (imageMaxWidth && width) {
       // Check if the current image width exceeds the max width or not.
       if (width > imageMaxWidth) {
-        console.log("setScaleRate:")
-        console.log("scaleRate:")
-        console.log(imageMaxWidth / width);
         setScaleRate(imageMaxWidth / width);
         sendScaleRateToParent(scaleRate);
       }
@@ -154,18 +141,6 @@ const BaseImageComponent = ({
   const getMousePos = (stage) => {
     return [stage.getPointerPosition().x, stage.getPointerPosition().y];
   };
-
-  useEffect(() => {
-    console.log("setWidthImage ", width)
-    console.log("setHeightImage:", height);
-    // console.log("maxImageWidth:", imageMaxWidth);
-    // console.log("scaleRate: ", scaleRate);
-    // console.log("width*scaleRate:", width*scaleRate);
-    // console.log("height*scaleRate:", height * scaleRate);
-    console.log("Final Rendering...")
-    console.log("Width render: ", width * scaleRate);
-    console.log("Height rendering: ", height * scaleRate);
-  }, [width, height, scaleRate]);
 
   return (
     <div className="outer-wrapper-konva">
