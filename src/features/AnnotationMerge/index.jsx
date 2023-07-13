@@ -27,6 +27,8 @@ function AnnotationMerge(props) {
   const { id } = useParams();
   const [scaleRate, setScaleRate] = useState(1);
 
+  const [annotatedResult, setAnnotatedResult] = useState({});
+
   // EXPORT ANNOTATION DATA.
   const [annotationData, setAnnotationData] = useState([]);
   function handleDownloadClick() {
@@ -625,7 +627,6 @@ function AnnotationMerge(props) {
   }
 
   const annotateImage = (e) => {
-
     if (annotationId && id) {
       fetch("http://localhost:5000/drive/annotate-image", {
         method: "POST",
@@ -647,15 +648,99 @@ function AnnotationMerge(props) {
           if (data && data.response.encoded_prediction) {
             console.log("setBase64str !!!")
             setBase64str(data.response.encoded_prediction);
+
+            // PROCESS RESPONSE DATA ANNOTATION HERE.
+            setAnnotatedResult({
+              "bounding-box": [
+                {
+                  "id": "1",
+                  "predict_result": data.response.encoded_prediction,
+                }
+              ]
+            })
           }
         })
         .catch((error) => {
           // Handle the error
-          console.log("Error annotating image!");
+          console.log("Error annotating imagee!");
           console.log(error);
         });
     }
   };
+
+  useEffect(() => {
+    console.log("Updating the result...")
+    if (Object.keys(annotatedResult).length > 0) {
+      console.log("This is annotatedResult: ");
+      console.log(annotatedResult);
+    const annotationDataDataData = currentAnnotationData;
+
+    const newAnnotation = annotationDataDataData.map((annotationItem) => {
+      if (annotationItem.id === id) {
+        // ADDING THE ANNOTATION RESULT.
+        // const newAnnotationData = annotationData;
+        const bounding_box = annotationData['bounding-box'];
+        const polygon = annotationData['polygon'];
+        if (bounding_box.length > 0) {
+          const addBoundingBoxResult = bounding_box.map((item) => {
+            console.log("considering bounding box item..")
+            console.log(item);
+            console.log("array bounding-box result:")
+            console.log(annotatedResult["bounding-box"]);
+            const matchingItem = annotatedResult['bounding-box'].find(
+              (newItem) => newItem.id == item.id
+            );
+            console.log(matchingItem);
+            console.log("Return result:")
+            console.log({ ...item, ...matchingItem });
+            return { ...item, ...matchingItem };
+          });
+          annotationItem.annotationData['bounding-box'] = addBoundingBoxResult;
+        }
+
+        if (polygon.length > 0) {
+          const addPolygonResult = polygon.map((item) => {
+            const matchingItem = annotatedResult[polygon].find(
+              (newItem) => newItem.id === item.id
+            );
+            return { ...item, ...matchingItem };
+          });
+          annotationItem.annotationData["polygon"] = addPolygonResult;
+        }
+        annotationItem.annotationData.scaleRate = scaleRate;
+        // Old code to save annotationData.
+        // annotationItem.annotationData = annotationData;
+      }
+      return annotationItem;
+    });
+    console.log("Calling update result annotation done")
+    console.log(newAnnotation)
+    fetch("http://localhost:5000/drive/update-json", {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        "user-agent": "Chrome",
+      },
+      body: JSON.stringify({
+        annotationFileId: annotationId,
+        fileContent: JSON.stringify(newAnnotation),
+      }),
+    })
+      .then(async (response) => {
+        // Handle the response
+        const jsonRes = await response.json();
+        let data = jsonRes.data;
+        console.log("Add result to annotation.json success!");
+      })
+      .catch((error) => {
+        // Handle the error
+        console.log("Error add result annotation.json");
+        console.log(error);
+      });
+    }
+  }, [annotatedResult])
 
   const handleScaleRateFromBaseImage = (data) => {
     console.log("Get Scale Rate in Parent!")
@@ -684,6 +769,11 @@ function AnnotationMerge(props) {
       setAnnotatedImage(imageObj);
     }
   }, [base64str]);
+
+  useEffect(() => {
+    console.log("annotationData:", annotationData)
+    console.log("currentAnnotationData:", currentAnnotationData)
+  }, [annotationData, currentAnnotationData])
 
   return (
     <div
