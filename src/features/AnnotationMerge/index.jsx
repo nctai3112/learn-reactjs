@@ -29,10 +29,6 @@ function AnnotationMerge(props) {
 
   const [annotatedResult, setAnnotatedResult] = useState({});
 
-  //default loading the annotation result.
-  const [bboxResult, setBBoxResult] = useState([]);
-  const [polyResult, setPolyResult] = useState([]);
-
   // EXPORT ANNOTATION DATA.
   const [annotationData, setAnnotationData] = useState([]);
   function handleDownloadClick() {
@@ -122,31 +118,8 @@ function AnnotationMerge(props) {
             setBoundingBoxes(fileItem.annotationData['bounding-box']);
             setPolygons(fileItem.annotationData['polygon']);
           }
-          if (data.response.data.length > 0) {
+          if (data.response.data) {
             setCurrentAnnotationData(data.response.data);
-            const importData = data.response.data[0].annotationData;
-            const boundingBoxPredictResult = [];
-            const polygonPredictResult = [];
-            if (importData["bounding-box"].length > 0) {
-              importData["bounding-box"].map(item => {
-                boundingBoxPredictResult.push({
-                  id: item.id,
-                  predict_result: item.predict_result,
-                });
-              })
-            }
-            if (importData["polygon"].length > 0) {
-              importData["polygon"].map((item) => {
-                polygonPredictResult.push({
-                  id: item.id,
-                  predict_result: item.predict_result,
-                });
-              });
-            }
-            setAnnotatedResult({
-              "bounding-box": boundingBoxPredictResult,
-              "polygon": polygonPredictResult
-            })
           }
         })
         .catch((error) => {
@@ -700,76 +673,61 @@ function AnnotationMerge(props) {
     if (Object.keys(annotatedResult).length > 0) {
       console.log("This is annotatedResult: ");
       console.log(annotatedResult);
-      const annotationDataDataData = currentAnnotationData;
+    const annotationDataDataData = currentAnnotationData;
 
-      if (annotatedResult['bounding-box'].length > 0) {
-        annotatedResult["bounding-box"].map((annotatedBBox) => {
-          const imageObjBB = new window.Image();
-          imageObjBB.src = `data:image/jpeg;base64,${annotatedBBox.predict_result}`;
-          setBBoxResult([...bboxResult, imageObjBB]);
-        });
-      }
-      if (annotatedResult["polygon"].length > 0) {
-        annotatedResult["polygon"].map((annotatedPolygon) => {
-          const imageObjPoly = new window.Image();
-          imageObjPoly.src = `data:image/jpeg;base64,${annotatedPolygon.predict_result}`;
-          setPolyResult([...polyResult, imageObjPoly]);
-        });
-      }
-
-      const newAnnotation = annotationDataDataData.map((annotationItem) => {
-        if (annotationItem.id === id) {
-          // ADDING THE ANNOTATION RESULT.
-          // const newAnnotationData = annotationData;
-          const bounding_box = annotationData['bounding-box'];
-          const polygon = annotationData['polygon'];
-          if (bounding_box.length > 0) {
-            const addBoundingBoxResult = bounding_box.map((item) => {
-              console.log("considering bounding box item..")
-              console.log(item);
-              console.log("array bounding-box result:")
-              console.log(annotatedResult["bounding-box"]);
-              const matchingItem = annotatedResult['bounding-box'].find(
-                (newItem) => newItem.id == item.id
-              );
-              console.log(matchingItem);
-              console.log("Return result:")
-              console.log({ ...item, ...matchingItem });
-              return { ...item, ...matchingItem };
-            });
-            annotationItem.annotationData['bounding-box'] = addBoundingBoxResult;
-          }
-
-          if (polygon.length > 0) {
-            const addPolygonResult = polygon.map((item) => {
-              const matchingItem = annotatedResult[polygon].find(
-                (newItem) => newItem.id === item.id
-              );
-              return { ...item, ...matchingItem };
-            });
-            annotationItem.annotationData["polygon"] = addPolygonResult;
-          }
-          annotationItem.annotationData.scaleRate = scaleRate;
-          // Old code to save annotationData.
-          // annotationItem.annotationData = annotationData;
+    const newAnnotation = annotationDataDataData.map((annotationItem) => {
+      if (annotationItem.id === id) {
+        // ADDING THE ANNOTATION RESULT.
+        // const newAnnotationData = annotationData;
+        const bounding_box = annotationData['bounding-box'];
+        const polygon = annotationData['polygon'];
+        if (bounding_box.length > 0) {
+          const addBoundingBoxResult = bounding_box.map((item) => {
+            console.log("considering bounding box item..")
+            console.log(item);
+            console.log("array bounding-box result:")
+            console.log(annotatedResult["bounding-box"]);
+            const matchingItem = annotatedResult['bounding-box'].find(
+              (newItem) => newItem.id == item.id
+            );
+            console.log(matchingItem);
+            console.log("Return result:")
+            console.log({ ...item, ...matchingItem });
+            return { ...item, ...matchingItem };
+          });
+          annotationItem.annotationData['bounding-box'] = addBoundingBoxResult;
         }
-        return annotationItem;
-      });
-      console.log("Calling update result annotation done")
-      console.log(newAnnotation)
-      fetch("http://localhost:5000/drive/update-json", {
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          Connection: "keep-alive",
-          "Content-Type": "application/json",
-          "user-agent": "Chrome",
-        },
-        body: JSON.stringify({
-          annotationFileId: annotationId,
-          fileContent: JSON.stringify(newAnnotation),
-        }),
-      })
+
+        if (polygon.length > 0) {
+          const addPolygonResult = polygon.map((item) => {
+            const matchingItem = annotatedResult[polygon].find(
+              (newItem) => newItem.id === item.id
+            );
+            return { ...item, ...matchingItem };
+          });
+          annotationItem.annotationData["polygon"] = addPolygonResult;
+        }
+        annotationItem.annotationData.scaleRate = scaleRate;
+        // Old code to save annotationData.
+        // annotationItem.annotationData = annotationData;
+      }
+      return annotationItem;
+    });
+    console.log("Calling update result annotation done")
+    console.log(newAnnotation)
+    fetch("http://localhost:5000/drive/update-json", {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        "user-agent": "Chrome",
+      },
+      body: JSON.stringify({
+        annotationFileId: annotationId,
+        fileContent: JSON.stringify(newAnnotation),
+      }),
+    })
       .then(async (response) => {
         // Handle the response
         const jsonRes = await response.json();
@@ -812,19 +770,10 @@ function AnnotationMerge(props) {
     }
   }, [base64str]);
 
-  const [showAnnotated, setShowAnnotated] = useState(false);
-  const [annotateStatus, setAnnotateStatus] = useState("Show Annotate")
-
-  const changeAnnotateStatus = (e) => {
-    if (showAnnotated === false) {
-      setShowAnnotated(true);
-      setAnnotateStatus("Hide Annotate")
-    }
-    else {
-      setShowAnnotated(false);
-      setAnnotateStatus("Show Annotate");
-    }
-  }
+  useEffect(() => {
+    console.log("annotationData:", annotationData)
+    console.log("currentAnnotationData:", currentAnnotationData)
+  }, [annotationData, currentAnnotationData])
 
   return (
     <div
@@ -1016,34 +965,8 @@ function AnnotationMerge(props) {
                   />
                   {renderBoundingBoxes()}
                 </Layer>
-
-                {showAnnotated &&
-                  bboxResult.map((imageBBItem) => (
-                    <Layer>
-                      <Image
-                        image={imageBBItem}
-                        width={width}
-                        height={height}
-                        scaleX={scaleRate}
-                        scaleY={scaleRate}
-                        opacity={0.11}
-                      />
-                    </Layer>
-                  ))}
-                {showAnnotated &&
-                  polyResult.map((imagePolyItem) => (
-                    <Layer>
-                      <Image
-                        image={imagePolyItem}
-                        width={width}
-                        height={height}
-                        scaleX={scaleRate}
-                        scaleY={scaleRate}
-                        opacity={0.11}
-                      />
-                    </Layer>
-                  ))}
-                {/* {base64str.trim().length > 0 ? (
+                {/** Rendering the image after annotating above the image layers. */}
+                {base64str.trim().length > 0 ? (
                   <Layer>
                     <Image
                       image={annotatedImage}
@@ -1056,7 +979,7 @@ function AnnotationMerge(props) {
                   </Layer>
                 ) : (
                   ""
-                )} */}
+                )}
               </BaseImageComponent>
             </div>
           </div>
@@ -1094,9 +1017,6 @@ function AnnotationMerge(props) {
                   </div>
                   <div className="annotate">
                     <Button onClick={annotateImage}>Annotate Image</Button>
-                  </div>
-                  <div className="annotate-status">
-                    <Button onClick={changeAnnotateStatus}>{annotateStatus}</Button>
                   </div>
                 </div>
               </div>
