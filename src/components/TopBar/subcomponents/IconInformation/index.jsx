@@ -63,7 +63,6 @@ function IconInformation(props) {
               }}
             >
               <Button type="primary" onClick={e => {
-                console.log("click Logout");
                 googleLogout();
                 dispatch(loginSlice.actions.DeleteGoogleLogin());
                 navigate('/');

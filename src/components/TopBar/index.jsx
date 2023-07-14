@@ -7,9 +7,7 @@ import "./styles.css"
 import { googleLoginSelector } from "../../redux/selectors";
 import { useSelector } from "react-redux";
 
-const TopBar = ({ sendDataToParent = () => {
-  console.log("sendDataToParent");
-}, topText }) => {
+const TopBar = ({ sendDataToParent = () => {}, topText }) => {
   // const { sendDataToParent, topText } = props;
 
   const topBarWrapperRef = useRef(null);
@@ -18,10 +16,6 @@ const TopBar = ({ sendDataToParent = () => {
 
   useEffect(() => {
     if (topBarWrapperRef) {
-      console.log(
-        "Debugging get top bar height: ",
-        topBarWrapperRef.current.clientHeight
-      );
       sendDataToParent(topBarWrapperRef.current.clientHeight);
     }
   }, [topBarWrapperRef]);

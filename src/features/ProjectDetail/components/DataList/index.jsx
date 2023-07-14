@@ -251,23 +251,9 @@ function DataList(props) {
 
   useEffect(() => {
     if (fileItems.length > 0) {
-      console.log("Getting file items...!")
       const dataTableTmp = [];
       fileItems.map(async (fileItem) => {
         if (!fileItem.name.includes(".json")) {
-          // const metadataResponse = await fetch(
-          //   `https://www.googleapis.com/drive/v3/files/${fileItem.id}?fields=webContentLink`,
-          //   {
-          //     headers: {
-          //       Authorization: `Bearer ${accessTokenData.access_token}`,
-          //     },
-          //   }
-          // );
-
-          // const metadata = await metadataResponse.json();
-          // console.log("metadata: ..")
-          // console.log(metadata);
-
           const tableItem = {
             id: fileItem.id,
             name: fileItem.name,

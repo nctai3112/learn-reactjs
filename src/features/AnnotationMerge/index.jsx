@@ -46,8 +46,17 @@ function AnnotationMerge(props) {
   }
   const annotationId = currentProject.urlData;
 
+  // Tracking important variable.
+  useEffect(() => {
+    console.log("annotationData:", annotationData);
+  }, [annotationData])
+
   // GET ANNOTATION DATA FROM GOOGLE DRIVE
   const [currentAnnotationData, setCurrentAnnotationData] = useState([]);
+  useEffect(() => {
+    console.log("currentAnnotationData:", currentAnnotationData);
+  }, [currentAnnotationData]);
+
   const getCurrentAnnotationData = (annotationId) => {
     if (annotationId) {
       fetch(`http://localhost:5000/drive/get-json/${annotationId}`, {
@@ -68,7 +77,6 @@ function AnnotationMerge(props) {
             (file) => file.id === id && file.annotationData
           );
           if (fileItem) {
-            console.log("Set Annotation Data!!!")
 
             setAnnotationData(fileItem.annotationData);
             let data = fileItem.annotationData;
@@ -121,8 +129,7 @@ function AnnotationMerge(props) {
           }
         })
         .catch((error) => {
-          // Handle the error
-          console.log("Error get json data:");
+          console.log("Error get json data");
           console.log(error);
           setCurrentAnnotationData([]);
         });
@@ -150,7 +157,6 @@ function AnnotationMerge(props) {
             const dataImgInfo = jsonRes.data.imageInfo;
             setWidth(dataImgInfo.width);
             setHeight(dataImgInfo.height);
-            console.log("Get width height image success!")
           }
         })
         .catch((error) => {
@@ -438,14 +444,12 @@ function AnnotationMerge(props) {
     setPoints([...points, pos]);
   };
 
-  // HANDLE IMPORT JSON DATA FILE.
   useEffect(() => {
     setAnnotationData({
       "bounding-box": boundingBoxes,
-      polygon: polygons,
+      "polygon": polygons
     });
   }, [boundingBoxes, polygons]);
-
   // IMPORT JSON  FILE HANDLING.
   function handleFileChange(event) {
     const file = event.target.files[0];
@@ -615,7 +619,6 @@ function AnnotationMerge(props) {
         // Handle the response
         const jsonRes = await response.json();
         let data = jsonRes.data;
-        console.log("Update annotation.json success!");
       })
       .catch((error) => {
         // Handle the error
@@ -625,7 +628,7 @@ function AnnotationMerge(props) {
   }
 
   const annotateImage = (e) => {
-
+    console.log("Annotating image...!")
     if (annotationId && id) {
       fetch("http://localhost:5000/drive/annotate-image", {
         method: "POST",
@@ -642,10 +645,10 @@ function AnnotationMerge(props) {
       })
         .then(async (response) => {
           // Handle the response
+          console.log("Annotate done - render image result.")
           const jsonRes = await response.json();
           let data = jsonRes.data;
           if (data && data.response.encoded_prediction) {
-            console.log("setBase64str !!!")
             setBase64str(data.response.encoded_prediction);
           }
         })
@@ -658,7 +661,6 @@ function AnnotationMerge(props) {
   };
 
   const handleScaleRateFromBaseImage = (data) => {
-    console.log("Get Scale Rate in Parent!")
     setScaleRate(data);
   }
 
@@ -669,18 +671,6 @@ function AnnotationMerge(props) {
     if (base64str !== "") {
       const imageObj = new window.Image();
       imageObj.src = `data:image/jpeg;base64,${base64str}`;
-      // imageObj.onload = () => {
-      //   const image = new Konva.Image({
-      //     x: 0,
-      //     y: 0,
-      //     image: imageObj,
-      //     width: width,
-      //     height: height,
-      //     scaleX: scaleRate,
-      //     scaleY: scaleRate,
-      //   });
-      // };
-      console.log("setAnnotatedImage");
       setAnnotatedImage(imageObj);
     }
   }, [base64str]);
