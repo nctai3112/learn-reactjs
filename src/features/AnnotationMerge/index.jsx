@@ -17,6 +17,10 @@ import "./styles.css";
 // AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
+
+  // render image base 64 return from AI model.
+  const [base64str, setBase64str] = useState("");
+
   const [width, setWidth] = useState(513);
   const [height, setHeight] = useState(513);
   const currentProject = useSelector(currentProjectSelector);
@@ -66,18 +70,12 @@ function AnnotationMerge(props) {
           const jsonRes = await response.json();
           let data = jsonRes.data;
           let dataJson = data.response.data;
-          console.log("request get-json from annotation.json file.")
-          console.log(dataJson);
-
           const fileItem = dataJson.find(
-            // (file) => file.id === id && file.annotationData
-            (file) => file.id === id
+            (file) => file.id === id && file.annotationData
           );
-          console.log("id to get annotationData -> return fileItem mapping to current image!");
-          console.log(fileItem);
-
           if (fileItem) {
-            console.log("setAnnotationData from fileItem!")
+            console.log("Set Annotation Data!!!")
+
             setAnnotationData(fileItem.annotationData);
             let data = fileItem.annotationData;
             let arrayLabel = [];
@@ -126,33 +124,29 @@ function AnnotationMerge(props) {
           }
           if (data.response.data.length > 0) {
             setCurrentAnnotationData(data.response.data);
-
-            // CODE RUN SUCCESS - BUT MET ERROR WHEN GENERATE FULL FLOW CASE - DEBUGGING IMPORT ANNOTATED RESULT.
-          //   const importData = data.response.data[0].annotationData;
-          //   const boundingBoxPredictResult = [];
-          //   const polygonPredictResult = [];
-          //   console.log("importData")
-          //   console.log(importData);
-          //   if (importData["bounding-box"].length > 0) {
-          //     importData["bounding-box"].map(item => {
-          //       boundingBoxPredictResult.push({
-          //         id: item.id,
-          //         predict_result: item.predict_result,
-          //       });
-          //     })
-          //   }
-          //   if (importData["polygon"].length > 0) {
-          //     importData["polygon"].map((item) => {
-          //       polygonPredictResult.push({
-          //         id: item.id,
-          //         predict_result: item.predict_result,
-          //       });
-          //     });
-          //   }
-          //   setAnnotatedResult({
-          //     "bounding-box": boundingBoxPredictResult,
-          //     "polygon": polygonPredictResult
-          //   })
+            const importData = data.response.data[0].annotationData;
+            const boundingBoxPredictResult = [];
+            const polygonPredictResult = [];
+            if (importData["bounding-box"].length > 0) {
+              importData["bounding-box"].map(item => {
+                boundingBoxPredictResult.push({
+                  id: item.id,
+                  predict_result: item.predict_result,
+                });
+              })
+            }
+            if (importData["polygon"].length > 0) {
+              importData["polygon"].map((item) => {
+                polygonPredictResult.push({
+                  id: item.id,
+                  predict_result: item.predict_result,
+                });
+              });
+            }
+            setAnnotatedResult({
+              "bounding-box": boundingBoxPredictResult,
+              "polygon": polygonPredictResult
+            })
           }
         })
         .catch((error) => {
@@ -164,16 +158,10 @@ function AnnotationMerge(props) {
     }
   };
 
-  // INIT VARIABLES.
   useEffect(() => {
-    // if having annotation.json id file -> getCurrentAnnotationData().
     if (annotationId) {
       getCurrentAnnotationData(annotationId);
     }
-
-  }, [annotationId])
-  useEffect(() => {
-    // if having file image id --> get image width height and set to width, height state.
     if (id) {
       fetch(`http://localhost:5000/drive/get-json/${id}`, {
         method: "GET",
@@ -185,19 +173,22 @@ function AnnotationMerge(props) {
         },
       })
         .then(async (response) => {
+          // Handle the response
           const jsonRes = await response.json();
           if (jsonRes.data.imageInfo) {
             const dataImgInfo = jsonRes.data.imageInfo;
             setWidth(dataImgInfo.width);
             setHeight(dataImgInfo.height);
+            console.log("Get width height image success!")
           }
         })
         .catch((error) => {
+          // Handle the error
           console.log("Error get width height image...");
           console.log(error);
         });
     }
-  }, [id]);
+  }, [annotationId, id])
 
   // SET ANNOTATION METHOD (DEFAULT: BOUNDING-BOX)
   const [modeController, setModeController] = useState("bounding-box");
@@ -478,19 +469,11 @@ function AnnotationMerge(props) {
 
   // HANDLE IMPORT JSON DATA FILE.
   useEffect(() => {
-    console.log("set Annotation Data from boundingBoxes + polygons!!")
-    console.log("boundingBoxes");
-    console.log(boundingBoxes);
     setAnnotationData({
       "bounding-box": boundingBoxes,
-      "polygon": polygons,
+      polygon: polygons,
     });
   }, [boundingBoxes, polygons]);
-
-  useEffect(() => {
-    console.log("Keep tracking annotation data")
-    console.log(annotationData);
-  }, [annotationData])
 
   // IMPORT JSON  FILE HANDLING.
   function handleFileChange(event) {
@@ -558,19 +541,14 @@ function AnnotationMerge(props) {
     }
     setLabelList([...labelList, formData]);
     if (modeController === "bounding-box") {
-      console.log("DEBUGGING...");
-      console.log(boundingBoxes);
       const currentLabelItem = boundingBoxes[boundingBoxes.length - 1];
       currentLabelItem["label"] = formData["label"];
       currentLabelItem["color"] = formData["color"];
-      console.log("setBoundingBoxes");
       setBoundingBoxes(
         boundingBoxes.map((boundingBox) => {
           if (boundingBox.id === boundingBox.length - 1) {
-            console.log("currentLabelItem: ", currentLabelItem);
             return currentLabelItem;
           }
-          console.log("boundingBox: ", boundingBox);
           return boundingBox;
         })
       );
@@ -640,44 +618,39 @@ function AnnotationMerge(props) {
 
   const handleSaveDataAnnotation = (e) => {
     const annotationDataDataData = currentAnnotationData;
-    console.log("Click save annotation data")
-    console.log(annotationData);
+
     const newAnnotation = annotationDataDataData.map((annotationItem) => {
       if (annotationItem.id === id) {
         annotationItem.annotationData = annotationData;
+        // ADDING SCALE RATE HERE.
         annotationItem.annotationData.scaleRate = scaleRate;
       }
       return annotationItem;
     });
-    if (newAnnotation.length == 0) {
-      console.log("Bug here 1")
-    }
-    if (newAnnotation.length > 0) {
-      fetch("http://localhost:5000/drive/update-json", {
-        method: "POST",
-        headers: {
-          Accept: "*/*",
-          Connection: "keep-alive",
-          "Content-Type": "application/json",
-          "user-agent": "Chrome",
-        },
-        body: JSON.stringify({
-          annotationFileId: annotationId,
-          fileContent: JSON.stringify(newAnnotation),
-        }),
+    fetch("http://localhost:5000/drive/update-json", {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        "user-agent": "Chrome",
+      },
+      body: JSON.stringify({
+        annotationFileId: annotationId,
+        fileContent: JSON.stringify(newAnnotation),
+      }),
+    })
+      .then(async (response) => {
+        // Handle the response
+        const jsonRes = await response.json();
+        let data = jsonRes.data;
+        console.log("Update annotation.json success!");
       })
-        .then(async (response) => {
-          // Handle the response
-          const jsonRes = await response.json();
-          let data = jsonRes.data;
-          console.log("Update annotation.json success!");
-        })
-        .catch((error) => {
-          // Handle the error
-          console.log("Error update annotation.json");
-          console.log(error);
-        });
-    }
+      .catch((error) => {
+        // Handle the error
+        console.log("Error update annotation.json");
+        console.log(error);
+      });
   }
 
   const annotateImage = (e) => {
@@ -700,6 +673,9 @@ function AnnotationMerge(props) {
           const jsonRes = await response.json();
           let data = jsonRes.data;
           if (data && data.response.encoded_prediction) {
+            console.log("setBase64str !!!")
+            setBase64str(data.response.encoded_prediction);
+
             // PROCESS RESPONSE DATA ANNOTATION HERE.
             setAnnotatedResult({
               "bounding-box": [
@@ -721,10 +697,10 @@ function AnnotationMerge(props) {
 
   useEffect(() => {
     console.log("Updating the result...")
-    if (annotatedResult && Object.keys(annotatedResult).length > 0) {
+    if (Object.keys(annotatedResult).length > 0) {
       console.log("This is annotatedResult: ");
       console.log(annotatedResult);
-      const annotationDataDataData = annotationData;
+      const annotationDataDataData = currentAnnotationData;
 
       if (annotatedResult['bounding-box'].length > 0) {
         annotatedResult["bounding-box"].map((annotatedBBox) => {
@@ -781,41 +757,60 @@ function AnnotationMerge(props) {
       });
       console.log("Calling update result annotation done")
       console.log(newAnnotation)
-      if (newAnnotation.length == 0) {
-        console.log("Bug here 2");
-      }
-      if (newAnnotation.length > 0) {
-        fetch("http://localhost:5000/drive/update-json", {
-          method: "POST",
-          headers: {
-            Accept: "*/*",
-            Connection: "keep-alive",
-            "Content-Type": "application/json",
-            "user-agent": "Chrome",
-          },
-          body: JSON.stringify({
-            annotationFileId: annotationId,
-            fileContent: JSON.stringify(newAnnotation),
-          }),
-        })
-          .then(async (response) => {
-            // Handle the response
-            const jsonRes = await response.json();
-            let data = jsonRes.data;
-            console.log("Add result to annotation.json success!");
-          })
-          .catch((error) => {
-            // Handle the error
-            console.log("Error add result annotation.json");
-            console.log(error);
-          });
-      }
+      fetch("http://localhost:5000/drive/update-json", {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          Connection: "keep-alive",
+          "Content-Type": "application/json",
+          "user-agent": "Chrome",
+        },
+        body: JSON.stringify({
+          annotationFileId: annotationId,
+          fileContent: JSON.stringify(newAnnotation),
+        }),
+      })
+      .then(async (response) => {
+        // Handle the response
+        const jsonRes = await response.json();
+        let data = jsonRes.data;
+        console.log("Add result to annotation.json success!");
+      })
+      .catch((error) => {
+        // Handle the error
+        console.log("Error add result annotation.json");
+        console.log(error);
+      });
     }
   }, [annotatedResult])
 
   const handleScaleRateFromBaseImage = (data) => {
+    console.log("Get Scale Rate in Parent!")
     setScaleRate(data);
   }
+
+
+  const [annotatedImage, setAnnotatedImage] = useState();
+
+  useEffect(() => {
+    if (base64str !== "") {
+      const imageObj = new window.Image();
+      imageObj.src = `data:image/jpeg;base64,${base64str}`;
+      // imageObj.onload = () => {
+      //   const image = new Konva.Image({
+      //     x: 0,
+      //     y: 0,
+      //     image: imageObj,
+      //     width: width,
+      //     height: height,
+      //     scaleX: scaleRate,
+      //     scaleY: scaleRate,
+      //   });
+      // };
+      console.log("setAnnotatedImage");
+      setAnnotatedImage(imageObj);
+    }
+  }, [base64str]);
 
   const [showAnnotated, setShowAnnotated] = useState(false);
   const [annotateStatus, setAnnotateStatus] = useState("Show Annotate")
