@@ -23,7 +23,7 @@ export const Polygon = ({
 
   const _id = String(Math.random());
   const _name = `group-${_id}`;
-  const vertexRadius = 6;
+  const vertexRadius = 3;
 
   const handleGroupMouseOver = (e) => {
     if (!isFinished) return;
@@ -68,7 +68,7 @@ export const Polygon = ({
         <Line
           points={flattenedPoints}
           stroke={stroke}
-          strokeWidth={3}
+          strokeWidth={2}
           closed={isFinished}
           fill={fill}
           onMouseDown={handleLineMouseDown}
@@ -79,7 +79,7 @@ export const Polygon = ({
           const startPointAttr =
             index === 0
               ? {
-                  hitStrokeWidth: 12,
+                  hitStrokeWidth: 3,
                   onMouseOver: handleMouseOverStartPoint,
                   onMouseOut: handleMouseOutStartPoint,
                   onMouseDown: handlePointMouseDown,
@@ -92,7 +92,7 @@ export const Polygon = ({
               y={y}
               key={index}
               radius={vertexRadius}
-              fill="#FF019A"
+              fill="black"
               stroke="#00F1FF"
               strokeWidth={2}
               {...startPointAttr}

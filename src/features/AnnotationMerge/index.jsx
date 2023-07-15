@@ -437,7 +437,7 @@ function AnnotationMerge(props) {
               width={width}
               height={height}
               stroke={"#00F1FF"}
-              strokeWidth={3}
+              strokeWidth={2}
               fill={color}
             />
           </Group>
@@ -588,6 +588,8 @@ function AnnotationMerge(props) {
       const currentLabelItem = polygons[polygons.length - 1];
       currentLabelItem["label"] = formData["label"];
       currentLabelItem["color"] = formData["color"];
+      // Add id for polygons :D
+      currentLabelItem["id"] = polygons.length;
       setPolygons(
         polygons.map((polygon, index) => {
           if (index === polygon.length - 1) {
@@ -634,6 +636,8 @@ function AnnotationMerge(props) {
           const currentLabelItem = polygons[polygons.length - 1];
           currentLabelItem["label"] = formData["label"];
           currentLabelItem["color"] = formData["color"];
+          // Add id for polygons.
+          currentLabelItem["id"] = polygons.length;
           setPolygons(
             polygons.map((polygon, index) => {
               if (index === polygon.length - 1) {
@@ -715,17 +719,38 @@ function AnnotationMerge(props) {
           console.log(data);
           setLoading(false);
           // COMMENT FOR UPDATING APP.
-          // if (data && data.response.encoded_prediction) {
-          //   // PROCESS RESPONSE DATA ANNOTATION HERE.
-          //   setAnnotatedResult({
-          //     "bounding_box": [
-          //       {
-          //         "id": "1",
-          //         "predict_result": data.response.encoded_prediction,
-          //       }
-          //     ]
-          //   })
-          // }
+          const boundingBoxResult = [];
+          if (data.responseBBox && Array.isArray(data.responseBBox.results)) {
+            const bboxResultResponse = data.responseBBox.results;
+            bboxResultResponse.map((resultItem, index) => {
+              console.log("resultItem BBox")
+              console.log(resultItem);
+              if (resultItem.encoded_prediction) {
+                boundingBoxResult.push({
+                  "id": index+1,
+                  "predict_result": resultItem.encoded_prediction
+                })
+              }
+            })
+          }
+          const polygonResult = [];
+          if (data.responsePolygons && Array.isArray(data.responsePolygons.results)) {
+            const polyResultResponse = data.responsePolygons.results;
+            polyResultResponse.map((resultItem, index) => {
+              console.log("resultItem Polygons");
+              console.log(resultItem);
+              if (resultItem.encoded_prediction) {
+                polygonResult.push({
+                  id: index+1,
+                  predict_result: resultItem.encoded_prediction,
+                });
+              }
+            });
+          }
+          setAnnotatedResult({
+            "bounding_box": boundingBoxResult,
+            "polygon": polygonResult,
+          });
         })
         .catch((error) => {
           // Handle the error
@@ -736,9 +761,12 @@ function AnnotationMerge(props) {
     }
   };
 
+  // Add for checking result.
   useEffect(() => {
-    console.log("Updating the result...")
-    console.log(annotatedResult);
+    console.log("This is annotated Result:", annotatedResult);
+  }, [annotatedResult])
+
+  useEffect(() => {
     if (annotatedResult && Object.keys(annotatedResult).length > 0) {
       console.log("This is annotatedResult: ");
       console.log(annotatedResult);
@@ -765,7 +793,6 @@ function AnnotationMerge(props) {
           if (annotatedPolygon.predict_result) {
             const imageObjPoly = new window.Image();
             imageObjPoly.src = `data:image/jpeg;base64,${annotatedPolygon.predict_result}`;
-            console.log("setPolygons...");
             setPolyResult([...polyResult, imageObjPoly]);
           }
         });
@@ -801,8 +828,8 @@ function AnnotationMerge(props) {
 
             if (polygon.length > 0) {
               const addPolygonResult = polygon.map((item) => {
-                if (annotatedResult[polygon] && Array.isArray(annotatedResult[polygon])) {
-                  const matchingItem = annotatedResult[polygon].find(
+                if (annotatedResult["polygon"] && Array.isArray(annotatedResult["polygon"])) {
+                  const matchingItem = annotatedResult["polygon"].find(
                     (newItem) => newItem.id === item.id
                   );
                   return { ...item, ...matchingItem };
@@ -842,7 +869,6 @@ function AnnotationMerge(props) {
                     // Handle the response
                     const jsonRes = await response.json();
                     let data = jsonRes.data;
-                    console.log("Add result to annotation.json success!");
                   })
                   .catch((error) => {
                     // Handle the error
@@ -1067,7 +1093,7 @@ function AnnotationMerge(props) {
                         width={rect.width}
                         height={rect.height}
                         stroke="black"
-                        strokeWidth={3}
+                        strokeWidth={2}
                         onMouseDown={handleMouseDownOnRect}
                       />
                       {renderBoundingBoxes()}
