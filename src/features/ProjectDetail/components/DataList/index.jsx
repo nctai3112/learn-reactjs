@@ -87,10 +87,12 @@ function DataList(props) {
               !fileItem.name.includes("json") &&
               !annotationContent.some((item) => item.id === fileItem.id)
             ) {
-              fileItem.annotationData ={
-                "bounding-box": [],
-                "polygon": [],
-              };
+              if (!fileItem.hasOwnProperty("annotationData")) {
+                fileItem.annotationData = {
+                  "bounding_box": [],
+                  "polygon": [],
+                };
+              }
               console.log("fileItem1:", fileItem)
               annotationContent.push(fileItem);
             }
@@ -98,7 +100,9 @@ function DataList(props) {
         }
       }
 
-      if (annotationFileId && annotationContent.length > 0) {
+      if (annotationFileId) {
+        console.log("update json file2!!!")
+        console.log(annotationContent);
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -198,10 +202,12 @@ function DataList(props) {
               !fileItem.name.includes("json") &&
               !annotationContent.some((item) => item.id === fileItem.id)
             ) {
-              fileItem.annotationData={
-                "bounding-box": [],
-                "polygon": [],
-              };
+              if (!fileItem.hasOwnProperty("annotationData")) {
+                fileItem.annotationData = {
+                  "bounding_box": [],
+                  "polygon": [],
+                }
+              }
               console.log("fileitem2:", fileItem)
               annotationContent.push(fileItem);
             }
@@ -209,7 +215,9 @@ function DataList(props) {
         }
       }
 
-      if (annotationFileId && annotationContent.length > 0) {
+      if (annotationFileId) {
+        console.log("update json file 1: ...")
+        console.log(annotationContent)
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {

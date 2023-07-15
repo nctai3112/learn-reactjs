@@ -24,9 +24,7 @@ function Project(props) {
   const [projectList, setProjectList] = useState([]);
 
   useEffect(() => {
-    setLoading(true);
     getProjectListFromDB(googleLoginData.email);
-    setLoading(false);
   }, []);
 
   const onClickCreateProject = (e) => {
@@ -35,7 +33,6 @@ function Project(props) {
 
   const getProjectListFromDB = (email) => {
     let data = [];
-    setLoading(true);
     fetch("http://localhost:5000/projects/author", {
       method: "POST",
       headers: {
@@ -54,7 +51,6 @@ function Project(props) {
         data = jsonRes.data;
         if (data.projects !== null && data.projects !== undefined) {
           setProjectList(data.projects)
-          setLoading(false);
         }
       })
       .catch((error) => {

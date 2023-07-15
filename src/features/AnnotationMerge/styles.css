@@ -64,11 +64,11 @@
   flex-direction: row;
 }
 
-.button-bounding-box {
+.button-bounding_box {
   margin-left: 5px;
 }
 
-.button-bounding-box-text {
+.button-bounding_box-text {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -81,7 +81,7 @@
   transition: visibility 0s, opacity 0.3s ease;
 }
 
-.button-bounding-box:hover .button-bounding-box-text {
+.button-bounding_box:hover .button-bounding_box-text {
   visibility: visible;
   opacity: 1;
 }
