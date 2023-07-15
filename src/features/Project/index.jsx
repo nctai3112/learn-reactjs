@@ -14,6 +14,7 @@ Project.propTypes = {};
 
 function Project(props) {
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingResponse, setLoadingResponse] = useState(false);
   const navigate = useNavigate();
   const googleLoginData = useSelector(googleLoginSelector);
   const [isProjectVisible, setProjectVisible] = useState(false);
@@ -26,7 +27,6 @@ function Project(props) {
   useEffect(() => {
     setLoading(true);
     getProjectListFromDB(googleLoginData.email);
-    setLoading(false);
   }, []);
 
   const onClickCreateProject = (e) => {
@@ -69,7 +69,7 @@ function Project(props) {
 
     const email = googleLoginData.email;
     // If exists  email -> create project!
-    setLoading(true);
+    setLoadingResponse(true);
     if (email) {
       fetch("http://localhost:5000/projects", {
         method: "POST",
@@ -134,11 +134,11 @@ function Project(props) {
                     // End
                     console.log("Response update project info: ");
                     console.log(dataResponse);
-                    setLoading(false);
+                    setLoadingResponse(false);
                   })
                   .catch((error) => {
                     Modal.error({title:"ERROR", content: "Error when trying to update project information"});
-                    setLoading(false);
+                    setLoadingResponse(false);
                   });
               })
               .catch((error) => {
@@ -148,7 +148,7 @@ function Project(props) {
         })
         .catch((error) => {
           Modal.error({title:"ERROR", content: "Server error when creating a project. Please try again!"});
-          setLoading(false);
+          setLoadingResponse(false);
         });
     }
     else {
@@ -169,8 +169,12 @@ function Project(props) {
 
   return (
     <div className="outer-wrapper">
-      {isLoading ? (
-        <ClimbingBoxLoader size={30} color={"#000"} loading={isLoading} />
+      {isLoadingResponse ? (
+        <ClimbingBoxLoader
+          size={30}
+          color={"#000"}
+          loading={isLoadingResponse}
+        />
       ) : (
         <div
           className="project-page"
