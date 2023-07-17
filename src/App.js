@@ -10,7 +10,6 @@ import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import Project from "./features/Project";
-import SendAPI from "./features/SendAPI";
 import UserInformation from "./features/UserInformation";
 
 function App() {
@@ -21,11 +20,10 @@ function App() {
           <Route element={<Project />} path="/projects" exact />
           <Route element={<ProjectDetail />} path="/project/:id" exact />
           <Route element={<AnnotationMerge />} path="/annotation/:id" exact />
+          <Route element={<UserInformation />} path="/user" />
         </Route>
 
         <Route element={<LoginFeature />} path="/" />
-        <Route element={<SendAPI />} path="/send-api"/>
-        <Route element={<UserInformation/>} path="/user"/>
       </Routes>
     </div>
   );

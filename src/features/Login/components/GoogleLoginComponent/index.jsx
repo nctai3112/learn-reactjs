@@ -21,9 +21,6 @@ function GoogleLoginComponent(props) {
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
-      console.log("codeResponse:")
-      console.log("dispatchAccessToken")
-      console.log(codeResponse)
       dispatch(loginResponseSlice.actions.AccessToken(codeResponse));
       setUser(codeResponse);
     },
@@ -62,8 +59,6 @@ function GoogleLoginComponent(props) {
               }
             )
               .then((response) => {
-                console.log("Login Success!")
-                console.log(res);
                 dispatch(loginSlice.actions.GoogleLogin(res.data));
                 navigate("/projects");
               })

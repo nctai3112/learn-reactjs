@@ -128,8 +128,6 @@ function Project(props) {
                     // Update project list after create a new project
                     getProjectListFromDB(email);
                     // End
-                    console.log("Response update project info: ");
-                    console.log(dataResponse);
                     setLoading(false);
                   })
                   .catch((error) => {

@@ -9,8 +9,6 @@ function UploadImages(props) {
   const [openPicker, data, authResponse] = useDrivePicker();
   // const customViewsArray = [new google.picker.DocsView()]; // custom view
   const handleOpenPicker = () => {
-    console.log("Uploading to: ");
-    console.log(projectDetail.driveParent);
     try {
       openPicker({
         clientId:
@@ -24,10 +22,10 @@ function UploadImages(props) {
         setParentFolder: projectDetail.driveParent,
         customScopes: ['https://www.googleapis.com/auth/drive'],
         callbackFunction: (data) => {
-          if (data.action === "cancel") {
-            console.log("User clicked cancel/close button");
-          }
           console.log(data);
+          if (data.action === "cancel") {
+
+          }
         },
       });
     } catch(err) {
@@ -37,10 +35,10 @@ function UploadImages(props) {
 
   useEffect(() => {
     // do anything with the selected/uploaded files
-    // if (data) {
-    //   console.log(data);
-    //   data.docs.map((i) => console.log(i));
-    // }
+    if (data) {
+      console.log("Drive Picker: data:")
+      console.log(data);
+    }
   }, [data]);
 
   return (

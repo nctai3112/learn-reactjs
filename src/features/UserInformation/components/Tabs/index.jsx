@@ -16,9 +16,6 @@ function VerticalTab(props) {
     form.setFieldsValue({ givenName: givenName });
     form.setFieldsValue({ familyName: familyName });
     form.setFieldsValue({ email: email });
-    console.log("This is familyName", familyName);
-    console.log("This is givenName", givenName);
-    console.log("This is email", email);
   }, [email, familyName, givenName]);
 
   return (

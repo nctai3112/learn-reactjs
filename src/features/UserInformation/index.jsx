@@ -30,16 +30,8 @@ function UserInformation(props) {
   const [componentTopBarHeight, setComponentTopBarHeight] = useState(0);
 
   const handleDataFromTopBar = (data) => {
-    console.log("setComponentTopBarHeight: ", data)
     setComponentTopBarHeight(data);
   };
-
-  // useEffect(() => {
-  //   if (componentTopBarRef) {
-  //     console.log("Top Bar width: ", componentTopBarRef.current.clientHeight);
-  //     setComponentTopBarHeight(componentTopBarRef.current.clientHeight);
-  //   }
-  // }, [componentTopBarRef]);
 
   useEffect(() => {
     if (googleLoginData) {

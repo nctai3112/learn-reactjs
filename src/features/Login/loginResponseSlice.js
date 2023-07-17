@@ -7,8 +7,6 @@ const loginResponseSlice = createSlice({
   },
   reducers: {
     AccessToken: (state, action) => {
-      console.log("calling set access token...")
-      console.log(action.payload);
       state.codeResponse = action.payload;
     },
   },

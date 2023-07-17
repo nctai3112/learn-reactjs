@@ -93,7 +93,6 @@ function DataList(props) {
                   "polygon": [],
                 };
               }
-              console.log("fileItem1:", fileItem)
               annotationContent.push(fileItem);
             }
           });
@@ -101,8 +100,6 @@ function DataList(props) {
       }
 
       if (annotationFileId) {
-        console.log("update json file2!!!")
-        console.log(annotationContent);
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -208,7 +205,6 @@ function DataList(props) {
                   "polygon": [],
                 }
               }
-              console.log("fileitem2:", fileItem)
               annotationContent.push(fileItem);
             }
           });
@@ -216,8 +212,6 @@ function DataList(props) {
       }
 
       if (annotationFileId) {
-        console.log("update json file 1: ...")
-        console.log(annotationContent)
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -272,23 +266,9 @@ function DataList(props) {
 
   useEffect(() => {
     if (fileItems.length > 0) {
-      console.log("Getting file items...!")
       const dataTableTmp = [];
       fileItems.map(async (fileItem) => {
         if (!fileItem.name.includes(".json")) {
-          // const metadataResponse = await fetch(
-          //   `https://www.googleapis.com/drive/v3/files/${fileItem.id}?fields=webContentLink`,
-          //   {
-          //     headers: {
-          //       Authorization: `Bearer ${accessTokenData.access_token}`,
-          //     },
-          //   }
-          // );
-
-          // const metadata = await metadataResponse.json();
-          // console.log("metadata: ..")
-          // console.log(metadata);
-
           const tableItem = {
             id: fileItem.id,
             name: fileItem.name,

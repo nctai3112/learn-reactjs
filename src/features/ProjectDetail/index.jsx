@@ -48,8 +48,6 @@ function ProjectDetail(props) {
   }, [id]);
 
   const popupChangeOwner = (e) => {
-    console.log("click Change Owner")
-    console.log(projectDetail)
     setChangeOwner(true);
   };
 
@@ -80,7 +78,6 @@ function ProjectDetail(props) {
     }
     else {
       const dataResponseJson = await responseChangeOwnership.json();
-      console.log("This is the response of request changing ownership");
     }
     setChangeOwner(false);
   }
