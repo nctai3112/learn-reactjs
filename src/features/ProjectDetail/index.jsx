@@ -44,7 +44,10 @@ function ProjectDetail(props) {
             content: "Server error when trying to get project detail.",
           });
         });
-    } catch {}
+    } catch(error) {
+      console.log("Error get information project");
+      console.log(error);
+    }
   }, [id]);
 
   const popupChangeOwner = (e) => {

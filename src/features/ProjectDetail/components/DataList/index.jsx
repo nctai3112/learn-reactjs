@@ -82,24 +82,47 @@ function DataList(props) {
             }
             const dataResponseJson = await responseJsonData.json();
             annotationContent = dataResponseJson.data.response.data;
-            dataResponse.data.response.data.files.map((fileItem) => {
-            if (
-              !fileItem.name.includes("json") &&
-              !annotationContent.some((item) => item.id === fileItem.id)
-            ) {
-              if (!fileItem.hasOwnProperty("annotationData")) {
-                fileItem.annotationData = {
-                  "bounding_box": [],
-                  "polygon": [],
-                };
-              }
-              annotationContent.push(fileItem);
+            if (!annotationContent) {
+              console.log("here 1");
+              annotationContent = [];
+              dataResponse.data.response.data.files.map((fileItem) => {
+                if (
+                  !fileItem.name.includes("json") &&
+                  fileItem.name !== "Result"
+                ) {
+                  if (!fileItem.hasOwnProperty("annotationData")) {
+                    fileItem.annotationData = {
+                      bounding_box: [],
+                      polygon: [],
+                    };
+                  }
+                  annotationContent.push(fileItem);
+                }
+              });
+            } else {
+              dataResponse.data.response.data.files.map((fileItem) => {
+                if (
+                  !fileItem.name.includes("json") &&
+                  fileItem.name !== "Result" &&
+                  Array.isArray(annotationContent) &&
+                  !annotationContent.some((item) => item.id === fileItem.id)
+                ) {
+                  if (!fileItem.hasOwnProperty("annotationData")) {
+                    fileItem.annotationData = {
+                      "bounding_box": [],
+                      "polygon": []
+                    };
+                  }
+                  annotationContent.push(fileItem);
+                }
+              });
             }
-          });
         }
       }
 
-      if (annotationFileId) {
+      if (annotationFileId && annotationContent && annotationContent.length > 0) {
+        console.log("update json 2")
+        console.log("content annotation:", annotationContent);
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -194,24 +217,45 @@ function DataList(props) {
           }
           const dataResponseJson = await responseJsonData.json();
           annotationContent = dataResponseJson.data.response.data;
-          dataResponse.data.response.data.files.map((fileItem) => {
-            if (
-              !fileItem.name.includes("json") &&
-              !annotationContent.some((item) => item.id === fileItem.id)
-            ) {
-              if (!fileItem.hasOwnProperty("annotationData")) {
+          if (!annotationContent) {
+            annotationContent = [];
+            dataResponse.data.response.data.files.map((fileItem) => {
+              if (
+                !fileItem.name.includes("json") &&
+                fileItem.name !== "Result"
+              ) {
                 fileItem.annotationData = {
-                  "bounding_box": [],
-                  "polygon": [],
-                }
+                  bounding_box: [],
+                  polygon: [],
+                };
+                annotationContent.push(fileItem);
               }
-              annotationContent.push(fileItem);
-            }
-          });
+            });
+          }
+          else {
+            dataResponse.data.response.data.files.map((fileItem) => {
+              if (
+                !fileItem.name.includes("json") &&
+                fileItem.name !== "Result" &&
+                Array.isArray(annotationContent) &&
+                !annotationContent.some((item) => item.id === fileItem.id)
+              ) {
+                if (!fileItem.hasOwnProperty("annotationData")) {
+                  fileItem.annotationData = {
+                    bounding_box: [],
+                    polygon: [],
+                  }
+                }
+                annotationContent.push(fileItem);
+              }
+            });
+          }
         }
       }
 
-      if (annotationFileId) {
+      if (annotationFileId && annotationContent.length > 0) {
+        console.log("update json 1")
+        console.log("content annotation:", annotationContent)
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -268,7 +312,7 @@ function DataList(props) {
     if (fileItems.length > 0) {
       const dataTableTmp = [];
       fileItems.map(async (fileItem) => {
-        if (!fileItem.name.includes(".json")) {
+        if (fileItem.name !== "Result" && !fileItem.name.includes(".json")) {
           const tableItem = {
             id: fileItem.id,
             name: fileItem.name,
