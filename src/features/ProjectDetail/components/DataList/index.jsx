@@ -83,7 +83,6 @@ function DataList(props) {
             const dataResponseJson = await responseJsonData.json();
             annotationContent = dataResponseJson.data.response.data;
             if (!annotationContent) {
-              console.log("here 1");
               annotationContent = [];
               dataResponse.data.response.data.files.map((fileItem) => {
                 if (
@@ -121,8 +120,6 @@ function DataList(props) {
       }
 
       if (annotationFileId && annotationContent && annotationContent.length > 0) {
-        console.log("update json 2")
-        console.log("content annotation:", annotationContent);
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -254,8 +251,6 @@ function DataList(props) {
       }
 
       if (annotationFileId && annotationContent.length > 0) {
-        console.log("update json 1")
-        console.log("content annotation:", annotationContent)
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {

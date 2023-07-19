@@ -3,17 +3,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
   width: 100%;
   height: 100vh;
+}
+
+.project-page {
+  display: "flex";
+  width: "100%";
+  height: "100vh"
 }
 
 .custom-divider {
   margin: 0 0;
 }
-
-/* .project-page .project-wrapper {
-  background: linear-gradient(to bottom, #4599e8, #9acdef);
-} */
 
 .project-above-section {
   display: flex;

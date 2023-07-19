@@ -168,7 +168,6 @@ function Project(props) {
       ) : (
         <div
           className="project-page"
-          style={{ display: "flex", flexDirection: "column", height: "100vh" }}
         >
           <header>
             <TopBar topText="Projects" />

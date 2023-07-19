@@ -163,11 +163,6 @@ function AnnotationMerge(props) {
                   });
                 });
               }
-              console.log("setAnnotatedResult: ")
-              console.log({
-                bounding_box: boundingBoxPredictResult,
-                polygon: polygonPredictResult,
-              });
               setAnnotatedResult({
                 bounding_box: boundingBoxPredictResult,
                 polygon: polygonPredictResult,
@@ -534,8 +529,6 @@ function AnnotationMerge(props) {
   // Write annotationData on Drive annotation.json.
   const handleSaveDataAnnotation = (e) => {
     const annotationDataDataData = currentAnnotationData;
-    console.log("save data annotation:")
-    console.log(annotationDataDataData);
     const newAnnotation = annotationDataDataData.map((annotationItem) => {
       if (annotationItem.id === id) {
         annotationItem.annotationData = annotationData;
@@ -546,8 +539,6 @@ function AnnotationMerge(props) {
 
     if (newAnnotation && newAnnotation.length > 0) {
       setLoadingSaveAnnotation(true);
-      console.log("update json 3")
-      console.log("content annotation:", newAnnotation);
       fetch("http://localhost:5000/drive/update-json", {
         method: "POST",
         headers: {
@@ -594,14 +585,9 @@ function AnnotationMerge(props) {
         }),
       })
         .then(async (response) => {
-          // Handle the response
           const jsonRes = await response.json();
           let data = jsonRes.data;
-          // Checking the result response from AI model.
-          console.log("Data response from calling AI model!!!");
-          console.log(data);
           setLoading(false);
-          // COMMENT FOR UPDATING APP.
           const boundingBoxResult = [];
           if (data && data.responseBBox && Array.isArray(data.responseBBox)) {
             const bboxResultResponse = data.responseBBox;
@@ -676,8 +662,6 @@ function AnnotationMerge(props) {
       ) {
         let arrayPolyImageResult = [];
         annotatedResult["polygon"].map((annotatedPolygon) => {
-          console.log("Checking result:")
-          console.log(annotatedPolygon);
           if (annotatedPolygon.resultFileId) {
             let imageObjPoly = new window.Image();
             let imageSrcEncoded = encodeURIComponent(annotatedPolygon.resultFileId);
@@ -729,8 +713,6 @@ function AnnotationMerge(props) {
 
         // Update annotation.json file if data valid.
         if (newAnnotation && newAnnotation.length > 0) {
-          console.log("update json 4")
-          console.log("content annotation:", newAnnotation);
           fetch("http://localhost:5000/drive/update-json", {
             method: "POST",
             headers: {
@@ -776,14 +758,11 @@ function AnnotationMerge(props) {
     }
   };
 
-  // Debugging loading data outside:
-  useEffect(() => {
-    console.log("polyResult:");
-    console.log(polyResult);
-  }, [polyResult])
-
   return (
-    <div className="outer-wrapper">
+    <div
+      className="outer-wrapper"
+      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+    >
       {isLoading || isLoadingSaveAnnotation ? (
         <ClimbingBoxLoader
           size={30}
@@ -791,10 +770,7 @@ function AnnotationMerge(props) {
           loading={isLoading || isLoadingSaveAnnotation}
         />
       ) : (
-        <div
-          key={id}
-          style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-        >
+        <div key={id}>
           <TopBar
             topText={`Projects / ${currentProject.title} / Annotation Image`}
           />
@@ -965,14 +941,14 @@ function AnnotationMerge(props) {
                     {showAnnotated && (
                       <Layer opacity={0.8}>
                         {polyResult.map((imagePolyItem, index) => (
-                        <Image
-                          key = {index}
-                          image={imagePolyItem}
-                          width={width}
-                          height={height}
-                          scaleX={scaleRate}
-                          scaleY={scaleRate}
-                        />
+                          <Image
+                            key={index}
+                            image={imagePolyItem}
+                            width={width}
+                            height={height}
+                            scaleX={scaleRate}
+                            scaleY={scaleRate}
+                          />
                         ))}
                       </Layer>
                     )}
