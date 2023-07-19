@@ -8,9 +8,10 @@ div.select-item-wrapper {
   padding: 0px 10px;
 }
 
-/* div.select-item-text {
-  width: 300px;
-} */
+div.select-item-wrapper .select-item-text{
+  font-size: 10px;
+  font-weight: bold;
+}
 
 div.select-item-color {
   margin-top: 15px;

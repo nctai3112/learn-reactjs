@@ -1,3 +1,7 @@
+.select-list-label-region .label-list-text {
+  font-size: 20px;
+}
+
 .outer-wrapper {
   text-align: center;
   display: flex;
@@ -6,12 +10,6 @@
   max-width: 100%;
   width: 100%;
   height: 100vh;
-}
-
-.project-page {
-  display: "flex";
-  width: "100%";
-  height: "100vh"
 }
 
 .custom-divider {

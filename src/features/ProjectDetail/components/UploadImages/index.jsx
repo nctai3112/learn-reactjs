@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { Modal } from 'antd';
 import useDrivePicker from "react-google-drive-picker";
 import { Button } from "antd";
 import './styles.css'
@@ -23,8 +24,12 @@ function UploadImages(props) {
         customScopes: ['https://www.googleapis.com/auth/drive'],
         callbackFunction: (data) => {
           console.log(data);
-          if (data.action === "cancel") {
-
+          if (data && data.action === "picked") {
+            Modal.info({
+              title: "Notice",
+              content:
+                "Please click 'refresh' button after you upload your images to fetch your data",
+            });
           }
         },
       });
@@ -32,14 +37,6 @@ function UploadImages(props) {
       console.log("Error open Picker: " + err);
     }
   };
-
-  useEffect(() => {
-    // do anything with the selected/uploaded files
-    if (data) {
-      console.log("Drive Picker: data:")
-      console.log(data);
-    }
-  }, [data]);
 
   return (
     <Button onClick={() => handleOpenPicker()} className="button-upload-drive">

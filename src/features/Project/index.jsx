@@ -136,13 +136,15 @@ function Project(props) {
                   });
               })
               .catch((error) => {
+                setLoading(false);
                 Modal.error({title:"ERROR", content: "Error when creating drive folder for project."});
               });
           }
         })
         .catch((error) => {
-          Modal.error({title:"ERROR", content: "Server error when creating a project. Please try again!"});
           setLoading(false);
+          Modal.error({title:"ERROR", content: "Server error when creating a project. Please try again!"});
+
         });
     }
     else {
@@ -168,6 +170,7 @@ function Project(props) {
       ) : (
         <div
           className="project-page"
+          style={{ display: "flex", flexDirection: "column", width: "100%",height: "100vh" }}
         >
           <header>
             <TopBar topText="Projects" />

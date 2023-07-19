@@ -25,6 +25,7 @@ function AnnotationMerge(props) {
   // Add loading state.
   const [isLoading, setLoading] = useState(false);
   const [isLoadingSaveAnnotation, setLoadingSaveAnnotation] = useState(false);
+  const [isLoadingData, setLoadingData] = useState(false);
   // Image scale handling + rendering.
   const [width, setWidth] = useState(513);
   const [height, setHeight] = useState(513);
@@ -113,6 +114,7 @@ function AnnotationMerge(props) {
   // LOADING THE annotationData from annotation.json file.
   const getCurrentAnnotationData = (annotationId) => {
     if (annotationId) {
+      setLoadingData(true);
       fetch(`http://localhost:5000/drive/get-json/${annotationId}`, {
         method: "GET",
         headers: {
@@ -169,12 +171,13 @@ function AnnotationMerge(props) {
               });
             }
           }
+          setLoadingData(false);
         })
         .catch((error) => {
-          // Handle the error
+          setLoadingData(false);
+          setCurrentAnnotationData([]);
           console.log("Error get all data relating to current annotate image.");
           console.log(error);
-          setCurrentAnnotationData([]);
         });
     }
   };
@@ -759,18 +762,23 @@ function AnnotationMerge(props) {
   };
 
   return (
-    <div
-      className="outer-wrapper"
-      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-    >
-      {isLoading || isLoadingSaveAnnotation ? (
+    <div className="outer-wrapper">
+      {isLoading || isLoadingSaveAnnotation || isLoadingData ? (
         <ClimbingBoxLoader
           size={30}
           color={"#000"}
-          loading={isLoading || isLoadingSaveAnnotation}
+          loading={isLoading || isLoadingSaveAnnotation || isLoadingData}
         />
       ) : (
-        <div key={id}>
+        <div
+          key={id}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100vh",
+          }}
+        >
           <TopBar
             topText={`Projects / ${currentProject.title} / Annotation Image`}
           />
@@ -785,7 +793,7 @@ function AnnotationMerge(props) {
                     {defaultLabelList.length === 0 ? (
                       <h2></h2>
                     ) : (
-                      <h2>Labeling List</h2>
+                      <h2 className="label-list-text">Labeling List</h2>
                     )}
                     <SelectionList
                       key={id}

@@ -22,7 +22,6 @@ function DataList(props) {
   const annotationFileId = projectDetail.urlData;
   const [fileItems, setFileItems] = useState([]);
   const [dataTable, setDataTable] = useState([]);
-  const accessTokenData = useSelector(accessTokenSelector);
 
   useEffect(() => {
     const fetchData = async() => {
@@ -276,6 +275,7 @@ function DataList(props) {
         const dataUpdateJson = await responseUpdateJson.json();
       }
     }
+    Modal.info({"title": "Notice", "content": "Refresh done!"})
   }
 
   const columns = [
