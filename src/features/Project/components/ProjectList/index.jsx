@@ -1,9 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import './styles.css'
 import { useNavigate } from "react-router-dom";
-
-ProjectList.propTypes = {};
 
 function ProjectList({ projectList }) {
   const navigate = useNavigate();

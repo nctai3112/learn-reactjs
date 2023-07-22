@@ -1,29 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import "./styles.css"
-
-Footer.propTypes = {
-
-};
 
 function Footer(props) {
   return (
     <div className="footer-basic">
       <footer>
-        {/* <div class="social">
-          <a href="#">
-            <i class="icon ion-social-instagram"></i>
-          </a>
-          <a href="#">
-            <i class="icon ion-social-snapchat"></i>
-          </a>
-          <a href="#">
-            <i class="icon ion-social-twitter"></i>
-          </a>
-          <a href="#">
-            <i class="icon ion-social-facebook"></i>
-          </a>
-        </div> */}
         <ul className="list-inline">
           <li className="list-inline-item">
             <a href="/projects">Home</a>

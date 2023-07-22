@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 function NotFound(props) {
   return (
@@ -11,7 +10,5 @@ function NotFound(props) {
     </div>
   );
 }
-
-NotFound.propTypes = {};
 
 export default NotFound;

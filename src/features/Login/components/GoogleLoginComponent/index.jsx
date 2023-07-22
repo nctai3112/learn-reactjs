@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
-import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
 import loginSlice from "../../loginSlice";
 import loginResponseSlice from "../../loginResponseSlice";
 import axios from "axios";
 import { Modal } from "antd";
-import { current } from "@reduxjs/toolkit";
 import './styles.css';
 
 function GoogleLoginComponent(props) {
@@ -15,9 +13,6 @@ function GoogleLoginComponent(props) {
   const navigate = useNavigate();
 
   const [user, setUser] = useState({});
-  const [profile, setProfile] = useState([]);
-
-  const [currentError, setCurrentError] = useState(false);
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
@@ -41,7 +36,6 @@ function GoogleLoginComponent(props) {
         )
         .then(async (res) => {
           if (res.data) {
-            setProfile(res.data);
             fetch(
               "http://localhost:5000/authors",
               {
@@ -67,7 +61,6 @@ function GoogleLoginComponent(props) {
                   title: "ERROR",
                   content: "There is problem with server. Please try again later!",
                 });
-                setCurrentError(true);
               });
           }
         })
@@ -75,11 +68,10 @@ function GoogleLoginComponent(props) {
           Modal.error({
             title: "ERROR",
             content: "There is error when you log in. Please try again later!",
-          })
-          setCurrentError(true);
+          });
         });
     }
-  }, [user]);
+  }, [user, dispatch, navigate]);
 
   return (
     <div className="login-container">

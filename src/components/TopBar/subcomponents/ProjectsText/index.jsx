@@ -1,9 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-ProjectsText.propTypes = {
-
-};
 
 function ProjectsText(props) {
   const { text } =props;

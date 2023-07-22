@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { Button, Modal, Form, Input, Divider, Space } from "antd";
 import ProjectList from "./components/ProjectList";
 import { googleLoginSelector } from "../../redux/selectors";
@@ -9,8 +8,6 @@ import Footer from './../../components/Footer';
 import TopBar from "./../../components/TopBar";
 import './styles.css'
 import { ClimbingBoxLoader } from "react-spinners";
-
-Project.propTypes = {};
 
 function Project(props) {
   const [isLoading, setLoading] = useState(false);

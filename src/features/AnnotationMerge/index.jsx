@@ -1,5 +1,4 @@
 import React from "react";
-// import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import { Layer, Group, Rect, Image } from "react-konva";
 import BaseImageComponent from "../BaseImageComponent";
@@ -14,8 +13,6 @@ import TopBar from "../../components/TopBar";
 import Footer from "../../components/Footer";
 import { ClimbingBoxLoader } from "react-spinners";
 import "./styles.css";
-
-// AnnotationMerge.propTypes = {};
 
 function AnnotationMerge(props) {
   // Param passing from parent.
@@ -442,7 +439,7 @@ function AnnotationMerge(props) {
               draggable={true}
               width={width}
               height={height}
-              stroke={"#00F1FF"}
+              stroke={"black"}
               strokeWidth={2}
               fill={color}
             />
@@ -890,7 +887,7 @@ function AnnotationMerge(props) {
                             flattenedPoints={_.flatten([...polygon["points"]])}
                             points={polygon["points"]}
                             width={width}
-                            stroke={"red"}
+                            stroke={"black"}
                             height={height}
                             fill={polygon.color}
                             handlePointDragMove={handlePointDragMove}

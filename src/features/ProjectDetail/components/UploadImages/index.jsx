@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 import useDrivePicker from "react-google-drive-picker";
 import { Button } from "antd";

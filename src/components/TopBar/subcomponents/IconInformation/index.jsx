@@ -1,9 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
 import "./styles.css"
 import { googleLogout } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-// import { Menu, Dropdown, Button } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Divider, Dropdown, Space, theme } from "antd";
 import { useDispatch } from "react-redux";

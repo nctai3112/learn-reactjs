@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import "./styles.css"
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
@@ -9,10 +8,6 @@ import { Modal, Table } from "antd";
 import UploadImages from "./../UploadImages";
 import { googleLoginSelector, accessTokenSelector } from "../../../../redux/selectors";
 import { useSelector } from "react-redux";
-
-DataList.propTypes = {
-
-};
 
 function DataList(props) {
   const dispatch = useDispatch();

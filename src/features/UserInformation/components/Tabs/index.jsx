@@ -1,11 +1,6 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { Tabs, Form, Input } from "antd";
 import "./styles.css";
-
-VerticalTab.propTypes = {
-
-};
 
 function VerticalTab(props) {
   const [form] = Form.useForm();

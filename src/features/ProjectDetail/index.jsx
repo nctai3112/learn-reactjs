@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
-import PropTypes from 'prop-types';
 import DataList from './components/DataList';
 import { Modal, Divider, Button, Input, Form } from "antd";
 import TopBar from '../../components/TopBar';
 import Footer from "../../components/Footer";
 import "./styles.css"
-
-ProjectDetail.propTypes = {
-
-};
 
 function ProjectDetail(props) {
   const { id } = useParams();

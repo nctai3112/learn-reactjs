@@ -1,5 +1,4 @@
 import React, {useRef, useEffect} from 'react';
-import PropTypes from 'prop-types';
 import ProjectsText from './subcomponents/ProjectsText';
 import IconInformation from './subcomponents/IconInformation';
 import { Col, Row } from "antd";

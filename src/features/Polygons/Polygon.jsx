@@ -23,7 +23,7 @@ export const Polygon = ({
 
   const _id = String(Math.random());
   const _name = `group-${_id}`;
-  const vertexRadius = 3;
+  const vertexRadius = 1;
 
   const handleGroupMouseOver = (e) => {
     if (!isFinished) return;
@@ -93,8 +93,8 @@ export const Polygon = ({
               key={index}
               radius={vertexRadius}
               fill="black"
-              stroke="#00F1FF"
-              strokeWidth={2}
+              stroke="white"
+              strokeWidth={1}
               {...startPointAttr}
               onDragMove={handlePointDragMove}
               dragBoundFunc={(pos) =>

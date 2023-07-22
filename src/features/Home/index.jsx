@@ -1,12 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import "./styles.css";
-
-Home.propTypes = {
-
-};
 
 function Home(props) {
   const navigate = useNavigate();

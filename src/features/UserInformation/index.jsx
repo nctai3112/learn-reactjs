@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from 'react';
-import PropTypes from 'prop-types';
 import TopBar from '../../components/TopBar';
 
 import { useSelector } from "react-redux";
@@ -9,10 +8,6 @@ import VerticalTab from './components/Tabs';
 import { Divider } from "antd";
 
 import "./styles.css"
-
-UserInformation.propTypes = {
-
-};
 
 function UserInformation(props) {
   const [email, setEmail] = useState("");
