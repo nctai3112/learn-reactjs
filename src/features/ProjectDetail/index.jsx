@@ -82,7 +82,7 @@ function ProjectDetail(props) {
 
   return (
     <div className="project-detail-page-wrapper">
-      <TopBar topText={`Projects / ${projectDetail.title}`} />
+      <TopBar topText={`Projects / ${projectDetail.title}`} backButton={true}/>
       <Divider className="divider-custom" />
       <div className="project-description-wrapper">
         <p className="project-description-text">{projectDetail.description}</p>

@@ -12,6 +12,7 @@ const SelectionList = ({ items, selected, onChange }) => {
             className="select-item-text"
             onClick={() => onChange(index)}
             style={{
+              width: "150px",
               backgroundColor: selected === index ? item.color : "transparent",
               padding: "10px",
               borderRadius: "5px",
@@ -25,7 +26,7 @@ const SelectionList = ({ items, selected, onChange }) => {
           <div
             className="select-item-color"
             style={{
-              width: "100px",
+              width: "70px",
               height: "20px",
               backgroundColor: item.color,
             }}

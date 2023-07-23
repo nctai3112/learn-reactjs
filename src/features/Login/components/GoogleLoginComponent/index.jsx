@@ -20,6 +20,8 @@ function GoogleLoginComponent(props) {
       setUser(codeResponse);
     },
     onError: (error) => console.log("Login Failed:", error),
+    scope:
+      "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file",
   });
 
   useEffect(() => {

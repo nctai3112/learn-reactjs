@@ -2,15 +2,25 @@ import React, { useEffect } from 'react';
 import { Modal } from 'antd';
 import useDrivePicker from "react-google-drive-picker";
 import { Button } from "antd";
-import './styles.css'
+import './styles.css';
+
+import { useSelector } from 'react-redux';
+import { accessTokenSelector } from "../../../../redux/selectors";
 
 function UploadImages(props) {
+  const accessTokenData = useSelector(accessTokenSelector);
   const {projectDetail} = props;
   const [openPicker, data, authResponse] = useDrivePicker();
   // const customViewsArray = [new google.picker.DocsView()]; // custom view
   const handleOpenPicker = () => {
     try {
+      console.log("here");
+      console.log(data);
+      console.log(authResponse);
+      console.log("open picker");
+      console.log(accessTokenData.access_token);
       openPicker({
+        token: accessTokenData.access_token,
         clientId:
           "482831900623-fvngfj4petn48ms9a9jqvmod19iglr5r.apps.googleusercontent.com",
         developerKey: "AIzaSyA7rgtJ--DxBcvZLl2xLFQP_rGfsE709KA",
@@ -22,6 +32,7 @@ function UploadImages(props) {
         setParentFolder: projectDetail.driveParent,
         customScopes: ['https://www.googleapis.com/auth/drive'],
         callbackFunction: (data) => {
+          console.log("data callback")
           console.log(data);
           if (data && data.action === "picked") {
             Modal.info({

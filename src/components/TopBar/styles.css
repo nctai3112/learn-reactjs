@@ -1,1 +1,34 @@
+/*
+.home-button {
+  background-color: #f0f2f5;
+  color: #333;
+  padding: 10px 20px;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+} */
 
+.top-bar-left {
+  text-align: center;
+}
+
+.child {
+  display: inline-block;
+  /* padding: 10px; */
+  /* border: 1px solid #ccc; */
+  /* box-sizing: border-box; */
+}
+
+.child-home{
+  /* margin-top: 15px; */
+}
+
+.home-button {
+  /* margin-top: 10px; */
+  display: inline-block;
+  text-indent: -9999px;
+  width: 25px; /* Set the width of the SVG image */
+  height: 25px; /* Set the height of the SVG image */
+  background-image: url('../../../public/icons/back_icon.svg');
+  background-size: cover; /* Adjust the image size to cover the entire area */
+}

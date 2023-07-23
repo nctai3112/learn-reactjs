@@ -37,56 +37,59 @@ function AnnotationMerge(props) {
   // Handle label list default including 13 items.
   const defaultLabelList = [
     {
-      label: "Liver",
-      color: "#9D0000",
-    },
-    {
-      label: "Right kidney",
-      color: "#00CF00",
-    },
-    {
-      label: "Spleen",
-      color: "#1D00F3",
-    },
-    {
-      label: "Pancreas",
-      color: "#FEFF00",
-    },
-    {
-      label: "Aorta",
-      color: "#00FFFF",
-    },
-    {
-      label: "Inferior Vena Cava",
-      color: "#FF00FF",
-    },
-    {
       label: "Right Adrenal Gland",
       color: "#FFEFD2",
-    },
-    {
-      label: "Left Adrenal Gland",
-      color: "#1600D6",
-    },
-    {
-      label: "Gallbladder",
-      color: "#D8822B",
     },
     {
       label: "Esophagus",
       color: "#D7B386",
     },
     {
+      label: "Aorta",
+      color: "#00FFFF",
+    },
+    {
       label: "Stomach",
       color: "#2ED1A8",
     },
     {
-      label: "Duodenum",
-      color: "#090086",
+      label: "Pancreas",
+      color: "#FEFF00",
+    },
+    {
+      label: "Right kidney",
+      color: "#00CF00",
+    },
+    {
+      label: "Gallbladder",
+      color: "#D8822B",
     },
     {
       label: "Left Kidney",
       color: "#008E8C",
+    },
+    {
+      label: "Inferior Vena Cava",
+      color: "#FF00FF",
+    },
+    {
+      label: "Liver",
+      color: "#9D0000",
+    },
+
+    {
+      label: "Spleen",
+      color: "#1D00F3",
+    },
+
+    {
+      label: "Left Adrenal Gland",
+      color: "#1600D6",
+    },
+
+    {
+      label: "Duodenum",
+      color: "#090086",
     },
   ];
   // Handle annotate feature.
@@ -776,9 +779,7 @@ function AnnotationMerge(props) {
             height: "100vh",
           }}
         >
-          <TopBar
-            topText={`Projects / ${currentProject.title} / Annotation Image`}
-          />
+          <TopBar topText={`Projects / ${currentProject.title} / Annotation Image`} backButton={true}/>
           <Divider className="custom-divider" />
           <Row gutter={[16, 16]}>
             <Col span={6} className="sidebar">
@@ -790,7 +791,7 @@ function AnnotationMerge(props) {
                     {defaultLabelList.length === 0 ? (
                       <h2></h2>
                     ) : (
-                      <h2 className="label-list-text">Labeling List</h2>
+                      <h4 className="label-list-text">Labeling List</h4>
                     )}
                     <SelectionList
                       key={id}

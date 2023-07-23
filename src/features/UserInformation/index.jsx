@@ -40,7 +40,7 @@ function UserInformation(props) {
 
   return (
     <div className="user-profile-page">
-      <TopBar topText="User Profile" sendDataToParent={handleDataFromTopBar} />
+      <TopBar topText="User Profile" sendDataToParent={handleDataFromTopBar} backButton={true}/>
       <Divider className="custom-divider" />
       <VerticalTab
         name={name}
