@@ -27,7 +27,7 @@ function DataList(props) {
         driveParentId !== ""
       ) {
         const responseFilesFromFolder = await fetch(
-          "http://localhost:5000/drive/folder",
+          "https://be-express.vercel.app/drive/folder",
           {
             method: "POST",
             headers: {
@@ -57,7 +57,7 @@ function DataList(props) {
             annotationFileId !== undefined
           ) {
             const responseJsonData = await fetch(
-              `http://localhost:5000/drive/get-json/${annotationFileId}`,
+              `https://be-express.vercel.app/drive/get-json/${annotationFileId}`,
               {
                 method: "GET",
                 headers: {
@@ -115,7 +115,7 @@ function DataList(props) {
 
       if (annotationFileId && annotationContent && annotationContent.length > 0) {
         const responseUpdateJson = await fetch(
-          "http://localhost:5000/drive/update-json",
+          "https://be-express.vercel.app/drive/update-json",
           {
             method: "POST",
             headers: {
@@ -157,7 +157,7 @@ function DataList(props) {
       driveParentId !== ""
     ) {
       const responseFilesFromFolder = await fetch(
-        "http://localhost:5000/drive/folder",
+        "https://be-express.vercel.app/drive/folder",
         {
           method: "POST",
           headers: {
@@ -188,7 +188,7 @@ function DataList(props) {
           annotationFileId !== undefined
         ) {
           const responseJsonData = await fetch(
-            `http://localhost:5000/drive/get-json/${annotationFileId}`,
+            `https://be-express.vercel.app/drive/get-json/${annotationFileId}`,
             {
               method: "GET",
               headers: {
@@ -246,7 +246,7 @@ function DataList(props) {
 
       if (annotationFileId && annotationContent.length > 0) {
         const responseUpdateJson = await fetch(
-          "http://localhost:5000/drive/update-json",
+          "https://be-express.vercel.app/drive/update-json",
           {
             method: "POST",
             headers: {

@@ -39,7 +39,7 @@ function GoogleLoginComponent(props) {
         .then(async (res) => {
           if (res.data) {
             fetch(
-              "http://localhost:5000/authors",
+              "https://be-express.vercel.app/authors",
               {
                 method: "POST",
                 headers: {

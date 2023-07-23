@@ -15,7 +15,7 @@ function ProjectDetail(props) {
   useEffect(() => {
     let data = [];
     try {
-      fetch(`http://localhost:5000/projects/${id}`, {
+      fetch(`https://be-express.vercel.app/projects/${id}`, {
         method: "GET",
         headers: {
           Accept: "*/*",
@@ -52,7 +52,7 @@ function ProjectDetail(props) {
   const handleChangeOwnerShip = async (e) => {
     const newOwnerEmail = e.ownerEmail;
     const responseChangeOwnership = await fetch(
-      "http://localhost:5000/drive/change-ownership",
+      "https://be-express.vercel.app/drive/change-ownership",
       {
         method: "POST",
         headers: {
