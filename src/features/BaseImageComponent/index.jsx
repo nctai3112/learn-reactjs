@@ -4,8 +4,6 @@ import { Button } from "antd";
 import "./styles.css"
 
 const BaseImageComponent = ({
-  // containerWidth,
-  // containerHeight,
   imageUrl,
   width,
   height,
@@ -20,15 +18,12 @@ const BaseImageComponent = ({
 
   // Width to render an image!
   const [imageMaxWidth, setImageMaxWidth] = useState(0);
-  // const [containerHeight, setContainerHeight] = useState(0);
 
-  // IMPLEMENTING
   useEffect(() => {
     // GET CONTAINER INFORMATION. (DIV CONTAINING THE STAGE)
     const getContainerWidth = () => {
       if (stageContainer.current) {
         setContainerWidth(stageContainer.current.clientWidth);
-        // setContainerHeight(stageContainer.current.clientHeight);
       }
     };
     getContainerWidth(); // Initial width calculation
@@ -39,7 +34,6 @@ const BaseImageComponent = ({
     };
   }, []);
 
-  // IMPLEMENTING
   useEffect(() => {
     if (containerWidth !== 0) {
       setImageMaxWidth(Math.round((containerWidth * 4) / 5));
@@ -55,22 +49,26 @@ const BaseImageComponent = ({
     flipY: false,
   });
   const handleZoom = (factor) => {
+    console.log("handleZoom...")
+    console.log(imageProps);
     const newScale = imageProps.scale * factor;
     setImageProps({ ...imageProps, scale: newScale });
   };
   const handleFlip = (axis) => {
+    console.log("handleFlip...");
+    console.log(imageProps);
     const newValue = !imageProps[axis];
     setImageProps({ ...imageProps, [axis]: newValue });
   };
   const handleRotate = (direction) => {
+    console.log("handleRotate...");
+    console.log(imageProps);
     const newRotation = imageProps.rotation + direction * 90;
     setImageProps({ ...imageProps, rotation: newRotation });
   };
 
   const imageRef = useRef(null);
   const [image, setImage] = useState();
-  // Currently not use!
-  // const [size, setSize] = useState({});
   const [scaleRate, setScaleRate] = useState(1);
 
   useEffect(() => {
@@ -94,10 +92,8 @@ const BaseImageComponent = ({
       image: element,
       width: element.width,
       height: element.height,
-      scaleRate: scaleRate,
     });
     return element;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageUrl]);
 
   // Run before update layout
@@ -182,24 +178,15 @@ const BaseImageComponent = ({
               onMouseMove={baseHandleMouseMoveOnImage}
               ref={imageRef}
               image={image}
-              scaleX={scaleRate}
-              scaleY={scaleRate}
-              width={width}
-              height={height}
+              scaleX={scaleRate * `${imageProps.flipX ? -1 : 1}` * `${imageProps.scale}`}
+              scaleY={scaleRate * `${imageProps.flipY ? -1 : 1}` * `${imageProps.scale}`}
+              width={imageProps.width}
+              height={imageProps.height}
               rotation={imageProps.rotation}
-              // x={(width * scaleRate) / 2}
-              // y={(height * scaleRate) / 2}
-              // offsetX={(width * scaleRate) / 2}
-              // offsetY={(height * scaleRate) / 2}
-              // Debugging - Fixing ...
-              // width={imageProps.width * imageProps.scale}
-              // height={imageProps.height * imageProps.scale}
-
-              // scaleX={imageProps.flipX ? -1 : 1}
-              // x={(width) / 2}
-              // y={(height) / 2}
-              // offsetX={(width) / 2}
-              // offsetY={(height) / 2}
+              x={(imageProps.width * scaleRate) / 2}
+              y={(imageProps.height * scaleRate) / 2}
+              offsetX={(imageProps.width * scaleRate) / 2}
+              offsetY={(imageProps.height * scaleRate) / 2}
             />
           </Layer>
           {children}

@@ -84,9 +84,14 @@ function ProjectDetail(props) {
     <div className="project-detail-page-wrapper">
       <TopBar topText={`Projects / ${projectDetail.title}`} backButton={true}/>
       <Divider className="divider-custom" />
-      <div className="project-description-wrapper">
-        <p className="project-description-text">{projectDetail.description}</p>
-      </div>
+      {
+        projectDetail.description ? (
+          <div className="project-description-wrapper">
+            <p className="project-description-text">{projectDetail.description}</p>
+          </div>
+        ) : ("")
+      }
+
       {isChangeOwner ? (
         <Modal
           title="Change Project Owner"
