@@ -348,12 +348,6 @@ function DataList(props) {
     }
   }, [fileItems]);
 
-  // Create fields for table datalist.
-  useEffect(() => {
-    console.log("Seeing current dataTable information")
-    console.log(dataTable);
-  }, [dataTable]);
-
   const rowProps = (record) => ({
     onClick: () => chooseAnnotateImage(record.id),
   });
