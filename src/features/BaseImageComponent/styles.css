@@ -1,3 +1,10 @@
+/* .outer-wrapper-konva {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+} */
+
 .stage-wrapper {
   display: flex;
   justify-content: center;
@@ -5,5 +12,7 @@
 }
 
 .buttons-wrapper {
-  padding-bottom: 5px;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
 }

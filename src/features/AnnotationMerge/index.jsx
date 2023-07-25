@@ -779,30 +779,12 @@ function AnnotationMerge(props) {
             height: "100vh",
           }}
         >
-          <TopBar topText={`Projects / ${currentProject.title} / Annotation Image`} backButton={true}/>
+          <TopBar
+            topText={`Projects / ${currentProject.title} / Annotation Image`}
+            backButton={true}
+          />
           <Divider className="custom-divider" />
           <Row gutter={[16, 16]}>
-            <Col span={6} className="sidebar">
-              <div className="column">
-                {/* // Hide to remove function add label --> change to available labels! */}
-                <div className="header"></div>
-                <div className="body">
-                  <div className="select-list-label-region">
-                    {defaultLabelList.length === 0 ? (
-                      <h2></h2>
-                    ) : (
-                      <h4 className="label-list-text">Labeling List</h4>
-                    )}
-                    <SelectionList
-                      key={id}
-                      items={defaultLabelList}
-                      selected={selected}
-                      onChange={setSelected}
-                    />
-                  </div>
-                </div>
-              </div>
-            </Col>
             <Col span={18} className="column-wrapper">
               <div className="middle-column">
                 <div className="header">
@@ -959,6 +941,27 @@ function AnnotationMerge(props) {
                       </Layer>
                     )}
                   </BaseImageComponent>
+                </div>
+              </div>
+            </Col>
+            <Col span={6} className="sidebar">
+              <div className="column">
+                {/* // Hide to remove function add label --> change to available labels! */}
+                <div className="header"></div>
+                <div className="body">
+                  <div className="select-list-label-region">
+                    {defaultLabelList.length === 0 ? (
+                      <h2></h2>
+                    ) : (
+                      <h4 className="label-list-text">Labeling List</h4>
+                    )}
+                    <SelectionList
+                      key={id}
+                      items={defaultLabelList}
+                      selected={selected}
+                      onChange={setSelected}
+                    />
+                  </div>
                 </div>
               </div>
             </Col>

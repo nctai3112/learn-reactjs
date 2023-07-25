@@ -49,20 +49,14 @@ const BaseImageComponent = ({
     flipY: false,
   });
   const handleZoom = (factor) => {
-    console.log("handleZoom...")
-    console.log(imageProps);
     const newScale = imageProps.scale * factor;
     setImageProps({ ...imageProps, scale: newScale });
   };
   const handleFlip = (axis) => {
-    console.log("handleFlip...");
-    console.log(imageProps);
     const newValue = !imageProps[axis];
     setImageProps({ ...imageProps, [axis]: newValue });
   };
   const handleRotate = (direction) => {
-    console.log("handleRotate...");
-    console.log(imageProps);
     const newRotation = imageProps.rotation + direction * 90;
     setImageProps({ ...imageProps, rotation: newRotation });
   };
@@ -140,6 +134,42 @@ const BaseImageComponent = ({
 
   return (
     <div className="outer-wrapper-konva">
+      <div className="stage-wrapper" ref={stageContainer}>
+        <Stage
+          className="konva-stage"
+          width={width * scaleRate}
+          height={height * scaleRate}
+          onMouseDown={baseHandleMouseDown}
+          onMouseMove={baseHandleMouseMove}
+        >
+          <Layer>
+            <Image
+              onMouseDown={baseHandleMouseDownOnImage}
+              onMouseMove={baseHandleMouseMoveOnImage}
+              ref={imageRef}
+              image={image}
+              scaleX={
+                scaleRate *
+                `${imageProps.flipX ? -1 : 1}` *
+                `${imageProps.scale}`
+              }
+              scaleY={
+                scaleRate *
+                `${imageProps.flipY ? -1 : 1}` *
+                `${imageProps.scale}`
+              }
+              width={imageProps.width}
+              height={imageProps.height}
+              rotation={imageProps.rotation}
+              x={(imageProps.width * scaleRate) / 2}
+              y={(imageProps.height * scaleRate) / 2}
+              offsetX={(imageProps.width * scaleRate) / 2}
+              offsetY={(imageProps.height * scaleRate) / 2}
+            />
+          </Layer>
+          {children}
+        </Stage>
+      </div>
       <div className="buttons-wrapper">
         <Button onClick={() => handleZoom(1.1)}>
           <img src="/icons/zoom_in.svg" width="10px" height="10px" />
@@ -163,34 +193,6 @@ const BaseImageComponent = ({
         <Button onClick={() => handleRotate(1)}>
           <img src="/icons/rotate_clockwise.svg" width="10px" height="10px" />
         </Button>
-      </div>
-      <div className="stage-wrapper" ref={stageContainer}>
-        <Stage
-          className="konva-stage"
-          width={width * scaleRate}
-          height={height * scaleRate}
-          onMouseDown={baseHandleMouseDown}
-          onMouseMove={baseHandleMouseMove}
-        >
-          <Layer>
-            <Image
-              onMouseDown={baseHandleMouseDownOnImage}
-              onMouseMove={baseHandleMouseMoveOnImage}
-              ref={imageRef}
-              image={image}
-              scaleX={scaleRate * `${imageProps.flipX ? -1 : 1}` * `${imageProps.scale}`}
-              scaleY={scaleRate * `${imageProps.flipY ? -1 : 1}` * `${imageProps.scale}`}
-              width={imageProps.width}
-              height={imageProps.height}
-              rotation={imageProps.rotation}
-              x={(imageProps.width * scaleRate) / 2}
-              y={(imageProps.height * scaleRate) / 2}
-              offsetX={(imageProps.width * scaleRate) / 2}
-              offsetY={(imageProps.height * scaleRate) / 2}
-            />
-          </Layer>
-          {children}
-        </Stage>
       </div>
     </div>
   );
