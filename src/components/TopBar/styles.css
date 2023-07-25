@@ -1,13 +1,3 @@
-/*
-.home-button {
-  background-color: #f0f2f5;
-  color: #333;
-  padding: 10px 20px;
-  text-decoration: none;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-} */
-
 .top-bar-left {
   text-align: center;
 }
@@ -31,4 +21,10 @@
   height: 25px; /* Set the height of the SVG image */
   background-image: url('../../../public/icons/back_icon.svg');
   background-size: cover; /* Adjust the image size to cover the entire area */
+  transition: transform 0.2s ease;
+}
+
+.home-button:hover {
+  cursor: pointer;
+  transform: scale(1.1);
 }

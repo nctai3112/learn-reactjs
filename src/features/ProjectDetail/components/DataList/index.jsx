@@ -49,6 +49,8 @@ function DataList(props) {
         }
         const dataResponse = await responseFilesFromFolder.json();
         if (dataResponse.data.response.data.files.length > 1) {
+          console.log("dataResponse from Express (Drive):")
+          console.log(dataResponse)
           setFileItems(dataResponse.data.response.data.files);
           // Input information files data to annotation.json.
           if (
@@ -345,6 +347,12 @@ function DataList(props) {
       }
     }
   }, [fileItems]);
+
+  // Create fields for table datalist.
+  useEffect(() => {
+    console.log("Seeing current dataTable information")
+    console.log(dataTable);
+  }, [dataTable]);
 
   const rowProps = (record) => ({
     onClick: () => chooseAnnotateImage(record.id),
