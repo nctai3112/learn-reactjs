@@ -1,3 +1,11 @@
+.id-item-container {
+  max-width: 150px;
+  width: 150px; /* Set the width of the container */
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis;
+}
+
 .file-item {
   display: flex;
   align-items: center;

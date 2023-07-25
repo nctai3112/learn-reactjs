@@ -27,7 +27,7 @@ function DataList(props) {
         driveParentId !== ""
       ) {
         const responseFilesFromFolder = await fetch(
-          "https://be-express.vercel.app/drive/folder",
+          "http://localhost:5000/drive/folder",
           {
             method: "POST",
             headers: {
@@ -57,7 +57,7 @@ function DataList(props) {
             annotationFileId !== undefined
           ) {
             const responseJsonData = await fetch(
-              `https://be-express.vercel.app/drive/get-json/${annotationFileId}`,
+              `http://localhost:5000/drive/get-json/${annotationFileId}`,
               {
                 method: "GET",
                 headers: {
@@ -115,7 +115,7 @@ function DataList(props) {
 
       if (annotationFileId && annotationContent && annotationContent.length > 0) {
         const responseUpdateJson = await fetch(
-          "https://be-express.vercel.app/drive/update-json",
+          "http://localhost:5000/drive/update-json",
           {
             method: "POST",
             headers: {
@@ -157,7 +157,7 @@ function DataList(props) {
       driveParentId !== ""
     ) {
       const responseFilesFromFolder = await fetch(
-        "https://be-express.vercel.app/drive/folder",
+        "http://localhost:5000/drive/folder",
         {
           method: "POST",
           headers: {
@@ -188,7 +188,7 @@ function DataList(props) {
           annotationFileId !== undefined
         ) {
           const responseJsonData = await fetch(
-            `https://be-express.vercel.app/drive/get-json/${annotationFileId}`,
+            `http://localhost:5000/drive/get-json/${annotationFileId}`,
             {
               method: "GET",
               headers: {
@@ -246,7 +246,7 @@ function DataList(props) {
 
       if (annotationFileId && annotationContent.length > 0) {
         const responseUpdateJson = await fetch(
-          "https://be-express.vercel.app/drive/update-json",
+          "http://localhost:5000/drive/update-json",
           {
             method: "POST",
             headers: {
@@ -277,12 +277,12 @@ function DataList(props) {
     {
       title: "ID",
       dataIndex: "id",
-      width: 100,
-    },
-    {
-      title: "FILE NAME",
-      dataIndex: "name",
-      width: 100,
+      render: (id) => (
+        <div className="id-item-container">
+          <p className="id-item">{id}</p>
+        </div>
+      ),
+      width: 50,
     },
     {
       title: "IMAGE",
@@ -291,10 +291,35 @@ function DataList(props) {
         <img
           src={imageSrc}
           alt="Image"
-          style={{ width: "100px", height: "100px" }}
+          style={{ width: "150px", height: "150px" }}
         />
       ),
       width: 200,
+    },
+    {
+      title: "FILE NAME",
+      dataIndex: "name",
+      width: 50,
+    },
+    {
+      title: "CREATED AT",
+      dataIndex: "createdAt",
+      render: (createdTime) => {
+        const dateObject = new Date(createdTime);
+        const localDateString = dateObject.toLocaleString();
+        return <p className='created-time-item'>{localDateString}</p>;
+      },
+      width: 150,
+    },
+    {
+      title: "UPDATED AT",
+      dataIndex: "updatedAt",
+      render: (updatedAt) => {
+        const dateObject = new Date(updatedAt);
+        const localDateString = dateObject.toLocaleString();
+        return <p className='modified-time-item'>{localDateString}</p>;
+      },
+      width: 150,
     },
   ];
 
@@ -303,10 +328,14 @@ function DataList(props) {
       const dataTableTmp = [];
       fileItems.map(async (fileItem) => {
         if (fileItem.name !== "Result" && !fileItem.name.includes(".json")) {
+          console.log("FileItem information");
+          console.log(fileItem);
           const tableItem = {
             id: fileItem.id,
             name: fileItem.name,
             image: `https://drive.google.com/uc?export=view&id=${fileItem.id}`,
+            createdAt: fileItem.createdTime,
+            updatedAt: fileItem.modifiedTime,
           };
           dataTableTmp.push(tableItem);
         }

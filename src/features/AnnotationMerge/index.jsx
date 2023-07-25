@@ -115,7 +115,7 @@ function AnnotationMerge(props) {
   const getCurrentAnnotationData = (annotationId) => {
     if (annotationId) {
       setLoadingData(true);
-      fetch(`https://be-express.vercel.app/drive/get-json/${annotationId}`, {
+      fetch(`http://localhost:5000/drive/get-json/${annotationId}`, {
         method: "GET",
         headers: {
           Accept: "*/*",
@@ -194,7 +194,7 @@ function AnnotationMerge(props) {
   useEffect(() => {
     // if having file image id --> get image width height and set to width, height state.
     if (id) {
-      fetch(`https://be-express.vercel.app/drive/get-json/${id}`, {
+      fetch(`http://localhost:5000/drive/get-json/${id}`, {
         method: "GET",
         headers: {
           Accept: "*/*",
@@ -542,7 +542,7 @@ function AnnotationMerge(props) {
 
     if (newAnnotation && newAnnotation.length > 0) {
       setLoadingSaveAnnotation(true);
-      fetch("https://be-express.vercel.app/drive/update-json", {
+      fetch("http://localhost:5000/drive/update-json", {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -574,7 +574,7 @@ function AnnotationMerge(props) {
   const annotateImage = (e) => {
     if (annotationId && id) {
       setLoading(true);
-      fetch("https://be-express.vercel.app/drive/annotate-image", {
+      fetch("http://localhost:5000/drive/annotate-image", {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -716,7 +716,7 @@ function AnnotationMerge(props) {
 
         // Update annotation.json file if data valid.
         if (newAnnotation && newAnnotation.length > 0) {
-          fetch("https://be-express.vercel.app/drive/update-json", {
+          fetch("http://localhost:5000/drive/update-json", {
             method: "POST",
             headers: {
               Accept: "*/*",

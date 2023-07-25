@@ -14,11 +14,6 @@ function UploadImages(props) {
   // const customViewsArray = [new google.picker.DocsView()]; // custom view
   const handleOpenPicker = () => {
     try {
-      console.log("here");
-      console.log(data);
-      console.log(authResponse);
-      console.log("open picker");
-      console.log(accessTokenData.access_token);
       openPicker({
         token: accessTokenData.access_token,
         clientId:
@@ -52,7 +47,7 @@ function UploadImages(props) {
     <Button onClick={() => handleOpenPicker()} className="button-upload-drive">
       <img src="/icons/upload_cloud.svg" width="10px" height="10px"/>
       <span className="button-upload-drive-text">
-        Upload Drive
+        Import Data
       </span>
     </Button>
   );
