@@ -11,6 +11,7 @@ import { ClimbingBoxLoader } from "react-spinners";
 
 function Project(props) {
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingProjectList, setLoadingProjectList] = useState(false);
   const navigate = useNavigate();
   const googleLoginData = useSelector(googleLoginSelector);
   const [isProjectVisible, setProjectVisible] = useState(false);
@@ -30,6 +31,7 @@ function Project(props) {
 
   const getProjectListFromDB = (email) => {
     let data = [];
+    setLoadingProjectList(true);
     fetch("https://be-express.vercel.app/projects/author", {
       method: "POST",
       headers: {
@@ -49,11 +51,13 @@ function Project(props) {
         if (data.projects !== null && data.projects !== undefined) {
           setProjectList(data.projects)
         }
+        setLoadingProjectList(false);
       })
       .catch((error) => {
         console.log(error);
         console.log("Error when trying to get projects from author");
         Modal.error({title:"ERROR", content: "Error when trying to get projects from user. Please, try again by reloading this page."});
+        setLoadingProjectList(false);
       });
   }
 
@@ -162,8 +166,8 @@ function Project(props) {
 
   return (
     <div className="outer-wrapper">
-      {isLoading ? (
-        <ClimbingBoxLoader size={30} color={"#000"} loading={isLoading} />
+      {(isLoading || isLoadingProjectList) ? (
+        <ClimbingBoxLoader size={30} color={"#000"} loading={isLoading || isLoadingProjectList} />
       ) : (
         <div
           className="project-page"

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useDispatch } from "react-redux";
+import { ClimbingBoxLoader } from "react-spinners";
 import loginSlice from "../../loginSlice";
 import loginResponseSlice from "../../loginResponseSlice";
 import axios from "axios";
@@ -12,6 +13,7 @@ function GoogleLoginComponent(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [isLoadingLogin, setLoadingLogin] = useState(false);
   const [user, setUser] = useState({});
 
   const login = useGoogleLogin({
@@ -19,7 +21,9 @@ function GoogleLoginComponent(props) {
       dispatch(loginResponseSlice.actions.AccessToken(codeResponse));
       setUser(codeResponse);
     },
-    onError: (error) => console.log("Login Failed:", error),
+    onError: (error) => {
+      console.log("Login Failed:", error);
+    },
     scope:
       "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/drive.file",
   });
@@ -38,6 +42,7 @@ function GoogleLoginComponent(props) {
         )
         .then(async (res) => {
           if (res.data) {
+            setLoadingLogin(true);
             fetch(
               "https://be-express.vercel.app/authors",
               {
@@ -55,6 +60,7 @@ function GoogleLoginComponent(props) {
               }
             )
               .then((response) => {
+                setLoadingLogin(false);
                 dispatch(loginSlice.actions.GoogleLogin(res.data));
                 navigate("/projects");
               })
@@ -63,6 +69,7 @@ function GoogleLoginComponent(props) {
                   title: "ERROR",
                   content: "There is problem with server. Please try again later!",
                 });
+                setLoadingLogin(false);
               });
           }
         })
@@ -76,12 +83,21 @@ function GoogleLoginComponent(props) {
   }, [user, dispatch, navigate]);
 
   return (
-    <div className="login-container">
-      {" "}
-      <button className="login-button" onClick={() => login()}>
-        Sign in with Google{" "}
-      </button>
-      {" "}
+    <div className="outer-wrapper">
+      {isLoadingLogin ? (
+        <ClimbingBoxLoader
+          size={30}
+          color={"#000"}
+          loading={isLoadingLogin}
+        />
+      ) : (
+        <div className="login-container">
+          {" "}
+          <button className="login-button" onClick={() => login()}>
+            Sign in with Google{" "}
+          </button>{" "}
+        </div>
+      )}
     </div>
   );
 }
