@@ -27,8 +27,6 @@ function UploadImages(props) {
         setParentFolder: projectDetail.driveParent,
         customScopes: ['https://www.googleapis.com/auth/drive'],
         callbackFunction: (data) => {
-          console.log("data callback")
-          console.log(data);
           if (data && data.action === "picked") {
             Modal.info({
               title: "Notice",

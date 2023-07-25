@@ -51,8 +51,6 @@ function DataList(props) {
         }
         const dataResponse = await responseFilesFromFolder.json();
         if (dataResponse.data.response.data.files.length > 1) {
-          console.log("dataResponse from Express (Drive):")
-          console.log(dataResponse)
           setFileItems(dataResponse.data.response.data.files);
           // Input information files data to annotation.json.
           if (
@@ -332,8 +330,6 @@ function DataList(props) {
       const dataTableTmp = [];
       fileItems.map(async (fileItem) => {
         if (fileItem.name !== "Result" && !fileItem.name.includes(".json")) {
-          console.log("FileItem information");
-          console.log(fileItem);
           const tableItem = {
             id: fileItem.id,
             name: fileItem.name,

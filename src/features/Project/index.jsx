@@ -49,8 +49,6 @@ function Project(props) {
         const jsonRes = await response.json();
         data = jsonRes.data;
         if (data.projects !== null && data.projects !== undefined) {
-          console.log("Getting information projects");
-          console.log(data.projects)
           setProjectList(data.projects)
         }
         setLoadingProjectList(false);
