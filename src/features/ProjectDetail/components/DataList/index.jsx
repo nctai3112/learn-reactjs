@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { useDispatch } from 'react-redux';
 import projectDetailSlide from '../../projectDetailSlice';
-import { Modal, Table } from "antd";
+import { Modal, Table, Form, Input } from "antd";
 import UploadImages from "./../UploadImages";
 import { googleLoginSelector, accessTokenSelector } from "../../../../redux/selectors";
 import { useSelector } from "react-redux";
@@ -17,6 +17,8 @@ function DataList(props) {
   const annotationFileId = projectDetail.urlData;
   const [fileItems, setFileItems] = useState([]);
   const [dataTable, setDataTable] = useState([]);
+
+  const [isChangeOwner, setChangeOwner] = useState(false);
 
   useEffect(() => {
     const fetchData = async() => {
@@ -352,11 +354,69 @@ function DataList(props) {
     onClick: () => chooseAnnotateImage(record.id),
   });
 
+  const popupChangeOwner = (e) => {
+    setChangeOwner(true);
+  };
+
+  const handleChangeOwnerShip = async (e) => {
+    const newOwnerEmail = e.ownerEmail;
+    const responseChangeOwnership = await fetch(
+      "http://localhost:5000/drive/change-ownership",
+      {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          Connection: "keep-alive",
+          "Content-Type": "application/json",
+          "user-agent": "Chrome",
+        },
+        body: JSON.stringify({
+          ownerEmail: newOwnerEmail,
+          projectId: projectDetail._id,
+          folderId: projectDetail.driveParent,
+        }),
+      }
+    );
+    if (!responseChangeOwnership.ok) {
+      Modal.error({
+        title: "ERROR",
+        content: "Server error when trying to get annotation file.",
+      });
+    } else {
+      const dataResponseJson = await responseChangeOwnership.json();
+    }
+    setChangeOwner(false);
+  };
+
   return (
     <div className="data-manager-region">
       <div className="data-manager-above">
         <h3 className="data-title">Data Manager</h3>
         <div className="buttons-data-manager">
+          {isChangeOwner ? (
+            <Modal
+              title="Change Project Owner"
+              open={isChangeOwner}
+              onCancel={() => setChangeOwner(false)}
+              footer={null}
+            >
+              <Form onFinish={handleChangeOwnerShip}>
+                <Form.Item label="Email" name="ownerEmail" required>
+                  <Input type="text" />
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Modal>
+          ) : (
+            <></>
+          )}
+          <Button className="button-change-owner" onClick={popupChangeOwner}>
+            Change Owner
+          </Button>
           <UploadImages projectDetail={projectDetail} />
           <Button name="Refresh" onClick={refresh} className="button-refresh">
             <img src="/icons/refresh.svg" width="10px" height="10px" />
