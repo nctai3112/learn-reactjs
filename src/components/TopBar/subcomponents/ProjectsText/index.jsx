@@ -1,4 +1,5 @@
 import React from 'react';
+import './styles.css'
 
 function ProjectsText(props) {
   const { classWrapper, text } = props;
@@ -7,7 +8,7 @@ function ProjectsText(props) {
       className={`project-text ${classWrapper}`}
       style={{ background: "white", color: "black" }}
     >
-      <h1
+      <h2
         className="text"
         style={{
           textAlign: "left",
@@ -15,7 +16,7 @@ function ProjectsText(props) {
         }}
       >
         {text}
-      </h1>
+      </h2>
     </div>
   );
 }

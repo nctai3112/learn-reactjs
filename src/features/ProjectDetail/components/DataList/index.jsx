@@ -331,6 +331,7 @@ function DataList(props) {
       fileItems.map(async (fileItem) => {
         if (fileItem.name !== "Result" && !fileItem.name.includes(".json")) {
           const tableItem = {
+            key: fileItem.id,
             id: fileItem.id,
             name: fileItem.name,
             image: `https://drive.google.com/uc?export=view&id=${fileItem.id}`,
@@ -421,6 +422,7 @@ function DataList(props) {
         </div>
       </div>
       <Table
+        key={projectDetail._id}
         columns={columns}
         dataSource={dataTable}
         onRow={rowProps}

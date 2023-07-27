@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState, useMemo, useRef, useEffect } from "react";
-import { Stage, Image, Layer, Rect } from "react-konva";
-import { Button } from "antd";
+import { Stage, Image, Layer } from "react-konva";
+import { Button, Row, Col } from "antd";
 import "./styles.css"
 
 const BaseImageComponent = ({
@@ -134,66 +134,78 @@ const BaseImageComponent = ({
 
   return (
     <div className="outer-wrapper-konva">
-      <div className="stage-wrapper" ref={stageContainer}>
-        <Stage
-          className="konva-stage"
-          width={width * scaleRate}
-          height={height * scaleRate}
-          onMouseDown={baseHandleMouseDown}
-          onMouseMove={baseHandleMouseMove}
-        >
-          <Layer>
-            <Image
-              onMouseDown={baseHandleMouseDownOnImage}
-              onMouseMove={baseHandleMouseMoveOnImage}
-              ref={imageRef}
-              image={image}
-              scaleX={
-                scaleRate *
-                `${imageProps.flipX ? -1 : 1}` *
-                `${imageProps.scale}`
-              }
-              scaleY={
-                scaleRate *
-                `${imageProps.flipY ? -1 : 1}` *
-                `${imageProps.scale}`
-              }
-              width={imageProps.width}
-              height={imageProps.height}
-              rotation={imageProps.rotation}
-              x={(imageProps.width * scaleRate) / 2}
-              y={(imageProps.height * scaleRate) / 2}
-              offsetX={(imageProps.width * scaleRate) / 2}
-              offsetY={(imageProps.height * scaleRate) / 2}
-            />
-          </Layer>
-          {children}
-        </Stage>
-      </div>
-      <div className="buttons-wrapper">
-        <Button onClick={() => handleZoom(1.1)}>
-          <img src="/icons/zoom_in.svg" width="10px" height="10px" />
-        </Button>
-        <Button onClick={() => handleZoom(0.9)}>
-          <img src="/icons/zoom_out.svg" width="10px" height="10px" />
-        </Button>
-        <Button onClick={() => handleFlip("flipX")}>
-          <img src="/icons/flip_vertical.svg" width="10px" height="10px" />
-        </Button>
-        <Button onClick={() => handleFlip("flipY")}>
-          <img src="/icons/flip_horizontal.svg" width="10px" height="10px" />
-        </Button>
-        <Button onClick={() => handleRotate(-1)}>
-          <img
-            src="/icons/rotate_counterclockwise.svg"
-            width="10px"
-            height="10px"
-          />
-        </Button>
-        <Button onClick={() => handleRotate(1)}>
-          <img src="/icons/rotate_clockwise.svg" width="10px" height="10px" />
-        </Button>
-      </div>
+      <Row gutter={[8, 8]}>
+        <Col span={22} className="stage-wrapper" ref={stageContainer}>
+          <Stage
+            className="konva-stage"
+            width={width * scaleRate}
+            height={height * scaleRate}
+            onMouseDown={baseHandleMouseDown}
+            onMouseMove={baseHandleMouseMove}
+          >
+            <Layer>
+              <Image
+                onMouseDown={baseHandleMouseDownOnImage}
+                onMouseMove={baseHandleMouseMoveOnImage}
+                ref={imageRef}
+                image={image}
+                scaleX={
+                  scaleRate *
+                  `${imageProps.flipX ? -1 : 1}` *
+                  `${imageProps.scale}`
+                }
+                scaleY={
+                  scaleRate *
+                  `${imageProps.flipY ? -1 : 1}` *
+                  `${imageProps.scale}`
+                }
+                width={imageProps.width}
+                height={imageProps.height}
+                rotation={imageProps.rotation}
+                x={(imageProps.width * scaleRate) / 2}
+                y={(imageProps.height * scaleRate) / 2}
+                offsetX={(imageProps.width * scaleRate) / 2}
+                offsetY={(imageProps.height * scaleRate) / 2}
+              />
+            </Layer>
+            {children}
+          </Stage>
+        </Col>
+        <Col span={2} className="buttons-wrapper">
+          {/* <div className="button-container"> */}
+            <Button className="button-item" onClick={() => handleZoom(1.1)}>
+              <img src="/icons/zoom_in.svg" width="10px" height="10px" />
+            </Button>
+            <Button className="button-item" onClick={() => handleZoom(0.9)}>
+              <img src="/icons/zoom_out.svg" width="10px" height="10px" />
+            </Button>
+            <Button className="button-item" onClick={() => handleFlip("flipX")}>
+              <img src="/icons/flip_vertical.svg" width="10px" height="10px" />
+            </Button>
+            <Button className="button-item" onClick={() => handleFlip("flipY")}>
+              <img
+                src="/icons/flip_horizontal.svg"
+                width="10px"
+                height="10px"
+              />
+            </Button>
+            <Button className="button-item" onClick={() => handleRotate(-1)}>
+              <img
+                src="/icons/rotate_counterclockwise.svg"
+                width="10px"
+                height="10px"
+              />
+            </Button>
+            <Button className="button-item" onClick={() => handleRotate(1)}>
+              <img
+                src="/icons/rotate_clockwise.svg"
+                width="10px"
+                height="10px"
+              />
+            </Button>
+          {/* </div> */}
+        </Col>
+      </Row>
     </div>
   );
 };

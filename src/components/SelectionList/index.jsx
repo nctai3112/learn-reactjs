@@ -7,13 +7,11 @@ const SelectionList = ({ items, selected, onChange }) => {
   return (
     <div key={uuidv4()} className="select-list">
       {items.map((item, index) => (
-        <div key={"wrapper-" + uuidv4()} className="select-item-wrapper">
-          <div
-            className="select-item-text"
+        <div key={"wrapper-" + uuidv4()} className={`select-item-wrapper ${selected === index ? "selected" : ""}`}>
+          <div className="select-item-text"
             onClick={() => onChange(index)}
             style={{
-              width: "150px",
-              backgroundColor: selected === index ? item.color : "transparent",
+              backgroundColor: item.color,
               padding: "10px",
               borderRadius: "5px",
               margin: "5px",
@@ -23,14 +21,14 @@ const SelectionList = ({ items, selected, onChange }) => {
           >
             {item.label}
           </div>
-          <div
+          {/* <div
             className="select-item-color"
             style={{
               width: "70px",
               height: "20px",
               backgroundColor: item.color,
             }}
-          ></div>
+          ></div> */}
         </div>
       ))}
     </div>

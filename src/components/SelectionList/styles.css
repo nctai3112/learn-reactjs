@@ -1,16 +1,24 @@
+.select-list {
+  text-align: left;
+}
+
 div.select-item-wrapper {
-  display: grid;
-  grid-template-columns: repeat(
-    2,
-    1fr
-  ); /* this will create 3 columns with equal width */
-  grid-gap: 10px; /* you can adjust the gap between the columns */
-  padding: 0px 10px;
+  display: inline-block; /* Place the inner divs next to each other */
+  margin: 0px;
+  /* background-color: #f0f0f0; Set the background color of the inner divs */
+  /* border-radius: 8px; */
 }
 
 div.select-item-wrapper .select-item-text{
   font-size: 10px;
   font-weight: bold;
+}
+
+div.select-item-wrapper.selected {
+  transform: scale(1.05);
+}
+div.select-item-wrapper.selected .select-item-text {
+  border: 1.5px black solid;
 }
 
 div.select-item-color {

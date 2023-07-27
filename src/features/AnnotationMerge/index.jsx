@@ -79,17 +79,17 @@ function AnnotationMerge(props) {
 
     {
       label: "Spleen",
-      color: "#1D00F3",
+      color: "#3E47F8",
     },
 
     {
       label: "Left Adrenal Gland",
-      color: "#1600D6",
+      color: "#5340FD",
     },
 
     {
       label: "Duodenum",
-      color: "#090086",
+      color: "#54508A",
     },
   ];
   // Handle annotate feature.
@@ -785,73 +785,8 @@ function AnnotationMerge(props) {
           />
           <Divider className="custom-divider" />
           <Row gutter={[16, 16]}>
-            <Col span={18} className="column-wrapper">
+            <Col span={17} className="column-wrapper">
               <div className="middle-column">
-                <div className="header">
-                  <div className="function-controller">
-                    <div className="annotation-method function-item">
-                      <p className="item-title">Annotation Method</p>
-                      <div className="item-content">
-                        <Button
-                          type={
-                            modeController === "bounding_box"
-                              ? "primary"
-                              : "default"
-                          }
-                          className="button-bounding_box"
-                          onClick={(e) => {
-                            setModeController("bounding_box");
-                          }}
-                        >
-                          <img
-                            src="/icons/rectangle.svg"
-                            width="10px"
-                            height="10px"
-                          />
-                          <span className="button-bounding_box-text">
-                            Bounding Box
-                          </span>
-                        </Button>
-                        <Button
-                          type={
-                            modeController === "polygon" ? "primary" : "default"
-                          }
-                          className="button-polygon"
-                          onClick={(e) => {
-                            setModeController("polygon");
-                          }}
-                        >
-                          <img
-                            src="/icons/polygon.svg"
-                            width="10px"
-                            height="10px"
-                          />
-                          <span className="button-polygon-text">Polygon</span>
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="json-data function-item">
-                      <p className="item-title">Annotation Activities</p>
-                      <div className="item-content">
-                        <div className="save-json">
-                          <Button onClick={handleSaveDataAnnotation}>
-                            Save Annotation
-                          </Button>
-                        </div>
-                        <div className="annotate">
-                          <Button onClick={annotateImage}>
-                            Annotate Image
-                          </Button>
-                        </div>
-                        <div className="annotate-status">
-                          <Button onClick={changeAnnotateStatus}>
-                            {annotateStatus}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div className="body-annotate">
                   <BaseImageComponent
                     sendScaleRateToParent={handleScaleRateFromBaseImage}
@@ -942,26 +877,101 @@ function AnnotationMerge(props) {
                     )}
                   </BaseImageComponent>
                 </div>
-              </div>
-            </Col>
-            <Col span={6} className="sidebar">
-              <div className="column">
-                {/* // Hide to remove function add label --> change to available labels! */}
-                <div className="header"></div>
-                <div className="body">
-                  <div className="select-list-label-region">
-                    {defaultLabelList.length === 0 ? (
+                <div className="select-list-label-region">
+                  {/* {defaultLabelList.length === 0 ? (
                       <h2></h2>
                     ) : (
-                      <h4 className="label-list-text">Labeling List</h4>
-                    )}
-                    <SelectionList
-                      key={id}
-                      items={defaultLabelList}
-                      selected={selected}
-                      onChange={setSelected}
-                    />
+                      <h4 className="label-list-text">Label List</h4>
+                    )} */}
+                  <SelectionList
+                    key={id}
+                    items={defaultLabelList}
+                    selected={selected}
+                    onChange={setSelected}
+                  />
+                </div>
+              </div>
+            </Col>
+            <Col span={7} className="sidebar-right-block">
+              <div className="step-item">
+                <h3 className="step-text">Step 1 Choose Method</h3>
+                <div className="step-content">
+                  <div className="item-content">
+                    <Button
+                      type={
+                        modeController === "bounding_box"
+                          ? "primary"
+                          : "default"
+                      }
+                      className="button-bounding_box"
+                      onClick={(e) => {
+                        setModeController("bounding_box");
+                      }}
+                    >
+                      <img
+                        src="/icons/rectangle.svg"
+                        width="10px"
+                        height="10px"
+                      />
+                      <span className="button-bounding_box-text">
+                        Bounding Box
+                      </span>
+                    </Button>
+                    <Button
+                      type={
+                        modeController === "polygon" ? "primary" : "default"
+                      }
+                      className="button-polygon"
+                      onClick={(e) => {
+                        setModeController("polygon");
+                      }}
+                    >
+                      <img
+                        src="/icons/polygon.svg"
+                        width="10px"
+                        height="10px"
+                      />
+                      <span className="button-polygon-text">Polygon</span>
+                    </Button>
                   </div>
+                </div>
+              </div>
+
+              <div className="step-item">
+                <h3 className="step-text">Step 2 Select Label</h3>
+                <div className="step-content">
+                  {" "}
+                  Choose label for the annotating item below the image
+                </div>
+              </div>
+
+              <div className="step-item">
+                <h3 className="step-text">Step 3 Draw Annotation</h3>
+                <div className="step-content"></div>
+              </div>
+
+              <div className="step-item">
+                <h3 className="step-text">Step 4 Save Your Work</h3>
+                <div className="step-content">
+                  <Button onClick={handleSaveDataAnnotation}>
+                    Save Annotation
+                  </Button>
+                </div>
+              </div>
+
+              <div className="step-item">
+                <h3 className="step-text">Step 5 Call Annotation</h3>
+                <div className="step-content">
+                  <Button onClick={annotateImage}>Annotate Image</Button>
+                </div>
+              </div>
+
+              <div className="step-item">
+                <h3 className="step-text">Step 6 Show Result</h3>
+                <div className="step-content">
+                  <Button onClick={changeAnnotateStatus}>
+                    {annotateStatus}
+                  </Button>
                 </div>
               </div>
             </Col>
