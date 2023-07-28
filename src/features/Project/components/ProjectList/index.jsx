@@ -2,10 +2,13 @@ import React from "react";
 import './styles.css'
 import { useNavigate } from "react-router-dom";
 
-function ProjectList({ projectList }) {
+function ProjectList({ projectList, inviteProject = false }) {
   const navigate = useNavigate();
 
   const accessProjectDetail = (projectItem) => {
+    if (inviteProject) {
+      
+    }
     navigate(`/project/${projectItem._id}`);
   }
 

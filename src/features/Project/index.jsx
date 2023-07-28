@@ -20,6 +20,7 @@ function Project(props) {
   const [projectDescription, setProjectDescription] = useState("");
 
   const [projectList, setProjectList] = useState([]);
+  const [projectInviteList, setProjectInviteList] = useState([]);
 
   useEffect(() => {
     getProjectListFromDB(googleLoginData.email);
@@ -49,6 +50,7 @@ function Project(props) {
         const jsonRes = await response.json();
         data = jsonRes.data;
         if (data.projects !== null && data.projects !== undefined) {
+          console.log(data.projects);
           setProjectList(data.projects)
         }
         setLoadingProjectList(false);
@@ -58,6 +60,35 @@ function Project(props) {
         console.log("Error when trying to get projects from author");
         Modal.error({title:"ERROR", content: "Error when trying to get projects from user. Please, try again by reloading this page."});
         setLoadingProjectList(false);
+      });
+
+    fetch("http://localhost:5000/projects/get-project-invite", {
+      method: "POST",
+      headers: {
+        Accept: "*/*",
+        Connection: "keep-alive",
+        "Content-Type": "application/json",
+        "user-agent": "Chrome",
+      },
+      body: JSON.stringify({
+        inviteEmail: email,
+      }),
+    })
+      .then(async (response) => {
+        // Handle the response
+        const jsonRes = await response.json();
+        data = jsonRes.data;
+        if (data !== null && data !== undefined) {
+          console.log(data);
+          setProjectInviteList(data)
+        }
+        // setLoadingProjectList(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log("Error when trying to get projects from author");
+        Modal.error({title:"ERROR", content: "Error when trying to get projects from user. Please, try again by reloading this page."});
+        // setLoadingProjectList(false);
       });
   }
 
@@ -235,6 +266,8 @@ function Project(props) {
                 </Form>
               </Modal>
               <ProjectList projectList={projectList} />
+              <h2>Invited Projects</h2>
+              <ProjectList projectList={projectInviteList} inviteProject={true}/>
             </Space>
           </div>
           <footer>
