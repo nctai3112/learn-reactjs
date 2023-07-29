@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { currentProjectSelector } from "../../redux/selectors";
 import TopBar from "../../components/TopBar";
 import Footer from "../../components/Footer";
+import CommentBlock from "./components/CommentBlock";
 import { ClimbingBoxLoader } from "react-spinners";
 import "./styles.css";
 
@@ -893,6 +894,7 @@ function AnnotationMerge(props) {
               </div>
             </Col>
             <Col span={7} className="sidebar-right-block">
+              <div className = "step-guides-block">
               <div className="step-item">
                 <h3 className="step-text">Step 1 Choose Method</h3>
                 <div className="step-content">
@@ -973,6 +975,12 @@ function AnnotationMerge(props) {
                     {annotateStatus}
                   </Button>
                 </div>
+              </div>
+              </div>
+
+              <div className="comment-region">
+                <h3>Comment</h3>
+                <CommentBlock annotationId={id}/>
               </div>
             </Col>
           </Row>

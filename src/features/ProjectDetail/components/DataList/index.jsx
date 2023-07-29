@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 function DataList(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { projectDetail } = props;
+  const { projectDetail, isInviteProject } = props;
   const driveParentId = projectDetail.driveParent;
   const annotationFileId = projectDetail.urlData;
   const [fileItems, setFileItems] = useState([]);
@@ -411,9 +411,14 @@ function DataList(props) {
           ) : (
             <></>
           )}
-          <Button className="button-change-owner" onClick={popupChangeOwner}>
-            Change Owner
-          </Button>
+          {
+            isInviteProject ? ("") : 
+            (
+            <Button className="button-change-owner" onClick={popupChangeOwner}>
+              Change Owner
+            </Button>
+            )
+          }
           <UploadImages projectDetail={projectDetail} />
           <Button name="Refresh" onClick={refresh} className="button-refresh">
             <img src="/icons/refresh.svg" width="10px" height="10px" />

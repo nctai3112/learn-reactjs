@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import DataList from './components/DataList';
 import { Modal, Divider, Button, Input, Form } from "antd";
 import TopBar from '../../components/TopBar';
@@ -46,7 +46,24 @@ function ProjectDetail(props) {
   }, [id]);
 
   const googleLoginData = useSelector(googleLoginSelector);
-  console.log(googleLoginData);
+
+  const location = useLocation();
+  const [isInviteProject, setInviteProject] = useState(false);
+  useEffect(() => {
+    if (location.state.inviteProject !== undefined) {
+      setInviteProject(location.state.inviteProject);
+    } else {
+      const ownerProject = projectDetail.author;
+      const loginUser = googleLoginData.email;
+      if (ownerProject === loginUser) {
+        setInviteProject(false);
+      }
+      else {
+        setInviteProject(true);
+      }
+    }
+  }, [location, projectDetail, googleLoginData]);
+  
   const [isInvite, setInvite] = useState(false);
   const [inputInviteEmail , setInputInviteEmail] = useState("");
   const invitePeople = (e) => {
@@ -151,8 +168,8 @@ function ProjectDetail(props) {
         </Form>
       </Modal>
       ) : ("")}
-      <Button onClick={invitePeople}>Invitations</Button>
-      <DataList projectDetail={projectDetail} id={projectDetail._id} />
+      {isInviteProject ? ("") : (<Button onClick={invitePeople}>Invitations</Button>)}
+      <DataList projectDetail={projectDetail} id={projectDetail._id} isInviteProject={isInviteProject}/>
       <Footer />
     </div>
   );
