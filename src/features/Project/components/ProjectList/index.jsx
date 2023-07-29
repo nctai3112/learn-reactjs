@@ -2,19 +2,17 @@ import React from "react";
 import './styles.css'
 import { useNavigate } from "react-router-dom";
 
-function ProjectList({ projectList, inviteProject = false }) {
+function ProjectList({ projectList, inviteProject = false}) {
   const navigate = useNavigate();
-
   const accessProjectDetail = (projectItem) => {
-    if (inviteProject) {
-      
-    }
     navigate(`/project/${projectItem._id}`);
   }
 
   return (
     <div className="projects-list">
-      {projectList.map((project) => {
+      {(Array.isArray(projectList)) && projectList.map((project) => {
+        console.log("Checking rendering")
+        console.log(project)
         return (
           <div
             className="project-item"

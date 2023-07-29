@@ -79,7 +79,6 @@ function Project(props) {
         const jsonRes = await response.json();
         data = jsonRes.data;
         if (data !== null && data !== undefined) {
-          console.log(data);
           setProjectInviteList(data)
         }
         // setLoadingProjectList(false);
@@ -266,7 +265,7 @@ function Project(props) {
                 </Form>
               </Modal>
               <ProjectList projectList={projectList} />
-              <h2>Invited Projects</h2>
+              {(Array.isArray(projectInviteList) && projectInviteList.length > 0) ? (<h2>Shared Projects</h2>): ("")}
               <ProjectList projectList={projectInviteList} inviteProject={true}/>
             </Space>
           </div>
