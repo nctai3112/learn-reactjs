@@ -168,7 +168,7 @@ function ProjectDetail(props) {
         </Form>
       </Modal>
       ) : ("")}
-      {isInviteProject ? ("") : (<Button onClick={invitePeople}>Invitations</Button>)}
+      {isInviteProject ? ("") : (<Button onClick={invitePeople}>Share Project</Button>)}
       <DataList projectDetail={projectDetail} id={projectDetail._id} isInviteProject={isInviteProject}/>
       <Footer />
     </div>
