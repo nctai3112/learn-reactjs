@@ -75,22 +75,22 @@ function AnnotationMerge(props) {
     },
     {
       label: "Liver",
-      color: "#9D0000",
+      color: "#EF6262",
     },
 
     {
       label: "Spleen",
-      color: "#3E47F8",
+      color: "#DBC4F0",
     },
 
     {
       label: "Left Adrenal Gland",
-      color: "#5340FD",
+      color: "#7C73C0",
     },
 
     {
       label: "Duodenum",
-      color: "#54508A",
+      color: "#9288F8",
     },
   ];
   // Handle annotate feature.
@@ -762,6 +762,31 @@ function AnnotationMerge(props) {
     }
   };
 
+  const sideBarColRef = useRef(null);
+  const stepGuideRef = useRef(null);
+  const [sideBarColHeight, setSideBarColHeight] = useState(0);
+  const [stepGuideHeight, setStepGuideHeight] = useState(0);
+
+  const [cmtHeight, setCmtHeight] = useState(0);
+
+  useEffect(() => {
+    console.log("HEREEEE")
+    if (sideBarColRef.current && stepGuideRef.current) {
+      console.log("Hereeee")
+      console.log(sideBarColRef.current);
+      console.log(stepGuideRef.current);
+      setCmtHeight(
+        sideBarColRef.current.clientHeight - stepGuideRef.current.clientHeight - 32
+      );
+      // console.log("Get height:", sideBarColRef.current.clientHeight);
+      // setSideBarColHeight(sideBarColRef.current.clientHeight);
+    }
+  }, []);
+  useEffect(() => {
+    console.log("CmtHeight");
+    console.log(cmtHeight);
+  }, [cmtHeight])
+
   return (
     <div className="outer-wrapper">
       {isLoading || isLoadingSaveAnnotation || isLoadingData ? (
@@ -893,94 +918,96 @@ function AnnotationMerge(props) {
                 </div>
               </div>
             </Col>
-            <Col span={7} className="sidebar-right-block">
-              <div className = "step-guides-block">
-              <div className="step-item">
-                <h3 className="step-text">Step 1 Choose Method</h3>
-                <div className="step-content">
-                  <div className="item-content">
-                    <Button
-                      type={
-                        modeController === "bounding_box"
-                          ? "primary"
-                          : "default"
-                      }
-                      className="button-bounding_box"
-                      onClick={(e) => {
-                        setModeController("bounding_box");
-                      }}
-                    >
-                      <img
-                        src="/icons/rectangle.svg"
-                        width="10px"
-                        height="10px"
-                      />
-                      <span className="button-bounding_box-text">
-                        Bounding Box
-                      </span>
+            <Col span={7} className="sidebar-right-block" ref={sideBarColRef}>
+              <div className="step-guides-block" ref={stepGuideRef}>
+                <div className="step-item">
+                  <h3 className="step-text">Step 1 Choose Method</h3>
+                  <div className="step-content">
+                    <div className="item-content">
+                      <Button
+                        type={
+                          modeController === "bounding_box"
+                            ? "primary"
+                            : "default"
+                        }
+                        className="button-bounding_box"
+                        onClick={(e) => {
+                          setModeController("bounding_box");
+                        }}
+                      >
+                        <img
+                          src="/icons/rectangle.svg"
+                          width="10px"
+                          height="10px"
+                        />
+                        <span className="button-bounding_box-text">
+                          Bounding Box
+                        </span>
+                      </Button>
+                      <Button
+                        type={
+                          modeController === "polygon" ? "primary" : "default"
+                        }
+                        className="button-polygon"
+                        onClick={(e) => {
+                          setModeController("polygon");
+                        }}
+                      >
+                        <img
+                          src="/icons/polygon.svg"
+                          width="10px"
+                          height="10px"
+                        />
+                        <span className="button-polygon-text">Polygon</span>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="step-item">
+                  <h3 className="step-text">Step 2 Select Label</h3>
+                  <div className="step-content">
+                    {" "}
+                    Choose label for the annotating item below the image
+                  </div>
+                </div>
+
+                <div className="step-item">
+                  <h3 className="step-text">Step 3 Draw Annotation</h3>
+                  <div className="step-content"></div>
+                </div>
+
+                <div className="step-item">
+                  <h3 className="step-text">Step 4 Save Your Work</h3>
+                  <div className="step-content">
+                    <Button onClick={handleSaveDataAnnotation}>
+                      Save Annotation
                     </Button>
-                    <Button
-                      type={
-                        modeController === "polygon" ? "primary" : "default"
-                      }
-                      className="button-polygon"
-                      onClick={(e) => {
-                        setModeController("polygon");
-                      }}
-                    >
-                      <img
-                        src="/icons/polygon.svg"
-                        width="10px"
-                        height="10px"
-                      />
-                      <span className="button-polygon-text">Polygon</span>
+                  </div>
+                </div>
+
+                <div className="step-item">
+                  <h3 className="step-text">Step 5 Call Annotation</h3>
+                  <div className="step-content">
+                    <Button onClick={annotateImage}>Annotate Image</Button>
+                  </div>
+                </div>
+
+                <div className="step-item">
+                  <h3 className="step-text">Step 6 Show Result</h3>
+                  <div className="step-content">
+                    <Button onClick={changeAnnotateStatus}>
+                      {annotateStatus}
                     </Button>
                   </div>
                 </div>
               </div>
 
-              <div className="step-item">
-                <h3 className="step-text">Step 2 Select Label</h3>
-                <div className="step-content">
-                  {" "}
-                  Choose label for the annotating item below the image
-                </div>
-              </div>
-
-              <div className="step-item">
-                <h3 className="step-text">Step 3 Draw Annotation</h3>
-                <div className="step-content"></div>
-              </div>
-
-              <div className="step-item">
-                <h3 className="step-text">Step 4 Save Your Work</h3>
-                <div className="step-content">
-                  <Button onClick={handleSaveDataAnnotation}>
-                    Save Annotation
-                  </Button>
-                </div>
-              </div>
-
-              <div className="step-item">
-                <h3 className="step-text">Step 5 Call Annotation</h3>
-                <div className="step-content">
-                  <Button onClick={annotateImage}>Annotate Image</Button>
-                </div>
-              </div>
-
-              <div className="step-item">
-                <h3 className="step-text">Step 6 Show Result</h3>
-                <div className="step-content">
-                  <Button onClick={changeAnnotateStatus}>
-                    {annotateStatus}
-                  </Button>
-                </div>
-              </div>
-              </div>
-
-              <div className="comment-region">
-                <h3>Comment</h3>
-                <CommentBlock annotationId={id}/>
+              <div
+                className="comment-region"
+                style={{ height: `${cmtHeight}px`}}
+              >
+                <CommentBlock annotationId={id} commentHeight={cmtHeight}/>
               </div>
             </Col>
           </Row>

@@ -3,11 +3,12 @@ import { Form, Input, Button } from "antd";
 import { CommentOutlined } from '@ant-design/icons';
 import { googleLoginSelector } from "../../../../redux/selectors";
 import { useSelector } from "react-redux";
+import "./styles.css"
 
 function CommentBlock(props) {
     const googleLoginData = useSelector(googleLoginSelector);
     const loginEmail = googleLoginData.email;
-    const { annotationId } = props;
+    const { annotationId, commentHeight } = props;
 
     const onFinish = async (values) => {
         console.log('Comment:', values.comment);
@@ -56,33 +57,40 @@ function CommentBlock(props) {
 
     useEffect(() => {
         updateCommentList();
-    });
+    }, []);
+
+    useEffect(() => {
+      console.log(commentList);
+    }, [commentList]);
 
     return (
-        <div className = "comment-block">
-            <div className ="comment-list">
-            {
-                (commentList && Array.isArray(commentList) && commentList.length > 0) ? (
-                    commentList.map((commentItem) => {
-                        return (
-                            <div className="comment-item">
-                                {commentItem.comment}
-                            </div>
-                        )
-                    })
-                ) : ("")
-            }
-            </div>
-            <Form onFinish={onFinish}>
-                <Form.Item name="comment">
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Input style={{ flex: 1 }} />
-                        <Button type="primary" htmlType="submit" icon={<CommentOutlined />} />
-                    </div>
-                </Form.Item>
-            </Form>
+      <div className="comment-block" style={{ height: `${commentHeight}px` }}>
+        <div className="comment-list">
+          {commentList && Array.isArray(commentList) && commentList.length > 0
+            ? commentList.map((commentItem) => {
+                return (
+                  <div className="comment-item">{commentItem.comment}</div>
+                );
+              })
+            : ""}
         </div>
-    )
+        <Form onFinish={onFinish} className="comment-input">
+          <Form.Item name="comment">
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Input
+                placeholder="Input your comment..."
+                style={{ flex: 1 }}
+              />
+              <Button
+                type="primary"
+                htmlType="submit"
+                icon={<CommentOutlined />}
+              />
+            </div>
+          </Form.Item>
+        </Form>
+      </div>
+    );
 }
 
 export default CommentBlock;
