@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Modal } from 'antd';
 import useDrivePicker from "react-google-drive-picker";
 import { Button } from "antd";
@@ -10,8 +10,7 @@ import { accessTokenSelector } from "../../../../redux/selectors";
 function UploadImages(props) {
   const accessTokenData = useSelector(accessTokenSelector);
   const {projectDetail} = props;
-  const [openPicker, data, authResponse] = useDrivePicker();
-  // const customViewsArray = [new google.picker.DocsView()]; // custom view
+  const [openPicker] = useDrivePicker();
   const handleOpenPicker = () => {
     try {
       openPicker({
@@ -43,7 +42,7 @@ function UploadImages(props) {
 
   return (
     <Button onClick={() => handleOpenPicker()} className="button-upload-drive">
-      <img src="/icons/upload_cloud.svg" width="10px" height="10px"/>
+      <img src="/icons/upload_cloud.svg" width="10px" height="10px" alt="Upload Drive"/>
       <span className="button-upload-drive-text">
         Import Data
       </span>

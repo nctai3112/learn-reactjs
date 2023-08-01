@@ -24,7 +24,7 @@ function Project(props) {
 
   useEffect(() => {
     getProjectListFromDB(googleLoginData.email);
-  }, []);
+  }, [googleLoginData.email]);
 
   const onClickCreateProject = (e) => {
     setProjectVisible(true);
@@ -50,7 +50,6 @@ function Project(props) {
         const jsonRes = await response.json();
         data = jsonRes.data;
         if (data.projects !== null && data.projects !== undefined) {
-          console.log(data.projects);
           setProjectList(data.projects)
         }
         setLoadingProjectList(false);
@@ -155,7 +154,7 @@ function Project(props) {
                   }),
                 })
                   .then(async (response) => {
-                    const dataResponse = await response.json();
+                    // const dataResponse = await response.json();
                     // Update project list after create a new project
                     getProjectListFromDB(email);
                     // End
@@ -216,7 +215,7 @@ function Project(props) {
             >
               <div className="project-above-section">
                 <div className="left-section">
-                  <img src="/images/all-projects.png" />
+                  <img src="/images/all-projects.png" alt="All Project"/>
                   <h3 className="all-project-text">All Projects</h3>
                 </div>
                 <div className="right-section">

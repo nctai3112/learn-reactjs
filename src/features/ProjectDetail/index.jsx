@@ -29,17 +29,24 @@ function ProjectDetail(props) {
           const jsonRes = await response.json();
           data = jsonRes.data;
           if (data.project !== null && data.project !== undefined) {
+            Modal.info({ title: "Notice", content: "Load data successfully" });
             setProjectDetail(data.project);
+          }else {
+            Modal.error({ title: "ERROR", content: "Error load data from server" });
           }
         })
         .catch((error) => {
           // Handle the error
           Modal.error({
             title: "ERROR",
-            content: "Server error when trying to get project detail.",
+            content: "Server error when trying to get project information.",
           });
         });
     } catch(error) {
+      Modal.error({
+        title: "ERROR",
+        content: "Server error when trying to get project information.",
+      });
       console.log("Error get information project");
       console.log(error);
     }
@@ -63,7 +70,7 @@ function ProjectDetail(props) {
       }
     }
   }, [location, projectDetail, googleLoginData]);
-  
+
   const [isInvite, setInvite] = useState(false);
   const [inputInviteEmail , setInputInviteEmail] = useState("");
   const invitePeople = (e) => {
@@ -72,7 +79,7 @@ function ProjectDetail(props) {
 
   const submitInvitePerson = (e) => {
     const emailOwner = googleLoginData.email;
-    
+
     if (emailOwner && inputInviteEmail) {
       try {
         fetch("http://localhost:5000/projects/invite-people", {
@@ -93,22 +100,27 @@ function ProjectDetail(props) {
           // Handle the response
           const jsonRes = await response.json();
           let data = jsonRes.data;
-          console.log("Here");
           console.log(data);
-          // setLoadingSaveAnnotation(false);
+          Modal.info({title: "Notice", content: "Share project successfully"})
         })
         .catch((error) => {
           // Handle the error
-          console.log("Error update annotation.json");
+          Modal.error({
+            title: "Error",
+            content: "Error share project try again later.",
+          });
+          console.log("Error invite people");
           console.log(error);
-          // setLoadingSaveAnnotation(false);
         });
       }
       catch (e) {
-        console.log("Error invite");
+        Modal.error({
+          title: "Error",
+          content: "Error share project try again later.",
+        });
+        console.log("Error invite people");
       }
     }
-    console.log(inputInviteEmail)
     setInputInviteEmail("");
     setInvite(false);
   }
@@ -119,60 +131,77 @@ function ProjectDetail(props) {
 
   return (
     <div className="project-detail-page-wrapper">
-      <TopBar topText={`Projects / ${projectDetail.title}`} backButton={true}/>
+      <TopBar
+        topText={`Projects / ${projectDetail.title}`}
+        backButton={true}
+      />
       <Divider className="divider-custom" />
-      {
-        projectDetail.description ? (
-          <div className="project-description-wrapper">
-            <p className="project-description-text">{projectDetail.description}</p>
-          </div>
-        ) : ("")
-      }
+      {projectDetail.description ? (
+        <div className="project-description-wrapper">
+          <p className="project-description-text">
+            {projectDetail.description}
+          </p>
+        </div>
+      ) : (
+        ""
+      )}
 
       {isInvite ? (
         <Modal
-        title="Share Project"
-        open={isInvite}
-        onCancel={() => setInvite(false)}
-        footer={null}
-      >
-        <Form layout="vertical">
-          <Form.Item
-            name="email"
-            label="E-mail"
-            rules={[
-              {
-                type: 'email',
-                message: 'The input is not valid E-mail!',
-              },
-              {
-                required: true,
-                message: 'Please input your E-mail!',
-              },
-            ]}
-          >
-            <Input 
-              value={inputInviteEmail}
-              onChange={handleChangeInputInviteEmail}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={submitInvitePerson}
+          title="Share Project"
+          open={isInvite}
+          onCancel={() => setInvite(false)}
+          footer={null}
+        >
+          <Form layout="vertical">
+            <Form.Item
+              name="email"
+              label="E-mail"
+              rules={[
+                {
+                  type: "email",
+                  message: "The input is not valid E-mail!",
+                },
+                {
+                  required: true,
+                  message: "Please input your E-mail!",
+                },
+              ]}
             >
-              Save
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
-      ) : ("")}
-      {isInviteProject ? ("") : (<Button onClick={invitePeople}>Share Project</Button>)}
-      <DataList projectDetail={projectDetail} id={projectDetail._id} isInviteProject={isInviteProject}/>
+              <Input
+                value={inputInviteEmail}
+                onChange={handleChangeInputInviteEmail}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={submitInvitePerson}
+              >
+                Save
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      ) : (
+        ""
+      )}
+      {isInviteProject ? (
+        ""
+      ) : (
+        <Button className="button-share-project" onClick={invitePeople}>
+          Share Project
+        </Button>
+      )}
+      <DataList
+        projectDetail={projectDetail}
+        id={projectDetail._id}
+        isInviteProject={isInviteProject}
+      />
       <Footer />
     </div>
-  );
+  )
 }
 
 export default ProjectDetail;

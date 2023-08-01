@@ -5,7 +5,7 @@ import BaseImageComponent from "../BaseImageComponent";
 import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
 import SelectionList from "../../components/SelectionList";
-import { Button, Modal, Form, Input, Divider, Layout, Row, Col } from "antd";
+import { Button, Modal, Divider, Row, Col } from "antd";
 import { useParams } from "react-router-dom"
 import { useSelector } from "react-redux";
 import { currentProjectSelector } from "../../redux/selectors";
@@ -75,22 +75,19 @@ function AnnotationMerge(props) {
     },
     {
       label: "Liver",
-      color: "#EF6262",
+      color: "#9D0000",
     },
-
     {
       label: "Spleen",
-      color: "#DBC4F0",
+      color: "#3E47F8",
     },
-
     {
       label: "Left Adrenal Gland",
-      color: "#7C73C0",
+      color: "#5340FD",
     },
-
     {
       label: "Duodenum",
-      color: "#9288F8",
+      color: "#54508A",
     },
   ];
   // Handle annotate feature.
@@ -153,6 +150,7 @@ function AnnotationMerge(props) {
                     id: item.id,
                     resultFileId: item.resultFileId,
                   });
+                  return item;
                 });
               }
               if (
@@ -164,6 +162,7 @@ function AnnotationMerge(props) {
                     id: item.id,
                     resultFileId: item.resultFileId,
                   });
+                  return item;
                 });
               }
               setAnnotatedResult({
@@ -179,6 +178,10 @@ function AnnotationMerge(props) {
           setCurrentAnnotationData([]);
           console.log("Error get all data relating to current annotate image.");
           console.log(error);
+          Modal.error({
+            title: "ERROR",
+            content: "Error get all data relating to current annotate image, please refresh the page to try again.",
+          });
         });
     }
   };
@@ -316,6 +319,7 @@ function AnnotationMerge(props) {
       let copyPoints = pointsArray;
       copyPoints.map((point) => {
         result.push([point[0] + e.target.x(), point[1] + e.target.y()]);
+        return point;
       });
       const newPolygons = polygons.map((pointArr) => {
         if (JSON.stringify(pointArr.points) === JSON.stringify(copyPoints)) {
@@ -557,15 +561,17 @@ function AnnotationMerge(props) {
         }),
       })
         .then(async (response) => {
-          // Handle the response
-          const jsonRes = await response.json();
-          let data = jsonRes.data;
           setLoadingSaveAnnotation(false);
         })
         .catch((error) => {
           // Handle the error
           console.log("Error update annotation.json");
           console.log(error);
+          Modal.error({
+            title: "ERROR",
+            content:
+              "Error update annotation information, click the Save Annotation to try again.",
+          });
           setLoadingSaveAnnotation(false);
         });
     }
@@ -615,6 +621,7 @@ function AnnotationMerge(props) {
                   resultFileId: resultItem,
                 });
               }
+              return resultItem
             });
           }
           setAnnotatedResult({
@@ -627,8 +634,13 @@ function AnnotationMerge(props) {
         })
         .catch((error) => {
           // Handle the error
+          Modal.error({
+            title: "ERROR",
+            content:
+              "Error call AI model for annotating image. Please try again",
+          });
           setLoading(false);
-          console.log("Error annotating imagee!");
+          console.log("Error annotating image!");
           console.log(error);
         });
     }
@@ -657,6 +669,7 @@ function AnnotationMerge(props) {
             imageObjBB.src = `https://drive.google.com/uc?export=view&id=${fileIdEncoded}`;
             arrayBBoxImageResult.push(imageObjBB);
           }
+          return annotatedBBox;
         });
         setBBoxResult(arrayBBoxImageResult);
       }
@@ -672,6 +685,7 @@ function AnnotationMerge(props) {
             imageObjPoly.src = `https://drive.google.com/uc?export=view&id=${imageSrcEncoded}`;
             arrayPolyImageResult.push(imageObjPoly);
           }
+          return annotatedPolygon;
         });
         setPolyResult(arrayPolyImageResult);
       }
@@ -732,18 +746,19 @@ function AnnotationMerge(props) {
           })
             .then(async (response) => {
               // Handle the response
-              const jsonRes = await response.json();
-              let data = jsonRes.data;
+              // const jsonRes = await response.json();
+              // let data = jsonRes.data;
             })
             .catch((error) => {
               // Handle the error
+              Modal.error({title: "ERROR", content: "Error save annotation result to database, please try again."})
               console.log("Error add result annotation.json");
               console.log(error);
             });
         }
       }
     }
-  }, [annotatedResult]);
+  }, [annotatedResult, annotationData, annotationId, currentAnnotationData, id, scaleRate]);
 
   const handleScaleRateFromBaseImage = (data) => {
     setScaleRate(data);
@@ -764,28 +779,15 @@ function AnnotationMerge(props) {
 
   const sideBarColRef = useRef(null);
   const stepGuideRef = useRef(null);
-  const [sideBarColHeight, setSideBarColHeight] = useState(0);
-  const [stepGuideHeight, setStepGuideHeight] = useState(0);
-
   const [cmtHeight, setCmtHeight] = useState(0);
 
   useEffect(() => {
-    console.log("HEREEEE")
     if (sideBarColRef.current && stepGuideRef.current) {
-      console.log("Hereeee")
-      console.log(sideBarColRef.current);
-      console.log(stepGuideRef.current);
       setCmtHeight(
         sideBarColRef.current.clientHeight - stepGuideRef.current.clientHeight - 32
       );
-      // console.log("Get height:", sideBarColRef.current.clientHeight);
-      // setSideBarColHeight(sideBarColRef.current.clientHeight);
     }
   }, []);
-  useEffect(() => {
-    console.log("CmtHeight");
-    console.log(cmtHeight);
-  }, [cmtHeight])
 
   return (
     <div className="outer-wrapper">
@@ -888,7 +890,7 @@ function AnnotationMerge(props) {
                       </Layer>
                     )}
                     {showAnnotated && (
-                      <Layer opacity={0.8}>
+                      <Layer opacity={1}>
                         {polyResult.map((imagePolyItem, index) => (
                           <Image
                             key={index}
@@ -939,6 +941,7 @@ function AnnotationMerge(props) {
                           src="/icons/rectangle.svg"
                           width="10px"
                           height="10px"
+                          alt="Bounding Box"
                         />
                         <span className="button-bounding_box-text">
                           Bounding Box
@@ -957,6 +960,7 @@ function AnnotationMerge(props) {
                           src="/icons/polygon.svg"
                           width="10px"
                           height="10px"
+                          alt="Polygon"
                         />
                         <span className="button-polygon-text">Polygon</span>
                       </Button>

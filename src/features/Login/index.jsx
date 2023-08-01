@@ -14,17 +14,18 @@ function LoginFeature(props) {
     if (googleLoginData) {
       navigate("/projects");
     }
-  }, googleLoginData);
+  }, [googleLoginData, navigate]);
 
   return (
     <div className="login-page">
       <div className="left-section">
         <h1 className="intro-title">MEDICAL ANNOTATION</h1>
-        <h2 className="intro-text">
-          This is the Demo version for Annotation app. Here, you can upload your
-          images to our website and then perform a simple annotation operation
-          with them.
-        </h2>
+        <h3 className="intro-text">
+          Our website supports annotate image with AI model 13 labels including: <br></br>
+          Right Adrenal Gland, Esophagus, Aorta, Stomach, Pancreas, Right
+          kidney, Gallbladder, Left Kidney, Inferior Vena Cava, Liver, Spleen,
+          Left Adrenal Gland, Duodenum
+        </h3>
       </div>
       <div className="vertical-line"></div>
       <div className="right-section">

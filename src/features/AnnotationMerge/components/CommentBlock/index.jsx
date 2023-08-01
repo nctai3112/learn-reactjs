@@ -11,7 +11,6 @@ function CommentBlock(props) {
     const { annotationId, commentHeight } = props;
 
     const onFinish = async (values) => {
-        console.log('Comment:', values.comment);
         const response = await fetch("http://localhost:5000/projects/comment", {
             method: "POST",
             headers: {
@@ -27,10 +26,6 @@ function CommentBlock(props) {
             })
         });
         if (response.ok) {
-            const data = await response.json();
-            console.log("this is data json");
-            console.log(data)
-            console.log("HERE!!!");
             updateCommentList();
         }
     };
@@ -56,12 +51,8 @@ function CommentBlock(props) {
     }
 
     useEffect(() => {
-        updateCommentList();
+      updateCommentList();
     }, []);
-
-    useEffect(() => {
-      console.log(commentList);
-    }, [commentList]);
 
     return (
       <div className="comment-block" style={{ height: `${commentHeight}px` }}>

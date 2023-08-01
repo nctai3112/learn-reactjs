@@ -54,3 +54,9 @@ html, body {
   width: 1px;
   background-color: lightgray;
 }
+
+.intro-text {
+  font-size: 15px;
+  font-weight: Bold;
+  line-height: 20px;
+}

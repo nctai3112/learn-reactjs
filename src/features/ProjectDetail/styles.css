@@ -1,3 +1,11 @@
+.project-detail-page-wrapper {
+  width: 100%;
+}
+
+.button-share-project {
+  margin-top: 5px;
+}
+
 .divider-custom {
   margin: 0 0;
 }
