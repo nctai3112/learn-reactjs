@@ -789,6 +789,60 @@ function AnnotationMerge(props) {
     }
   }, []);
 
+  const predictNextImage = async (e) => {
+    console.log("Click predict next image.")
+    e.preventDefault();
+    const currentAnnotationId = id;
+    const arrayResultFileId = preprocessResultFile(annotatedResult);
+    const annotationJsonFileId = currentProject.urlData;
+
+    const responsePredictNextImage = await fetch(
+      "http://localhost:5000/drive/predict-next",
+      {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          Connection: "keep-alive",
+          "Content-Type": "application/json",
+          "user-agent": "Chrome",
+        },
+        body: JSON.stringify({
+          annotationJsonFileId: annotationJsonFileId,
+          currentAnnotationId: currentAnnotationId,
+          arrayResultFileId: arrayResultFileId,
+        }),
+      }
+    );
+        if (responsePredictNextImage.ok) {
+          const responseReturn = await responsePredictNextImage.json();
+          console.log(responseReturn);
+        }
+  }
+
+
+  const preprocessResultFile = (annotatedResult) => {
+    const arrayResult = [];
+    if (annotatedResult) {
+      if (annotatedResult['bounding_box'] && annotatedResult['bounding_box'].length > 0) {
+        annotatedResult['bounding_box'].map(boundingBoxResult => {
+          if (boundingBoxResult && boundingBoxResult['resultFileId']) {
+            arrayResult.push(boundingBoxResult['resultFileId']);
+          }
+          return boundingBoxResult;
+        })
+      }
+      if (annotatedResult["polygon"] && annotatedResult["polygon"].length > 0) {
+        annotatedResult["polygon"].map((polygonResult) => {
+          if (polygonResult && polygonResult["resultFileId"]) {
+            arrayResult.push(polygonResult["resultFileId"]);
+          }
+          return polygonResult;
+        });
+      }
+    }
+    return arrayResult;
+  }
+
   return (
     <div className="outer-wrapper">
       {isLoading || isLoadingSaveAnnotation || isLoadingData ? (
@@ -1005,13 +1059,22 @@ function AnnotationMerge(props) {
                     </Button>
                   </div>
                 </div>
+
+                <div className="step-item">
+                  <h3 className="step-text">Step 7 Inference</h3>
+                  <div className="step-content">
+                    <Button onClick={predictNextImage}>
+                      Predict Next Image
+                    </Button>
+                  </div>
+                </div>
               </div>
 
               <div
                 className="comment-region"
-                style={{ height: `${cmtHeight}px`}}
+                style={{ height: `${cmtHeight}px` }}
               >
-                <CommentBlock annotationId={id} commentHeight={cmtHeight}/>
+                <CommentBlock annotationId={id} commentHeight={cmtHeight} />
               </div>
             </Col>
           </Row>
