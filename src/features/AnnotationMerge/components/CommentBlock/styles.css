@@ -5,6 +5,7 @@
   border-radius: 10px;
   border: black solid 1px;
   padding: 15px;
+  padding-bottom: 25px;
   display: grid;
   grid-template-rows: 85% 15%;
   flex-direction: column;

@@ -6,7 +6,7 @@ import * as _ from "lodash";
 import { Polygon } from "../Polygons/Polygon";
 import SelectionList from "../../components/SelectionList";
 import { Button, Modal, Divider, Row, Col } from "antd";
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux";
 import { currentProjectSelector } from "../../redux/selectors";
 import TopBar from "../../components/TopBar";
@@ -16,6 +16,7 @@ import { ClimbingBoxLoader } from "react-spinners";
 import "./styles.css";
 
 function AnnotationMerge(props) {
+  const navigate = useNavigate();
   // Param passing from parent.
   const currentProject = useSelector(currentProjectSelector);
   const { id } = useParams();
@@ -24,6 +25,7 @@ function AnnotationMerge(props) {
   const [isLoading, setLoading] = useState(false);
   const [isLoadingSaveAnnotation, setLoadingSaveAnnotation] = useState(false);
   const [isLoadingData, setLoadingData] = useState(false);
+  const [isLoadingPredictNext, setLoadingPredictNext] = useState(false);
   // Image scale handling + rendering.
   const [width, setWidth] = useState(513);
   const [height, setHeight] = useState(513);
@@ -108,6 +110,37 @@ function AnnotationMerge(props) {
   //    setAnnotatedResult
   // ]
 
+  // IMPLEMENTING - LOADING IMAGE PREDICT FROM PREVIOUS FRAME
+  const [predictFromPrevValue, setPredictFromPrevValue] = useState([]);
+  const [arrayImagePredictRendering, setArrayImagePredictRendering] = useState([]);
+  const [isShowPredictFromPrev, setShowPredictFromPrev] = useState(true);
+  const showPredictPrevImages = (e) => {
+    e.preventDefault();
+    if (isShowPredictFromPrev) {
+      setShowPredictFromPrev(false);
+    }else {
+      setShowPredictFromPrev(true);
+    }
+  };
+  //DOINGGGGGGGGGGGGGG
+  useEffect(() => {
+    if (predictFromPrevValue.length > 0) {
+      const arrayTmp = [];
+      predictFromPrevValue.map((predictFileId) => {
+        if (predictFileId) {
+          let imgObjPredict = new window.Image();
+          let fileIdEncoded = encodeURIComponent(predictFileId);
+          imgObjPredict.src = `https://drive.google.com/uc?export=view&id=${fileIdEncoded}`;
+          arrayTmp.push(imgObjPredict);
+        }
+        return predictFileId;
+      })
+      if (arrayTmp.length > 0) {
+        setArrayImagePredictRendering(arrayTmp);
+      }
+    }
+  }, [predictFromPrevValue])
+
   // IMPLEMENTING - STORE ALL RESULT IN 1 FOLDER DRIVE.
   // LOADING THE annotationData from annotation.json file.
   const getCurrentAnnotationData = (annotationId) => {
@@ -132,6 +165,9 @@ function AnnotationMerge(props) {
 
             // fileItem: current file chosen from project.
             const fileItem = dataJson.find((file) => file.id === id);
+            if (fileItem && fileItem.predict_next_image) {
+              setPredictFromPrevValue(fileItem.predict_next_image);
+            }
             if (fileItem && fileItem.annotationData) {
               const importData = fileItem.annotationData;
               setAnnotationData(importData);
@@ -547,6 +583,7 @@ function AnnotationMerge(props) {
 
     if (newAnnotation && newAnnotation.length > 0) {
       setLoadingSaveAnnotation(true);
+      console.log("Update json 1")
       fetch("http://localhost:5000/drive/update-json", {
         method: "POST",
         headers: {
@@ -731,6 +768,7 @@ function AnnotationMerge(props) {
 
         // Update annotation.json file if data valid.
         if (newAnnotation && newAnnotation.length > 0) {
+          console.log("Update json 2")
           fetch("http://localhost:5000/drive/update-json", {
             method: "POST",
             headers: {
@@ -758,7 +796,7 @@ function AnnotationMerge(props) {
         }
       }
     }
-  }, [annotatedResult, annotationData, annotationId, currentAnnotationData, id, scaleRate]);
+  }, [annotatedResult, annotationId, scaleRate]);
 
   const handleScaleRateFromBaseImage = (data) => {
     setScaleRate(data);
@@ -784,7 +822,7 @@ function AnnotationMerge(props) {
   useEffect(() => {
     if (sideBarColRef.current && stepGuideRef.current) {
       setCmtHeight(
-        sideBarColRef.current.clientHeight - stepGuideRef.current.clientHeight - 32
+        sideBarColRef.current.clientHeight - stepGuideRef.current.clientHeight - 55
       );
     }
   }, []);
@@ -795,7 +833,9 @@ function AnnotationMerge(props) {
     const currentAnnotationId = id;
     const arrayResultFileId = preprocessResultFile(annotatedResult);
     const annotationJsonFileId = currentProject.urlData;
-
+    const resultFolderId = currentProject.resultFolderId;
+    console.log("resultFolderId:", resultFolderId);
+    setLoadingPredictNext(true);
     const responsePredictNextImage = await fetch(
       "http://localhost:5000/drive/predict-next",
       {
@@ -810,13 +850,70 @@ function AnnotationMerge(props) {
           annotationJsonFileId: annotationJsonFileId,
           currentAnnotationId: currentAnnotationId,
           arrayResultFileId: arrayResultFileId,
+          resultFolderId: resultFolderId,
+          predictFromPrev: predictFromPrevValue,
         }),
       }
     );
-        if (responsePredictNextImage.ok) {
-          const responseReturn = await responsePredictNextImage.json();
-          console.log(responseReturn);
+    setLoadingPredictNext(false);
+    if (responsePredictNextImage.ok) {
+      const responseReturn = await responsePredictNextImage.json();
+      if (
+        responseReturn.data.nextFrameId &&
+        responseReturn.data.imagePredictId
+      ) {
+        console.log("return data:", responseReturn)
+        const nextFrameAnnotationId = responseReturn.data.nextFrameId;
+        const resultPredictNext = responseReturn.data.imagePredictId;
+        const annotationDataDataData = currentAnnotationData;
+        console.log("currentAnnotationData");
+        console.log(currentAnnotationData)
+        const newAnnotation = annotationDataDataData.map((annotationItem) => {
+          if (annotationItem.id === nextFrameAnnotationId) {
+            annotationItem.predict_next_image = resultPredictNext;
+          }
+          return annotationItem
+        });
+        console.log(newAnnotation);
+        console.log("Ready to navigate...");
+
+
+        if (newAnnotation && newAnnotation.length > 0) {
+          setLoadingSaveAnnotation(true);
+          console.log("Update json 3")
+          console.log(newAnnotation);
+          fetch("http://localhost:5000/drive/update-json", {
+            method: "POST",
+            headers: {
+              Accept: "*/*",
+              Connection: "keep-alive",
+              "Content-Type": "application/json",
+              "user-agent": "Chrome",
+            },
+            body: JSON.stringify({
+              annotationFileId: annotationId,
+              fileContent: JSON.stringify(newAnnotation),
+            }),
+          })
+            .then(async (response) => {
+              setLoadingSaveAnnotation(false);
+            })
+            .catch((error) => {
+              // Handle the error
+              console.log("Error update annotation.json");
+              console.log(error);
+              Modal.error({
+                title: "ERROR",
+                content:
+                  "Error update annotation information, click the Save Annotation to try again.",
+              });
+              setLoadingSaveAnnotation(false);
+            });
         }
+        navigate(`/annotation/${responseReturn.data.nextFrameId}`);
+        window.location.reload();
+      }
+    }
   }
 
 
@@ -845,11 +942,19 @@ function AnnotationMerge(props) {
 
   return (
     <div className="outer-wrapper">
-      {isLoading || isLoadingSaveAnnotation || isLoadingData ? (
+      {isLoading ||
+      isLoadingSaveAnnotation ||
+      isLoadingData ||
+      isLoadingPredictNext ? (
         <ClimbingBoxLoader
           size={30}
           color={"#000"}
-          loading={isLoading || isLoadingSaveAnnotation || isLoadingData}
+          loading={
+            isLoading ||
+            isLoadingSaveAnnotation ||
+            isLoadingData ||
+            isLoadingPredictNext
+          }
         />
       ) : (
         <div
@@ -928,7 +1033,22 @@ function AnnotationMerge(props) {
                     ) : (
                       ""
                     )}
-
+                    {isShowPredictFromPrev && (
+                      <Layer opacity={0.8}>
+                        {arrayImagePredictRendering.map(
+                          (imagePrevItem, index) => (
+                            <Image
+                              key={index}
+                              image={imagePrevItem}
+                              width={width}
+                              height={height}
+                              scaleX={scaleRate}
+                              scaleY={scaleRate}
+                            />
+                          )
+                        )}
+                      </Layer>
+                    )}
                     {showAnnotated && (
                       <Layer opacity={0.8}>
                         {bboxResult.map((imageBBItem, index) => (
@@ -1065,6 +1185,9 @@ function AnnotationMerge(props) {
                   <div className="step-content">
                     <Button onClick={predictNextImage}>
                       Predict Next Image
+                    </Button>
+                    <Button onClick={showPredictPrevImages}>
+                      {isShowPredictFromPrev ? "Hide Predict" : "Show Predict"}
                     </Button>
                   </div>
                 </div>

@@ -116,6 +116,7 @@ function DataList(props) {
       }
 
       if (annotationFileId && annotationContent && annotationContent.length > 0) {
+        console.log("Update json 4")
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -247,6 +248,7 @@ function DataList(props) {
       }
 
       if (annotationFileId && annotationContent.length > 0) {
+        console.log("Update json 5")
         const responseUpdateJson = await fetch(
           "http://localhost:5000/drive/update-json",
           {
@@ -412,7 +414,7 @@ function DataList(props) {
             <></>
           )}
           {
-            isInviteProject ? ("") : 
+            isInviteProject ? ("") :
             (
             <Button className="button-change-owner" onClick={popupChangeOwner}>
               Change Owner
