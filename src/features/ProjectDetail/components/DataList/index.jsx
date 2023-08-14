@@ -29,7 +29,7 @@ function DataList(props) {
         driveParentId !== ""
       ) {
         const responseFilesFromFolder = await fetch(
-          "http://localhost:5000/drive/folder",
+          "https://be-express.vercel.app/drive/folder",
           {
             method: "POST",
             headers: {
@@ -59,7 +59,7 @@ function DataList(props) {
             annotationFileId !== undefined
           ) {
             const responseJsonData = await fetch(
-              `http://localhost:5000/drive/get-json/${annotationFileId}`,
+              `https://be-express.vercel.app/drive/get-json/${annotationFileId}`,
               {
                 method: "GET",
                 headers: {
@@ -118,7 +118,7 @@ function DataList(props) {
       if (annotationFileId && annotationContent && annotationContent.length > 0) {
         console.log("Update json 4")
         const responseUpdateJson = await fetch(
-          "http://localhost:5000/drive/update-json",
+          "https://be-express.vercel.app/drive/update-json",
           {
             method: "POST",
             headers: {
@@ -160,7 +160,7 @@ function DataList(props) {
       driveParentId !== ""
     ) {
       const responseFilesFromFolder = await fetch(
-        "http://localhost:5000/drive/folder",
+        "https://be-express.vercel.app/drive/folder",
         {
           method: "POST",
           headers: {
@@ -191,7 +191,7 @@ function DataList(props) {
           annotationFileId !== undefined
         ) {
           const responseJsonData = await fetch(
-            `http://localhost:5000/drive/get-json/${annotationFileId}`,
+            `https://be-express.vercel.app/drive/get-json/${annotationFileId}`,
             {
               method: "GET",
               headers: {
@@ -250,7 +250,7 @@ function DataList(props) {
       if (annotationFileId && annotationContent.length > 0) {
         console.log("Update json 5")
         const responseUpdateJson = await fetch(
-          "http://localhost:5000/drive/update-json",
+          "https://be-express.vercel.app/drive/update-json",
           {
             method: "POST",
             headers: {
@@ -360,7 +360,7 @@ function DataList(props) {
   const handleChangeOwnerShip = async (e) => {
     const newOwnerEmail = e.ownerEmail;
     const responseChangeOwnership = await fetch(
-      "http://localhost:5000/drive/change-ownership",
+      "https://be-express.vercel.app/drive/change-ownership",
       {
         method: "POST",
         headers: {

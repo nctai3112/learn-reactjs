@@ -44,7 +44,7 @@ function GoogleLoginComponent(props) {
           if (res.data) {
             setLoadingLogin(true);
             fetch(
-              "http://localhost:5000/authors",
+              "https://be-express.vercel.app/authors",
               {
                 method: "POST",
                 headers: {

@@ -33,7 +33,7 @@ function Project(props) {
   const getProjectListFromDB = (email) => {
     let data = [];
     setLoadingProjectList(true);
-    fetch("http://localhost:5000/projects/author", {
+    fetch("https://be-express.vercel.app/projects/author", {
       method: "POST",
       headers: {
         Accept: "*/*",
@@ -61,7 +61,7 @@ function Project(props) {
         setLoadingProjectList(false);
       });
 
-    fetch("http://localhost:5000/projects/get-project-invite", {
+    fetch("https://be-express.vercel.app/projects/get-project-invite", {
       method: "POST",
       headers: {
         Accept: "*/*",
@@ -97,7 +97,7 @@ function Project(props) {
     // If exists  email -> create project!
     setLoading(true);
     if (email) {
-      fetch("http://localhost:5000/projects", {
+      fetch("https://be-express.vercel.app/projects", {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -124,7 +124,7 @@ function Project(props) {
             data.project._id !== "" &&
             data.project._id !== undefined
           ) {
-            fetch("http://localhost:5000/drive", {
+            fetch("https://be-express.vercel.app/drive", {
               method: "POST",
               headers: {
                 Accept: "*/*",
@@ -139,7 +139,7 @@ function Project(props) {
             })
               .then(async (response) => {
                 const dataResponse = await response.json();
-                fetch("http://localhost:5000/projects/update-project", {
+                fetch("https://be-express.vercel.app/projects/update-project", {
                   method: "POST",
                   headers: {
                     Accept: "*/*",

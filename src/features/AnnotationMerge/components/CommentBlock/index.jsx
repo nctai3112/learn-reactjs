@@ -11,7 +11,7 @@ function CommentBlock(props) {
     const { annotationId, commentHeight } = props;
 
     const onFinish = async (values) => {
-        const response = await fetch("http://localhost:5000/projects/comment", {
+        const response = await fetch("https://be-express.vercel.app/projects/comment", {
             method: "POST",
             headers: {
             Accept: "*/*",
@@ -32,7 +32,7 @@ function CommentBlock(props) {
 
     const [commentList, setCommentList] = useState([]);
     const updateCommentList = async () => {
-        const responseGetComment = await fetch("http://localhost:5000/projects/get-comment", {
+        const responseGetComment = await fetch("https://be-express.vercel.app/projects/get-comment", {
             method: "POST",
             headers: {
             Accept: "*/*",

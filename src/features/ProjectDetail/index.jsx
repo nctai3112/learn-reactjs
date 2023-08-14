@@ -15,7 +15,7 @@ function ProjectDetail(props) {
   useEffect(() => {
     let data = [];
     try {
-      fetch(`http://localhost:5000/projects/${id}`, {
+      fetch(`https://be-express.vercel.app/projects/${id}`, {
         method: "GET",
         headers: {
           Accept: "*/*",
@@ -82,7 +82,7 @@ function ProjectDetail(props) {
 
     if (emailOwner && inputInviteEmail) {
       try {
-        fetch("http://localhost:5000/projects/invite-people", {
+        fetch("https://be-express.vercel.app/projects/invite-people", {
         method: "POST",
         headers: {
           Accept: "*/*",

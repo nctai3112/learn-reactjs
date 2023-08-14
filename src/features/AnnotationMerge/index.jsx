@@ -146,7 +146,7 @@ function AnnotationMerge(props) {
   const getCurrentAnnotationData = (annotationId) => {
     if (annotationId) {
       setLoadingData(true);
-      fetch(`http://localhost:5000/drive/get-json/${annotationId}`, {
+      fetch(`https://be-express.vercel.app/drive/get-json/${annotationId}`, {
         method: "GET",
         headers: {
           Accept: "*/*",
@@ -234,7 +234,7 @@ function AnnotationMerge(props) {
   useEffect(() => {
     // if having file image id --> get image width height and set to width, height state.
     if (id) {
-      fetch(`http://localhost:5000/drive/get-json/${id}`, {
+      fetch(`https://be-express.vercel.app/drive/get-json/${id}`, {
         method: "GET",
         headers: {
           Accept: "*/*",
@@ -584,7 +584,7 @@ function AnnotationMerge(props) {
     if (newAnnotation && newAnnotation.length > 0) {
       setLoadingSaveAnnotation(true);
       console.log("Update json 1")
-      fetch("http://localhost:5000/drive/update-json", {
+      fetch("https://be-express.vercel.app/drive/update-json", {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -618,7 +618,7 @@ function AnnotationMerge(props) {
   const annotateImage = (e) => {
     if (annotationId && id) {
       setLoading(true);
-      fetch("http://localhost:5000/drive/annotate-image", {
+      fetch("https://be-express.vercel.app/drive/annotate-image", {
         method: "POST",
         headers: {
           Accept: "*/*",
@@ -769,7 +769,7 @@ function AnnotationMerge(props) {
         // Update annotation.json file if data valid.
         if (newAnnotation && newAnnotation.length > 0) {
           console.log("Update json 2")
-          fetch("http://localhost:5000/drive/update-json", {
+          fetch("https://be-express.vercel.app/drive/update-json", {
             method: "POST",
             headers: {
               Accept: "*/*",
@@ -837,7 +837,7 @@ function AnnotationMerge(props) {
     console.log("resultFolderId:", resultFolderId);
     setLoadingPredictNext(true);
     const responsePredictNextImage = await fetch(
-      "http://localhost:5000/drive/predict-next",
+      "https://be-express.vercel.app/drive/predict-next",
       {
         method: "POST",
         headers: {
@@ -882,7 +882,7 @@ function AnnotationMerge(props) {
           setLoadingSaveAnnotation(true);
           console.log("Update json 3")
           console.log(newAnnotation);
-          fetch("http://localhost:5000/drive/update-json", {
+          fetch("https://be-express.vercel.app/drive/update-json", {
             method: "POST",
             headers: {
               Accept: "*/*",
